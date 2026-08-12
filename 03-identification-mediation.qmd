@@ -1,0 +1,244 @@
+# The design limits the questions: identification {#sec-identification}
+
+The previous chapter ended on a warning: a model that fits the data is not thereby true. This chapter is about the hard version of that warning. Some questions cannot be answered by a given design *no matter how much data we collect* — not because the data are noisy, but because the design never put the answer into the data in the first place. Statisticians call this the problem of **identification**, and it is the sharpest illustration in this book of the chain from @sec-rq-to-interpretation: the design determines which assumptions are plausible, and thereby which questions the model can answer at all.
+
+Our case study is **mediation** — a beloved, useful, and dangerous kind of analysis.
+
+## Mediation: asking *how*
+
+Suppose an experiment has shown that a mindfulness program ($X$) reduces depressive symptoms ($Y$). The natural next question is *how*. Does the program work by reducing rumination ($M$)? That is a **mediation** question: does the effect of $X$ on $Y$ run *through* $M$?
+
+As in @sec-theory-to-glm, the theory becomes a model. Each endogenous variable gets an equation (all variables standardized, as before):
+
+$$
+\begin{aligned}
+M &= a X + \varepsilon_M \\
+Y &= c' X + b M + \varepsilon_Y
+\end{aligned}
+$$ {#eq-mediation}
+
+```{mermaid}
+%%| fig-cap: "The mediation model. The effect of X on Y decomposes into a direct part (c′) and an indirect part running through M (a×b)."
+flowchart LR
+  X[Program X] -->|a| M[Rumination M]
+  M -->|b| Y[Symptoms Y]
+  X -->|c′| Y
+```
+
+The tracing rules of @sec-theory-to-glm give the decomposition that makes mediation attractive. Between $X$ and $Y$ there are two traces: the direct path, contributing $c'$, and the path through $M$, contributing $a \times b$. So
+
+$$
+\underbrace{\rho_{XY}}_{\text{total effect}} \;=\; \underbrace{c'}_{\text{direct}} + \underbrace{a b}_{\text{indirect}} .
+$$
+
+Estimate the two equations, multiply $\hat a \hat b$, and you have "the part of the effect explained by rumination." (This estimation recipe has circulated in psychology for decades, in a formulation due to @baron1986; the recipe is not our topic — what the numbers *mean* is.)
+
+::: {.callout-tip icon="false" title="Exercise 3.1"}
+In a study of education ($X$), health knowledge ($M$), and longevity ($Y$), the fitted standardized coefficients are $\hat a = 0.5$, $\hat b = 0.4$, $\hat c' = 0.1$. Compute the indirect, direct, and total effects, and the "proportion mediated." Then state, in one sentence each, what the indirect effect claims *about the world* if the model is true.
+:::
+
+::: {.callout-note collapse="true" icon="false" title="Answer 3.1"}
+Indirect $= 0.5 \times 0.4 = 0.20$; direct $= 0.10$; total $= 0.30$; proportion mediated $= 0.20/0.30 = 2/3$. If the model is true: raising education by one standard deviation would raise longevity by 0.3 SD in total, of which 0.2 SD would come about *because* education raises health knowledge, which in turn raises longevity — so intervening on health knowledge directly could capture about two-thirds of education's benefit. Notice how strong a claim that is; the rest of this chapter asks what entitles us to it.
+:::
+
+## The assumptions behind the arrows
+
+Equations [-@eq-mediation] are claims, and by now you know where their credibility must come from: the design. Interpreting $\hat a$, $\hat b$, and $\hat c'$ causally requires, beyond linearity:
+
+1. **No $X$–$M$ confounding**: nothing else drives both program participation and rumination.
+2. **No $M$–$Y$ confounding**: nothing else drives both rumination and symptoms — the error terms $\varepsilon_M$ and $\varepsilon_Y$ are uncorrelated.
+3. **Correct causal order**: $X$ before $M$ before $Y$ — the arrows point the right way.
+
+Each assumption must be *purchased* by a design feature or defended by argument. And here mediation springs its trap: randomizing $X$ — the best design feature we have — purchases assumption 1 (and makes $X \rightarrow M$, $X \rightarrow Y$ arrows credible), **but does nothing for assumptions 2 and 3.** Nobody randomized rumination. Within each arm of the trial, the people who ruminate less are simply *different people* than those who ruminate more — perhaps less neurotic, better slept, less lonely — and any of that may drive symptoms directly. The $b$ path is, hidden inside a randomized experiment, an observational study.
+
+Let us *experience* the two failures, as promised, rather than only hear about them.
+
+## Failure one: the arrows can be backwards
+
+We simulate a world where the model is exactly true — mindfulness reduces rumination, rumination raises symptoms, no direct effect — and then fit both the true model and a model with the arrows *reversed*: symptoms driving rumination, rumination driving program participation.
+
+```{r}
+#| label: reversed-arrows
+library(lavaan)
+set.seed(4)
+n <- 1000
+X <- rbinom(n, 1, 0.5)                    # randomized program
+X <- as.numeric(scale(X))
+M <- 0.5 * X + rnorm(n, sd = sqrt(1 - 0.25))
+Y <- 0.4 * M + rnorm(n, sd = sqrt(1 - 0.16))
+d <- data.frame(X, M, Y)
+
+fit_true     <- sem("M ~ X \n Y ~ M", data = d)
+fit_reversed <- sem("M ~ Y \n X ~ M", data = d)
+
+c(chisq_true     = fitMeasures(fit_true, "chisq"),
+  chisq_reversed = fitMeasures(fit_reversed, "chisq"))
+```
+
+The fit of the two models is **identical** — not similar: identical, down to the last decimal, and it would be in every dataset these models ever meet.
+
+::: {.callout-tip icon="false" title="Exercise 3.2"}
+Before reading on: explain this result. Use what you learned in @sec-theory-to-glm about what a path model implies for the correlations. (Hint: what does each model imply about $\rho_{XY}$, $\rho_{XM}$, $\rho_{MY}$?)
+:::
+
+::: {.callout-note collapse="true" icon="false" title="Answer 3.2"}
+Each model has three free parameters facing three observed correlations, and each imposes exactly one constraint. The true chain $X \rightarrow M \rightarrow Y$ implies $\rho_{XY} = \rho_{XM}\,\rho_{MY}$ (the only trace from $X$ to $Y$ passes through $M$). The reversed chain $Y \rightarrow M \rightarrow X$ implies... $\rho_{XY} = \rho_{MY}\,\rho_{XM}$ — the *same* constraint. Both models say: "the outer correlation is the product of the two inner ones," and both are silent about which way causation flows along the chain. Since the models imply identical restrictions on the correlations, no dataset of any size can prefer one to the other. Their difference lies entirely in claims the data cannot see.
+:::
+
+This is **non-identification** in its purest form: two models that mean opposite things about the world imply the *same* probability distribution for the data. The choice between them cannot come from fit statistics; it must come from outside — from the design. And design *can* settle it, in part: because $X$ was randomized, an arrow $M \rightarrow X$ is absurd (rumination cannot cause a coin flip), so the reversed model is ruled out — by the design, not by the chi-square. But the design that randomized $X$ is powerless to orient the $M$–$Y$ edge: for that pair we have measured two variables and randomized neither, so "M causes Y" and "Y causes M" (say, symptomatic people ruminate about their symptoms) remain observationally equivalent. *The design limits the questions.*
+
+## Failure two: the hidden confounder
+
+Now the second assumption. We simulate a world where the program truly reduces rumination ($a = 0.5$), but rumination has **no effect at all** on symptoms ($b = 0$). Instead, an unmeasured trait $U$ — call it neuroticism — drives both rumination and symptoms.
+
+```{r}
+#| label: hidden-confounder
+set.seed(5)
+U <- rnorm(n)                                  # unmeasured
+M2 <- 0.5 * X + 0.6 * U + rnorm(n, sd = sqrt(1 - 0.25 - 0.36))
+Y2 <- 0.0 * M2 + 0.6 * U + rnorm(n, sd = sqrt(1 - 0.36))
+d2 <- data.frame(X, M = M2, Y = Y2)
+
+round(coef(sem("M ~ X \n Y ~ M + X", data = d2)), 2)
+```
+
+The mediation analysis finds a healthy, "highly significant" $\hat b \approx 0.45$ and would report that a large share of... whatever effect exists... is "mediated by rumination." Every number is precisely estimated, and the conclusion is completely wrong: in this world, intervening on rumination would do *nothing*, because rumination does not cause symptoms — neuroticism merely makes the two travel together. Note also the estimate $\hat c'$: it is pushed *negative*, a spurious "suppression" effect, another artifact of the confounder. More data would only tighten the intervals around the wrong values. This is the observational wine-drinkers study of @sec-rq-to-interpretation, reborn inside an RCT.
+
+::: {.callout-tip icon="false" title="Exercise 3.3"}
+Explain, with a trace through the diagram $X \rightarrow M \leftarrow U \rightarrow Y$, why the regression of $Y$ on $M$ and $X$ yields a nonzero coefficient on $M$ even though $M$ does not cause $Y$. Then explain why randomizing $X$ did not protect us.
+:::
+
+::: {.callout-note collapse="true" icon="false" title="Answer 3.3"}
+$M$ and $Y$ share the common cause $U$: high-$U$ people have both high rumination and high symptoms, so $M$ and $Y$ are correlated within any level of $X$ — and regression, which can only redescribe correlation, attributes that association to the $M$ coefficient. In model terms, the errors $\varepsilon_M$ and $\varepsilon_Y$ both contain $U$ and are therefore correlated, violating assumption 2. Randomization of $X$ guarantees $U$ is unrelated to *$X$* — which is why $\hat a$ remains a fine estimate — but places no constraint whatsoever on the relation between $U$ and $M$ or $Y$. The protection racket covers only the variable that was randomized.
+:::
+
+## Trading one assumption for another: instrumental variables
+
+So far the chapter has been destructive. Now for the constructive turn, and it is a beautiful one. Look again at the correlations the randomized design gives us, in the confounded world, allowing the errors of $M$ and $Y$ to covary (that covariance, $\rho_{\varepsilon_M \varepsilon_Y}$, is the confounding). The tracing rules yield:
+
+$$
+\rho_{XM} = a, \qquad
+\rho_{XY} = a\,b + c' \cdot 1 + \text{(nothing else: } X \text{ is randomized)} .
+$$
+
+Three observable correlations ($\rho_{XM}, \rho_{XY}, \rho_{MY}$); four unknowns ($a$, $b$, $c'$, and the error covariance). One equation short: not identified. We cannot buy "no confounding" — but suppose the theory lets us assert **no direct effect**, $c' = 0$ (the program affects symptoms *only* through rumination). Then
+
+$$
+\rho_{XY} = a\,b
+\quad\Longrightarrow\quad
+b = \frac{\rho_{XY}}{\rho_{XM}} ,
+$$
+
+and $b$ is identified *without assuming away the confounding*: the error covariance becomes a free parameter the data can estimate. We have **traded the assumption "no $M$–$Y$ confounding" for the assumption "no direct effect $X \rightarrow Y$."** Neither is testable from these data — with $c'$ free the model is just-identified and fits perfectly, so the trade is struck on theoretical credit alone. In this role, $X$ is called an **instrumental variable** (IV): we are not actually interested in $X$; we use its randomness as a lever to move $M$ and watch what happens to $Y$ [@angrist1996].
+
+Does it work? In the same confounded data where naive regression told us $\hat b \approx 0.45$:
+
+```{r}
+#| label: iv-estimate
+model_iv <- "
+  M ~ a * X
+  Y ~ b * M
+  M ~~ Y        # errors may covary: confounding allowed!
+"
+round(coef(sem(model_iv, data = d2))[c("a", "b")], 2)
+# the ratio estimator gives the same answer:
+round(cov(d2$X, d2$Y) / cov(d2$X, d2$M), 2)
+```
+
+The IV estimate lands on the truth, $b = 0$: the analysis correctly reports that rumination does nothing, in exactly the dataset that fooled the ordinary mediation analysis.
+
+There is fine print, and it is printed larger than usual. First, the recipe divides by $\rho_{XM} = a$: **the instrument must move the mediator**, and not feebly. With a small $a$, the estimator divides noise by nearly zero:
+
+```{r}
+#| label: weak-instrument
+#| fig-cap: "IV estimates across 500 simulated studies (n = 1000 each), true b = 0. With a strong instrument (a = 0.5) estimates concentrate on the truth; with a weak one (a = 0.05) the same estimator is all over the place."
+one_iv <- function(a) {
+  U <- rnorm(1000); X <- rnorm(1000)
+  M <- a * X + 0.6 * U + rnorm(1000)
+  Y <- 0.6 * U + rnorm(1000)
+  cov(X, Y) / cov(X, M)
+}
+set.seed(6)
+strong <- replicate(500, one_iv(0.5))
+weak   <- replicate(500, one_iv(0.05))
+par(mfrow = c(1, 2))
+hist(strong, main = "Strong instrument", xlab = "IV estimate of b", breaks = 30)
+abline(v = 0, lwd = 2)
+hist(pmax(pmin(weak, 10), -10), main = "Weak instrument", xlab = "IV estimate of b",
+     breaks = 30)
+abline(v = 0, lwd = 2)
+```
+
+Weak instruments do not merely enlarge standard errors; they can make the estimator erratic and, when the instrument is even slightly invalid, badly biased [@bound1995].
+
+Second, the exclusion restriction $c' = 0$ does real work and cannot be checked here. If mindfulness also soothes symptoms directly — through relaxation, say — the "instrument" smuggles a direct effect into the numerator and the estimate of $b$ is corrupted.
+
+::: {.callout-tip icon="false" title="Exercise 3.4"}
+State the three requirements for $X$ to serve as an instrument for the effect of $M$ on $Y$, and for each requirement name the design feature or theoretical argument that could support it in the mindfulness example. Which requirement is supported by randomization alone?
+:::
+
+::: {.callout-note collapse="true" icon="false" title="Answer 3.4"}
+(1) *Relevance*: $X$ affects $M$ ($a \neq 0$, and not weakly) — checkable from the data ($\hat\rho_{XM}$), and supported by choosing a program known to move rumination strongly. (2) *Exogeneity*: $X$ shares no common causes with $Y$ — supported by randomization, and by it alone among our tools. (3) *Exclusion*: $X$ affects $Y$ only through $M$ ($c' = 0$) — supported by nothing in the design; it needs a theoretical argument about the mechanism of the program (and is doubtful for mindfulness, which plausibly has other active ingredients). Randomization gives only (2). The instrument's credibility is therefore never better than the theory behind its exclusion restriction.
+:::
+
+## Instruments in the wild
+
+Where do good instruments come from? Sometimes we *build* them. In an **encouragement design**, we randomize not the behavior itself but an encouragement to it — a nudge, an invitation, free access [@holland1988]. One cannot randomly force children to watch an educational TV program, but one can randomly encourage families to; encouragement is then an instrument for viewing. The same logic underlies analyzing a trial by *assignment* when compliance is imperfect: assignment is randomized, treatment received is not, and assignment serves as an instrument for treatment received — identifying, to be precise, the effect among those who comply with their assignment [@angrist1996].
+
+Sometimes nature or bureaucracy randomizes for us. The Vietnam draft lottery randomly encouraged military service; quarter of birth, via school-entry laws, nudged some children into more schooling than others [@angrist1991]. And in **Mendelian randomization** (MR), the meiotic lottery is the randomizer: genetic variants that raise, say, alcohol consumption are allocated at conception, plausibly independent of later confounders, and serve as instruments for the exposure's effect on disease [@daveysmith2003].
+
+Each example inherits the same fine print. The draft lottery is an instrument for service only if being drafted affected earnings solely through service (not through, say, draft-avoiding college enrollment — a direct path). Quarter of birth is famously *weak*, the canonical illustration of weak-instrument pathology [@bound1995]. A genetic variant is a valid instrument only absent **pleiotropy** — the variant influencing the disease through paths other than the exposure — which is exclusion-restriction doubt in genetic dress; modern MR practice is largely a battery of partial defenses against it [@davies2018]. And a broader critique from economics insists that even a valid instrument answers a narrower question than the one usually asked — the effect *among those the instrument moves* (the compliers), not the population effect — so that instrument-based results can be internally impeccable yet answer a question nobody posed [@deaton2010]. Design limits questions; instruments relocate the limit, they do not remove it.
+
+Mediation analysis, meanwhile, has its own bill of indictment. In psychology, where the $M \rightarrow Y$ leg is routinely estimated from unrandomized mediators measured minutes apart from outcomes, methodologists have argued that a large fraction of published mediation claims are unsupported: the required no-confounding and correct-order assumptions are rarely stated, let alone defended [@bullock2010; @rohrer2022]. The remedy is not to abandon the question — *how* effects work is often the scientific question — but to treat the mediation model as this book treats every model: as a set of assumptions in need of a design. Randomize the mediator where possible (double-randomization designs); use instruments where credible; measure candidate confounders and causal order; and report the causal claim with the modesty its warrant deserves.
+
+## Reading the chapter backwards
+
+Identification is a property of the *question–design pair*, not of the estimator, the sample size, or the software. The mediation case taught us, in miniature, everything general:
+
+- Two opposite models fit identically: the data cannot orient an edge the design did not orient (causal order).
+- A confounder made every estimate precise and wrong: assumptions absent from the design do not fail loudly; they fail silently (no confounding).
+- An untestable assumption ($c' = 0$) bought back identification: assumptions are a currency, and designs set the exchange rate (instrumental variables).
+- The instrument's own fine print (relevance, exclusion, compliers) relocated the limits rather than abolishing them.
+
+When you meet an analysis — any analysis — the identification question is question five of the checklist in @sec-rq-to-interpretation asked with maximal severity: *which feature of the design puts the answer to this question into the data at all?* If no feature does, no estimator can get it out.
+
+## Test yourself {.unnumbered}
+
+::: {.callout-tip icon="false" title="Exercise 3.A"}
+A published RCT randomized a workplace exercise program ($X$), then measured sleep quality ($M$) at 3 months and burnout ($Y$) at 6 months. Standardized estimates: $\hat a = 0.4$, $\hat b = 0.5$, $\hat c' = 0.1$ (n.s.). The authors conclude: "the program's effect on burnout is fully mediated by sleep; workplaces could target sleep directly."
+
+(a) Compute the indirect and total effects implied by the estimates.
+(b) List the assumptions required for the "fully mediated" causal reading, and say for each whether this design supports it.
+(c) Construct a concrete alternative world (specify the causal structure) in which these exact estimates arise but targeting sleep directly would do nothing for burnout.
+(d) The authors note that measuring $M$ before $Y$ establishes causal order. Evaluate this claim.
+:::
+
+::: {.callout-note collapse="true" icon="false" title="Answer 3.A"}
+(a) Indirect $= 0.4 \times 0.5 = 0.20$; total $= 0.20 + 0.10 = 0.30$. (b) No $X$–$M$ and no $X$–$Y$ confounding: supported by randomization of $X$. No $M$–$Y$ confounding: *not* supported — sleep was not randomized. Correct order $M \rightarrow Y$: not established by design (see d). Linearity/additivity: conventional, unexamined. (c) Let the program reduce a latent stress reactivity $U$... or more simply: program $\rightarrow$ overall recovery capacity $U$; $U \rightarrow$ sleep and $U \rightarrow$ burnout, with no sleep $\rightarrow$ burnout arrow. Then $M$ and $Y$ correlate within arms through $U$ (yielding $\hat b \approx 0.5$), $X$ moves $M$ through $U$ ($\hat a \approx 0.4$), and the direct path absorbs little ($\hat c' \approx 0$) — yet a sleep-only intervention leaves burnout untouched, because sleep never caused it. (d) Measuring $M$ earlier rules out *this measurement* of $Y$ causing *that measurement* of $M$, but not the underlying reverse structure: burnout is chronic, and burnout at baseline (unmeasured in the analysis) may drive both sleep at 3 months and burnout at 6. Temporal order of measurements is not temporal order of variables.
+:::
+
+::: {.callout-tip icon="false" title="Exercise 3.B"}
+An epidemiologist uses a genetic variant known to slow alcohol metabolism ($G$) as an instrument to estimate the effect of alcohol consumption ($M$) on esophageal cancer ($Y$).
+
+(a) Draw the assumed model and write the IV estimate of $b$ in terms of two correlations.
+(b) State the three instrument requirements in this setting, in genetic terms.
+(c) The variant also affects facial flushing, which reduces social drinking *and* independently correlates with other health behaviors through ancestry. Which requirement(s) does this threaten, and what is the technical term in the MR literature?
+(d) Suppose the variant is common in one subpopulation and rare in another, and the subpopulations differ in diet. Explain how this produces bias, and name one design/analysis remedy.
+:::
+
+::: {.callout-note collapse="true" icon="false" title="Answer 3.B"}
+(a) $G \rightarrow M \rightarrow Y$ with $\varepsilon_M \leftrightarrow \varepsilon_Y$ free and no $G \rightarrow Y$ arrow; $\hat b = \rho_{GY} / \rho_{GM}$. (b) Relevance: the variant actually shifts alcohol consumption. Exogeneity: the variant is independent of confounders of drinking and cancer — the "meiotic lottery" argument. Exclusion: the variant affects cancer only through alcohol consumption. (c) The flushing-to-other-behaviors path violates exclusion (the variant reaches the outcome via routes other than the exposure): *pleiotropy* (horizontal pleiotropy, in MR terms) [@davies2018]. (d) This is confounding of the instrument itself by *population stratification*: subpopulation membership causes both variant frequency and (via diet) cancer risk, violating exogeneity — the lottery was not fair across strata. Remedies: restrict analyses to genetically homogeneous samples, adjust for genetic principal components, or use within-family designs where the meiotic lottery argument holds exactly.
+:::
+
+::: {.callout-tip icon="false" title="Exercise 3.C"}
+Return to the reversed-arrows demonstration. A colleague proposes: "Fine, chains are ambiguous — but I will fit *all three* models ($X \rightarrow M \rightarrow Y$, $Y \rightarrow M \rightarrow X$, and $X \leftarrow M \rightarrow Y$, the common-cause model) and report whichever fits best."
+
+(a) Derive the constraint on correlations implied by the common-cause model $X \leftarrow M \rightarrow Y$ and compare it to the chain's constraint.
+(b) What will the colleague find, and why does the strategy fail?
+(c) Now suppose $X$ is randomized. Which of the three models can be ruled out, on what grounds, and what remains unresolvable?
+(d) Formulate the general lesson in one sentence using the vocabulary of this chapter.
+:::
+
+::: {.callout-note collapse="true" icon="false" title="Answer 3.C"}
+(a) Tracing in $X \leftarrow M \rightarrow Y$: the only trace between $X$ and $Y$ runs backward then forward through $M$, giving $\rho_{XY} = \rho_{XM}\rho_{MY}$ — the *same* constraint as both chains. (b) All three models fit identically in every dataset; "whichever fits best" selects noise. The strategy fails because the models are *observationally equivalent*: they differ only in claims that imply no differences in the distribution of the data. (c) Randomization of $X$ rules out every model with an arrow *into* $X$ ($Y \rightarrow M \rightarrow X$ and $X \leftarrow M \rightarrow Y$), because nothing in the system can cause a coin flip. The remaining ambiguity — whether the $M$–$Y$ association reflects $M \rightarrow Y$, confounding, or reverse causation from $Y$'s underlying process — is untouched. (d) Model comparison can never substitute for identification: when the design leaves models observationally equivalent, the data have no opinion, however large the sample.
+:::
