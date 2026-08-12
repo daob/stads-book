@@ -1,0 +1,17 @@
+# Preface {.unnumbered}
+
+::: {.callout-warning}
+**Draft.** This is an early, LLM-generated draft of the first three chapters, produced from an outline by Daniel Oberski. Everything in it — structure, examples, exercises, and claims — is provisional and subject to revision. The git history records what was written by the author and what was generated.
+:::
+
+This book is about a way of thinking, not a list of techniques.
+
+Most statistics courses teach methods one at a time: here is the *t*-test, here is regression, here is ANOVA. Students then leave with a toolbox and no manual: which tool answers which question, and when should we believe the answer? This book starts from the other end. Every empirical study — whether it uses a *t*-test or a transformer — follows the same basic logic:
+
+> A **research question** motivates a **design** for collecting data; the design makes a set of **assumptions** plausible; those assumptions define a **model**; and the results of fitting that model answer the research question — *to the extent that the assumptions hold*.
+
+The chapters that follow work through this logic. We begin with the logic itself (@sec-rq-to-interpretation), then make it concrete by building statistical models directly from verbal theories (@sec-theory-to-glm), and then confront its limits: some questions simply cannot be answered by some designs, no matter how much data we collect (@sec-identification).
+
+Each chapter is short and contains two kinds of exercises. *Inline exercises* appear throughout the text; they are meant to be done immediately, and you can reveal the answer directly below each one. *End-of-chapter exercises* are harder and are meant to test whether you can use the ideas, not just recognize them.
+
+The practical exercises use R. If you prefer Python, everything here can be done there too; the ideas are what matter.

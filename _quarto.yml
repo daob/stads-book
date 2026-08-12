@@ -1,0 +1,32 @@
+project:
+  type: book
+
+book:
+  title: "Statistics and Data Analysis"
+  subtitle: "A broad perspective for social and health scientists"
+  author: "Daniel Oberski"
+  date: today
+  chapters:
+    - index.qmd
+    - 01-research-question-to-interpretation.qmd
+    - 02-theory-to-linear-models.qmd
+    - 03-identification-mediation.qmd
+    - references.qmd
+
+bibliography: references.bib
+csl: apa.csl
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    number-sections: true
+    code-fold: false
+    fig-width: 6
+    fig-height: 4
+
+execute:
+  echo: true
+  warning: false
+  message: false
+  freeze: auto
