@@ -1,261 +1,246 @@
 # From theory to model: (generalized) linear models {#sec-theory-to-glm}
 
-The previous chapter drew the chain from research question to interpretation, but left one link abstract: where does the *model* actually come from? This chapter builds that link, step by step, for the most common case in the social and health sciences: a verbal theory, observational data, and (generalized) linear models. The approach follows a tradition best set out by @saris1984: treat the theory as the object of interest, and the statistical model as its translation — precise enough to estimate, precise enough to be wrong.
+In the Netherlands of 1977, an eleven-year-old's future was decided by committee. At the end of elementary school, pupils were sorted into secondary school types — from vocational tracks to the pre-university gymnasium — and the sorting worked roughly like this: the teacher gave a recommendation, the parents stated a preference, the child sat a national test, and a committee weighed the three into a final placement. A test bureau wrote up an account of how this process worked; researchers turned that prose into a model, estimated it on 383 pupils, and could then say things like "parents' preference dominates the final choice" and "school quality matters, but only through achievement" — with numbers attached, and with ways of being proven wrong.^[The study is the running example of @saris1984, whose approach this chapter follows closely. All numbers below are theirs.]
 
-By the end of the chapter you will have gone from a paragraph of prose to estimated equations and back: the estimates saying something about the world (*if* the model is true), and the tests saying something about the theory.
+That distance — from a paragraph of committee prose to estimated, testable equations — is what this chapter covers. The previous chapter said that a model is a set of assumptions and left it there. Here you will build one, piece by piece, and meet the two workhorses of applied statistics along the way: linear regression and its yes/no sibling, logistic regression. The estimates will say something about the world (*if* the model is true — this proviso is doing heavy lifting and I will keep pointing at it), and the tests will say something about the theory.
 
-## A verbal theory
+## From words to claims
 
-Here is a small theory of the kind you might find in the occupational health literature:
+Here is a compressed version of the verbal theory:
 
-> Demanding jobs cause stress. Having control over one's own work protects against stress. Stress, in turn, causes health complaints; job demands affect health complaints only through stress.
+> Scholastic achievement determines the teacher's recommendation, the parents' preference, and the test score. The committee's choice is produced by weighing recommendation, preference, and test score. Achievement itself is influenced by the quality of the elementary school and by the parents' social status.
 
-This is respectable science prose, and it is *not yet* a model. Try to estimate "demanding jobs cause stress" and you will notice everything that is missing: how strong is the effect? Is it the same for everyone? What else causes stress? What should we measure?
+The first job is to notice which sentences make *causal* claims. @saris1984 offer a sharp test. A causal hypothesis involves what they call "production" or "force": a change in one variable actually *produces* a change in another — verbal markers are words like *affects*, *influences*, *determines*. A mere **covariation statement** is symmetric: "the higher the achievement, the more advanced the school type." Diagnostic: if you can swap the two halves of the sentence and it says the same thing, it is covariation, not causation. Causation implies covariation (other things equal); covariation implies nothing.
 
-**Step 1: distill the claims.** Rewrite the theory as an explicit list of directed claims, one per pair of concepts:
+Their recipe for turning the prose into claims has three steps [@saris1984]: *(1) make a list of all variables which might be relevant; (2) indicate the causal ordering of the variables; (3) specify the causal hypotheses.* The causal order comes from the temporal flow of the process — achievement exists before the teacher writes a recommendation; the committee decides last. For the school study this yields, with the simplified four-variable version we will use to learn on:
 
-1. Job demands ($D$) increase stress ($S$): positive effect, $D \rightarrow S$.
-2. Autonomy ($A$) decreases stress: negative effect, $A \rightarrow S$.
-3. Stress increases health complaints ($C$): positive effect, $S \rightarrow C$.
-4. Demands have **no direct effect** on complaints: no arrow $D \rightarrow C$.
+- $x_1$: quality of the elementary school; $x_2$: parents' social status. These come first.
+- $y_1$: the pupil's scholastic achievement. Claims: $x_1 \rightarrow y_1$ and $x_2 \rightarrow y_1$.
+- $y_2$: the school choice. Claims: $y_1 \rightarrow y_2$, and — because school quality or status might also sway recommendations, preferences, or the committee directly — $x_1 \rightarrow y_2$ and $x_2 \rightarrow y_2$.
 
-Claim 4 deserves a pause. The words "only through stress" — easy to skim in prose — became a claim of *absence*. Absences are the most scientifically valuable claims a theory can make, because they are the easiest to prove wrong. A theory that merely says "everything affects everything, sign unknown" can never be embarrassed by data.
+Just as important is what we do *not* claim. It is a convention that effects which are not specified are supposed to be zero [@saris1984]. Every missing arrow is a claim of absence — and claims of absence are the most scientifically valuable kind, because they are the easiest to prove wrong. A theory that says "everything affects everything, sign unknown" can never be embarrassed by data.
 
-We must also decide what to say about relationships the theory is silent on: may demands and autonomy be related to each other? We do not wish to explain that relationship, only to allow it (demanding jobs plausibly come with less autonomy). So we let $D$ and $A$ covary freely, without a directed claim.
+Two bookkeeping terms. Variables the theory explains ($y_1, y_2$) are "endogenous" — explained within. Variables it takes as given ($x_1, x_2$) are "exogenous". The theory says nothing about *why* school quality and parental status go together; we allow them to covary without explaining it. That unexplained covariation is honest ignorance, and it will cost us something later — it always does.
+
+Which variables must be in, and which may be left out? The rules follow from what omission does [@saris1984]. A **common cause** of two variables you are studying can never be left out: omit it, and its work shows up disguised as a causal effect between them — the confounding of @sec-rq-to-interpretation, now in model form. An **intervening** variable may be omitted harmlessly; the indirect effect simply presents itself as direct. And a variable that affects only the cause or only the outcome — the pupil's IQ, say, which affects achievement but not the committee — may be dropped at no cost except unexplained variance.
 
 ::: {.callout-tip icon="false" title="Exercise 2.1"}
-Distill this verbal theory into directed claims, including any claims of absence: "Loneliness undermines sleep. Poor sleep worsens depressive symptoms, and so does loneliness itself, even apart from its effect on sleep. Physical activity improves sleep but has no further connection to depressive symptoms."
+Apply the three-step recipe to this verbal theory: "A union considering a protest action expects members' willingness to participate to be driven by the action's chance of success. But the more violent an action, the lower its expected success, and violence also frightens members off directly. Expected personal risk plays no role beyond this." List variables, give a causal order, state each directed claim — and each claim of absence.
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 2.1"}
-With loneliness $L$, physical activity $P$, sleep quality $Q$, depressive symptoms $Y$: (1) $L \rightarrow Q$, negative. (2) $Q \rightarrow Y$, negative. (3) $L \rightarrow Y$, positive, direct (the "even apart from" clause). (4) $P \rightarrow Q$, positive. (5) Absence: no direct $P \rightarrow Y$ (only via sleep). $L$ and $P$ are both exogenous; the theory says nothing about their relationship, so we allow them to covary freely. Note how "no further connection" became a testable claim of absence.
+Variables: action violence ($x$), expected success ($m$), willingness to participate ($y$); "expected personal risk" is mentioned to be excluded. Order: violence is a property of the proposed action and comes first; expectations form next; willingness last. Claims: $x \rightarrow m$ (negative), $m \rightarrow y$ (positive), $x \rightarrow y$ (negative, the direct "frightens off" path). Claims of absence: risk has no effect ("no role"), and there are no other paths — e.g., success expectations do not alter the action's violence. (This example is adapted from an exercise thread in @saris1984.)
 :::
 
 ## From claims to equations
 
-**Step 2: write each endogenous variable as an equation.** A variable that receives at least one arrow is called *endogenous* (explained within the model); the others are *exogenous* (taken as given). Each endogenous variable gets one linear equation:
+Each endogenous variable now gets one **linear equation**. To keep the arithmetic transparent, assume every variable is standardized: mean 0, standard deviation 1.^[Standardization is a convenience, not a commitment. Unstandardized coefficients — "one status point buys 2.46 achievement points" — are better for comparing across populations and for policy arithmetic; standardized ones are better for comparing effects within one sample. Since each converts to the other, @saris1984 remark drily that "there is no need for a serious argument" about which is correct.]
 
 $$
 \begin{aligned}
-S &= \beta_1 D + \beta_2 A + \varepsilon_S \\
-C &= \beta_3 S + \varepsilon_C
+y_1 &= \gamma_{11}\, x_1 + \gamma_{12}\, x_2 + \zeta_1 \\
+y_2 &= \beta_{21}\, y_1 + \gamma_{21}\, x_1 + \gamma_{22}\, x_2 + \zeta_2
 \end{aligned}
-$$ {#eq-stress-model}
+$$ {#eq-school-model}
 
-Three features of these equations carry all the content:
+Read the first equation aloud: achievement is school quality times $\gamma_{11}$, plus status times $\gamma_{12}$, plus *everything else*. Three features of these equations carry all the content.
 
-*The coefficients.* $\beta_1$ is the number of units $S$ changes when $D$ increases by one unit *and $A$ is held constant*. The theory's claims become sign constraints: $\beta_1 > 0$, $\beta_2 < 0$, $\beta_3 > 0$. The claim of absence is visible as a missing term: there is no $D$ in the equation for $C$.
+*The coefficients.* $\gamma_{11}$ says: a one-unit (here: one standard deviation) increase in school quality produces a $\gamma_{11}$-unit change in achievement, *holding parental status constant*. The theory's claims become sign expectations; the claims of absence are the terms that are not there.
 
-*The error terms.* $\varepsilon_S$ collects everything else that affects stress: genes, family, the neighbor's renovation. Including it is not an admission of defeat but part of the theory's honesty: we claim demands and autonomy matter, not that they are everything. Crucially, we assume each error is **uncorrelated with the predictors in its equation**. That is the observational-study assumption from @sec-rq-to-interpretation wearing mathematical clothes: it says the omitted causes of stress do not travel together with demands and autonomy. No amount of data can verify it; the design (or your defense of it) must carry it.
+*The linear-and-additive form.* "Linear" means each extra unit of $x$ does the same to $y$ as the previous unit; "additive" means the effect of school quality does not depend on the level of status. The prose said nothing either way — translating forced the choice. We choose the simplest form as a working approximation, and we should remember having chosen.^[@saris1984 defend the restriction on two grounds: it is often a good approximation, and transformations can frequently make it one. Satisfaction that levels off with income is not linear in income — but may be nearly linear in log income.]
 
-*What is absent.* No squared terms, no products: effects are assumed **linear** (each extra unit of $D$ does the same to $S$ as the previous one) and **additive** (the effect of $D$ does not depend on the level of $A$). The verbal theory said nothing either way; translating it forced a choice. We choose the simplest form as a working assumption — and we should remember we made it.
+*The disturbance.* The "$\zeta$" ("zeta") is not an apology; it is part of the theory. @saris1984 list precisely what lives in it: "the disturbance term may represent: (1) the effect of unknown variables, (2) the effect of known but omitted variables, (3) the randomness of human behavior, and (4) measurement error." We claim quality and status matter — not that they are everything. The crucial assumption rides on this term: *the omitted variables have only minor effects, are unrelated to each other, and are unrelated to the predetermined variables* [@saris1984]. That is the observational-study assumption of @sec-rq-to-interpretation in mathematical dress: whatever we left out must not travel together with what we kept in. No dataset can verify it. Its plausibility is exactly as strong as step (1) of the recipe was thorough — the time spent hunting for common causes.
 
-To keep the arithmetic transparent, assume in this chapter that all variables are **standardized**: mean 0, standard deviation 1. Coefficients are then correlations-scale quantities, and a picture becomes possible.
-
-**Step 3: draw the model.** The same model as a *path diagram*:
+A picture says the same thing. In a **path diagram**, every arrow is a coefficient, every *missing* arrow a claim of absence, the curved double-headed arc an unexplained covariance, and the $\zeta$'s the everything-else:
 
 ```{mermaid}
-%%| fig-cap: "Path diagram of the stress model. Single-headed arrows are causal claims; the double-headed arc is a covariance we allow but do not explain; the epsilons are everything-else."
+%%| fig-cap: "The simplified school-career model. Rectangles: observed variables. Single arrows: causal claims. The curved double arrow: covariation we allow but do not explain."
 flowchart LR
-  D[Demands] -->|β₁ +| S[Stress]
-  A[Autonomy] -->|β₂ −| S
-  S -->|β₃ +| C[Complaints]
-  D <-.->|r| A
-  eS((ε_S)) --> S
-  eC((ε_C)) --> C
+  x1[School quality] -->|γ₁₁| y1[Achievement]
+  x2[Parents' status] -->|γ₁₂| y1
+  y1 -->|β₂₁| y2[School choice]
+  x1 -->|γ₂₁| y2
+  x2 -->|γ₂₂| y2
+  x1 <-.->|φ₂₁| x2
+  z1((ζ₁)) --> y1
+  z2((ζ₂)) --> y2
 ```
 
-A path diagram is not an illustration *of* the model; it *is* the model, in graphical notation. Every arrow is a coefficient, every missing arrow a claim of absence, every double-headed arc an unexplained covariance.
+The diagram *is* the model — the same information as the equations, in a notation that will start doing real work in the next section.
 
-## What the model implies: the tracing rules
+## What the theory predicts: the decomposition rules
 
-Here is where the translation pays off. Once the theory is a set of linear equations, it makes *quantitative predictions* about things we can observe — in particular, about correlations. For standardized models without feedback loops, the predictions follow from **Wright's tracing rules** [@wright1934]:
+Here is where the translation pays off. Once the theory is linear equations, it makes *quantitative predictions* about something we can observe: the correlations. The recipe is a pair of rules that @saris1984 call the decomposition rules; the trace-tracing version goes back to Sewall Wright's "path analysis" [@wright1934].
 
-> The model-implied correlation between two variables is the **sum over all valid traces** connecting them, where each trace contributes the **product of its coefficients**. A valid trace (1) never passes through the same variable twice, (2) never goes forward along arrows and then backward, and (3) uses at most one double-headed arc.
+> **First decomposition rule.** The correlation between two variables equals the sum of the direct effect, the indirect effects, the spurious components, and the joint components — where each component is the product of the coefficients along one valid trace connecting the two variables.
 
-You may move *backward* along arrows first (against the arrowheads), optionally cross one double-headed arc, and then move *forward*; once moving forward, there is no turning back.
+A valid trace never passes through the same variable twice, never goes forward along arrows and then backward, and uses at most one curved arc. You may walk backward first (against the arrowheads), optionally cross one curved arc, then walk forward; once walking forward, no turning back. The names of the components tell you what kind of covariation each trace carries: **direct** ($x \rightarrow y$), **indirect** (forward through intervening variables), **spurious** (backward then forward — a common cause at the turn), and **joint** (through the curved arc — covariation we declined to explain, coming back to haunt the ledger).
 
-Let us trace the implied correlation between demands and stress, writing $r$ for the $D$–$A$ correlation:
+Watch it work. The model-implied correlation between school quality and achievement:
 
-- Trace 1: $D \rightarrow S$, contributing $\beta_1$.
-- Trace 2: $D \leftrightarrow A \rightarrow S$, contributing $r\,\beta_2$.
-
-$$
-\rho_{DS} = \beta_1 + r\beta_2.
-$$
-
-And between demands and complaints:
-
-- Trace 1: $D \rightarrow S \rightarrow C$: $\beta_1 \beta_3$.
-- Trace 2: $D \leftrightarrow A \rightarrow S \rightarrow C$: $r\,\beta_2\beta_3$.
+- Trace 1: $x_1 \rightarrow y_1$. Contributes $\gamma_{11}$ (direct).
+- Trace 2: $x_1 \leftrightarrow x_2 \rightarrow y_1$. Contributes $\varphi_{21}\gamma_{12}$ (joint).
 
 $$
-\rho_{DC} = \beta_1\beta_3 + r\beta_2\beta_3 = \rho_{DS}\,\beta_3.
+\rho(y_1, x_1) = \gamma_{11} + \varphi_{21}\,\gamma_{12}.
 $$
 
-Notice what just happened: the theory now predicts a *relationship between correlations*. Whatever the values of the coefficients, this model requires $\rho_{DC} = \rho_{DS} \times \rho_{SC}$ (since $\rho_{SC} = \beta_3$; check it by tracing). If the data show, say, a strong demands–complaints correlation that survives when stress is held constant, the model — and with it claim 4 of the theory — is in trouble. The claim of absence became a testable prediction. This single idea, that a causal structure implies (and is tested through) constraints on observable correlations, is the foundation on which all of structural equation modeling rests, and we will lean on it hard in @sec-identification.
+With the actual estimates from the study — $\gamma_{11} = .254$, $\gamma_{12} = .161$, $\varphi_{21} = .140$ — this gives $.254 + .140 \times .161 = .277$. The observed correlation was $.276$. The achievement–choice correlation decomposes more richly:
+
+$$
+\rho(y_2, y_1) = \underbrace{\beta_{21}}_{\text{direct}} + \underbrace{\gamma_{21}\gamma_{11} + \gamma_{22}\gamma_{12}}_{\text{spurious}} + \underbrace{\gamma_{21}\varphi_{21}\gamma_{12} + \gamma_{22}\varphi_{21}\gamma_{11}}_{\text{spurious via } \varphi} ,
+$$
+
+which with $\beta_{21} = .749$, $\gamma_{21} = .056$, $\gamma_{22} = .142$ works out to $.749 + .014 + .023 + .001 + .005 = .792$ — the observed value on the nose.^[On the nose because this four-variable model happens to have as many parameters as there are observed variances and covariances, so it can reproduce them exactly. Such a model is called "saturated", and its perfect fit is a bookkeeping identity, not an achievement. This innocent-looking remark becomes the villain of @sec-identification.]
+
+Pause on what just happened. A correlation of $.79$ between achievement and school choice, and the model says: $.75$ of it is the causal effect, and about $.04$ is achievement and choice being moved by the same background variables. The decomposition also cuts the other way — @saris1984 delight in showing both fallacies with numbers. In their full model, the test score correlates $.775$ with the final choice, yet its total causal effect is a puny $.042$: nearly all of that impressive correlation is spurious, achievement driving both. And the reverse: a variable can have a *zero* correlation with an outcome it strongly affects, when a direct effect and a spurious component cancel. Correlation is not effect — in either direction. If you want to know a variable's importance, compute its **total effect**: direct effect plus the sum of all indirect effects. In the full school model, achievement has *no* direct effect on the final choice at all — the committee never sees it — yet its total effect is $.74$, the second largest in the system, flowing entirely through recommendation, preference, and test score.
 
 ::: {.callout-tip icon="false" title="Exercise 2.2"}
-Using the tracing rules, derive the implied correlations $\rho_{AS}$, $\rho_{SC}$, and $\rho_{AC}$ for the stress model. Then compute all five implied correlations numerically for $\beta_1 = 0.4$, $\beta_2 = -0.3$, $\beta_3 = 0.5$, $r = -0.3$.
+(a) Using the tracing rules, write the implied correlation $\rho(y_2, x_1)$ — school quality with final choice — as a sum of named components (direct, indirect, spurious, joint). (b) Compute it with the estimates above. The observed value is $.283$; compare. (c) What *proportion* of school quality's association with choice is causal (direct + indirect), according to the model?
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 2.2"}
-$\rho_{AS} = \beta_2 + r\beta_1$ (traces $A \rightarrow S$ and $A \leftrightarrow D \rightarrow S$). $\rho_{SC} = \beta_3$ — the only valid trace is $S \rightarrow C$; a trace like $S \leftarrow D \leftrightarrow A \rightarrow S \rightarrow C$ visits $S$ twice and is invalid. $\rho_{AC} = \rho_{AS}\beta_3 = (\beta_2 + r\beta_1)\beta_3$. Numerically: $\rho_{DS} = 0.4 + (-0.3)(-0.3) = 0.49$; $\rho_{AS} = -0.3 + (-0.3)(0.4) = -0.42$; $\rho_{SC} = 0.5$; $\rho_{DC} = 0.49 \times 0.5 = 0.245$; $\rho_{AC} = -0.42 \times 0.5 = -0.21$. Note $\rho_{DC} = \rho_{DS}\rho_{SC}$, the model's testable constraint.
+(a) Four traces: direct $x_1 \rightarrow y_2$: $\gamma_{21}$; indirect $x_1 \rightarrow y_1 \rightarrow y_2$: $\gamma_{11}\beta_{21}$; joint $x_1 \leftrightarrow x_2 \rightarrow y_2$: $\varphi_{21}\gamma_{22}$; joint-then-indirect $x_1 \leftrightarrow x_2 \rightarrow y_1 \rightarrow y_2$: $\varphi_{21}\gamma_{12}\beta_{21}$. (b) $.056 + .254 \times .749 + .140 \times .142 + .140 \times .161 \times .749 = .056 + .190 + .020 + .017 = .283$. Matches. (c) Causal components: $.056 + .190 = .246$ of $.283$, about 87%. The rest travels through the unexplained quality–status covariation — the "joint" effect, the price of not explaining $\varphi_{21}$.
 :::
 
-## Estimating the model
+## Meeting the data
 
-Time to meet data. We simulate a dataset that behaves exactly according to the model — so we know the truth — and estimate the coefficients by regression, one equation at a time.
+Time to estimate. The study's correlations, for $N = 383$ pupils, were:
 
 ```{r}
-#| label: simulate-stress
-set.seed(2)
-n <- 800
-r <- -0.3
-# Exogenous variables with correlation r:
-D <- rnorm(n)
-A <- r * D + sqrt(1 - r^2) * rnorm(n)
-# Structural equations (standardized coefficients):
-b1 <- 0.4; b2 <- -0.3; b3 <- 0.5
-var_eS <- 1 - (b1^2 + b2^2 + 2 * b1 * b2 * r)   # so that Var(S) = 1
-S <- b1 * D + b2 * A + rnorm(n, sd = sqrt(var_eS))
-C <- b3 * S + rnorm(n, sd = sqrt(1 - b3^2))
-
-stress <- data.frame(D, A, S, C)
-round(coef(lm(S ~ D + A, data = stress)), 2)
-round(coef(lm(C ~ S, data = stress)), 2)
+#| label: school-data
+R <- matrix(c(
+   1.000, .792, .276, .196,
+   .792, 1.000, .283, .297,
+   .276, .283, 1.000, .140,
+   .196, .297, .140, 1.000),
+  nrow = 4, byrow = TRUE,
+  dimnames = list(c("ach", "choice", "quality", "ses"),
+                  c("ach", "choice", "quality", "ses")))
 ```
 
-The estimates land close to the true values $(0.4, -0.3, 0.5)$, as they should. In real data we would not know the truth; the estimates would *be* our knowledge, and their meaning is fixed by the model:
-
-> **Interpretation of a linear regression coefficient.** A one-unit increase in $D$ is associated with a $\hat\beta_1$-unit increase in $S$, holding the other predictors in the equation constant. Under the model's assumptions — linearity, additivity, and errors uncorrelated with predictors — "associated with" strengthens to "leads to."
-
-The same numbers, two readings. The weak reading (association) needs almost no assumptions and answers almost no interesting question. The strong reading (effect) answers the theory's question and needs every assumption in the model. There is no analysis-only trick that upgrades one to the other; that upgrade is purchased — or not — by the design and the defense of the error assumption.
-
-We can also estimate all equations at once, which will matter as soon as we care about the system as a whole:
+The first command just types in the published correlation matrix — with standardized variables, correlations are all we need.^[Data entry by matrix: unglamorous, and a genuinely useful trick. Any covariance or correlation matrix in a published paper can be re-analyzed this way, no raw data required.] The `lavaan` package fits systems of equations like ours; the model description is one string, one line per equation:
 
 ```{r}
-#| label: lavaan-stress
+#| label: school-fit
 library(lavaan)
 model <- "
-  S ~ D + A
-  C ~ S
+  ach    ~ quality + ses
+  choice ~ ach + quality + ses
 "
-fit <- sem(model, data = stress)
-coef(fit)[1:3]
+fit <- sem(model, sample.cov = R, sample.nobs = 383)
+round(coef(fit), 3)
 ```
 
-And now the payoff of claims of absence: the model *forbids* a direct $D \rightarrow C$ effect, so it claims the restriction can be imposed without harming the fit to the data. That is testable:
+The first command loads the package; the second writes the two structural equations (`~` reads "is regressed on"); `sem()` fits them to the correlation matrix. The output is the set of estimates you have already met — $\hat\gamma_{11} = .254$, $\hat\beta_{21} = .749$, and so on — plus the residual variances of the two disturbances. And the coefficients mean what the model says they mean:
+
+> **Reading a linear regression coefficient.** A one-unit increase in $x$ is associated with a $\hat\beta$-unit change in $y$, holding the other predictors in that equation constant. Under the model's assumptions — linearity, additivity, disturbances unrelated to predictors — "associated with" hardens into "produces".
+
+Same numbers, two readings, and the upgrade from the first to the second is purchased entirely outside the arithmetic: by the design, and by the argument that no common causes were left out. There is no trick of computation that does it.
+
+So far the model merely redescribes the data — saturated models always fit, as the footnote warned. The theory starts risking something the moment it *forbids* arrows. Suppose the theory had said: school quality and parental status act on the choice *only through achievement* — the committee is blind to schools and status. Then $\gamma_{21} = \gamma_{22} = 0$: two claims of absence, two fewer parameters than observed correlations, and now the model makes predictions the data can refuse:
 
 ```{r}
-#| label: test-absence
-fit_free <- sem("S ~ D + A \n C ~ S + D", data = stress)
-anova(fit, fit_free)
+#| label: school-test
+model0 <- "
+  ach    ~ quality + ses
+  choice ~ ach
+"
+fit0 <- sem(model0, sample.cov = R, sample.nobs = 383)
+round(fitMeasures(fit0, c("chisq", "df", "pvalue")), 3)
 ```
 
-The test compares our restricted model against one where demands may also affect complaints directly. A small, nonsignificant chi-square difference says the data are content with the absence — as they should be here, since we built the data that way. In real research this is the moment the theory risks something: had the test rejected, claim 4 would have been falsified (assuming the rest of the model!). A test never confronts one claim with the data alone; it confronts one claim with the data *given all the other claims*. And even when the whole model fits, it is not thereby proven true — other models fit equally well, a problem so important it gets its own chapter (@sec-identification).
+The chi-square statistic compares the correlations the restricted model can produce with the ones observed; if the restrictions are true, it behaves like a $\chi^2$ draw with (here) 2 degrees of freedom, so values near 2 would be unremarkable. We got 25.3 — the data refuse. Interesting: each forbidden path was small ($.056$ and $.142$), yet jointly they are unmistakable at $N = 383$. The blind-committee theory is false; schools and status leak into choices around achievement, not just through it.
 
-::: {.callout-tip icon="false" title="Exercise 2.3"}
-Predicted values follow from the fitted equations. Using the true coefficients ($\beta_1 = 0.4$, $\beta_2 = -0.3$, $\beta_3 = 0.5$): (a) What stress level does the model predict for a person one standard deviation above average in demands and one below average in autonomy? (b) What complaint level does it predict for that same person? (c) Why is your answer to (b) *not* obtained by plugging the person's actual stress — which you do not know — into the second equation?
-:::
-
-::: {.callout-note collapse="true" icon="false" title="Answer 2.3"}
-(a) $\hat S = 0.4(1) - 0.3(-1) = 0.7$: 0.7 standard deviations above average stress. (b) Chain the equations: $\hat C = 0.5 \times \hat S = 0.35$. (c) Because prediction from $D$ and $A$ alone must route through the *predicted* stress; the person's actual stress also contains $\varepsilon_S$, which is unknown. If we *did* know actual stress, the model says demands and autonomy tell us nothing more ($C$'s equation contains only $S$) and we would predict $0.5 \times S$ directly.
-:::
+Two cautions before you get to enjoy rejecting theories. First, a test never confronts one claim with the data alone; it confronts one claim *given every other claim in the model* — "the results of the tests are always conditional on the model that has been fitted to the data" [@saris1984]. Second, the converse comfort is unavailable: fit does not mean truth. Passing the test means the theory survived, not that it won; other models — often many others — fit the same data exactly as well. With seven variables there are over five thousand saturated recursive models, every one fitting perfectly [@saris1984]. Which brings us to the next chapter — but not before the outcome variable gets more realistic.
 
 ## When the outcome is yes/no: logistic regression
 
-Suppose the outcome is not a complaints scale but an event: whether the employee goes on long-term sick leave ($Y = 1$) or not ($Y = 0$). A linear equation is now awkward — it happily predicts probabilities of $-0.2$ or $1.4$. The standard repair keeps the linear machinery but changes what the equation predicts: not the probability itself, but its **log-odds**.
+The final school choice is not really a nice continuous scale, and many outcomes we care about are starkly binary: admitted or not, relapsed or not, voted or not. Say we reduce the choice to $y = 1$ (pupil enters the pre-university track) versus $y = 0$ (does not). A linear equation now misbehaves — extend the line far enough and it cheerfully predicts probabilities of $-0.2$ or $1.4$.
 
-Odds are a currency for probability used by bookmakers: probability $p$ corresponds to odds $p/(1-p)$. A probability of $0.75$ is odds of $3$ ("three to one"); $0.5$ is odds of $1$. Taking the logarithm stretches this scale over the whole number line: probability $0 \to$ log-odds $-\infty$, probability $1 \to +\infty$, probability $0.5 \to 0$. On the log-odds scale, a linear equation can roam freely and every value maps back to a legal probability:
-
-$$
-\log \frac{P(Y=1)}{1 - P(Y=1)} = \alpha + \beta S .
-$$
-
-This is **logistic regression**, the second member of the family of *generalized* linear models we will use (the first was linear regression itself: same idea, identity instead of log-odds). The price of legality is paid in interpretation:
-
-> **Interpretation of a logistic regression coefficient.** A one-unit increase in $S$ leads to a $\beta$-unit increase in the *log-odds* of $Y$ — under the same kinds of assumptions as before.
-
-Nobody thinks natively in log-odds, so two conversions are essential. First, exponentiating gives the **odds ratio**: each unit of $S$ *multiplies the odds* by $e^{\beta}$. A useful rule of thumb: for smallish coefficients (roughly $|\beta| < 0.3$), $e^{\beta} \approx 1 + \beta$, so the odds increase by about $100 \times \beta$ percent. A coefficient of $0.1$ raises the odds by about 10.5%; the shortcut says 10%.
-
-Second, for any concrete person we can compute an actual **probability** by inverting the log-odds:
+The standard repair keeps the linear machinery and changes what the line predicts: not the probability, but its **log-odds**. Odds are the bookmaker's currency for chance: probability $.75$ is odds of $3$ ("three to one"); probability $.5$ is odds of $1$. Taking the logarithm stretches the odds over the whole number line — probability $0$ maps to $-\infty$, probability $1$ to $+\infty$, and $.5$ to $0$ — so a linear equation can roam freely and every value translates back to a legal probability:
 
 $$
-P(Y = 1) = \frac{1}{1 + e^{-(\alpha + \beta S)}} .
+\log \frac{P(y=1)}{1 - P(y=1)} = \alpha + \beta\, y_1 .
 $$
+
+This is **logistic regression**. Together with linear regression it belongs to the family of "generalized linear models" — same recipe, different link between the linear part and the outcome. The price is paid at interpretation time: a one-unit increase in achievement now produces a $\beta$-unit increase in *the log-odds* of entering the track. Nobody thinks in log-odds,^[Not even statisticians, whatever they tell you.] so two conversions matter in practice.
+
+*Odds ratios.* Exponentiating undoes the log: each unit of $y_1$ *multiplies the odds* by $e^{\beta}$. Rule of thumb: for smallish coefficients (say $|\beta| < 0.3$), $e^{\beta} \approx 1 + \beta$, so the odds change by about $100 \times \beta$ percent — a coefficient of $0.1$ means roughly 10% higher odds per unit.
+
+*Probabilities.* For any actual pupil, invert the log-odds: $P(y=1) = 1/(1 + e^{-(\alpha + \beta y_1)})$ — in R, `plogis(alpha + beta * y1)`. Let us see both on simulated pupils:
 
 ```{r}
-#| label: logistic-stress
-set.seed(3)
-alpha <- -2; beta <- 0.8
-p <- plogis(alpha + beta * S)         # inverse log-odds
-Y <- rbinom(n, 1, p)
-fit_log <- glm(Y ~ S, family = binomial)
+#| label: school-logistic
+set.seed(2)
+n    <- 500
+ach  <- rnorm(n)                       # standardized achievement
+eta  <- -1.0 + 1.2 * ach               # true log-odds
+vwo  <- rbinom(n, 1, plogis(eta))      # 1 = pre-university track
+fit_log <- glm(vwo ~ ach, family = binomial)
 round(coef(fit_log), 2)
-round(exp(coef(fit_log)["S"]), 2)      # odds ratio per SD of stress
-round(plogis(sum(coef(fit_log) * c(1, 1))), 2)  # P(sick leave) at S = 1
+round(exp(coef(fit_log)["ach"]), 1)                    # odds ratio per SD
+round(plogis(coef(fit_log)[1] + coef(fit_log)[2] * c(0, 1, 2)), 2)
 ```
 
-Read the output the way the chapter has taught you to read everything: a person one standard deviation higher in stress has $e^{0.69} \approx 2.0$ times the estimated odds of long-term sick leave (the truth we built in was $e^{0.8} \approx 2.2$); a person at $S = 1$ has a predicted probability around $0.20$, against about $0.11$ at average stress. And all of it means what it appears to mean only under the model's assumptions — which the design, not the arithmetic, must justify.
+The first block simulates 500 pupils whose log-odds of entering the track rise with achievement; `glm(..., family = binomial)` fits the logistic regression; the last two lines convert. Read the output the way this chapter reads everything. The coefficient near $1.2$: each standard deviation of achievement adds about $1.2$ to the log-odds — or, exponentiated, multiplies the odds of the pre-university track by about $3.3$. The probabilities: about $.27$ at average achievement, $.55$ one standard deviation up, $.80$ two up. Notice those gaps: $.27$ to $.55$ to $.80$ — the same coefficient moves the probability by different amounts depending on where you start. That is the one honest inconvenience of the log-odds scale, and the reason to always report predicted probabilities at realistic values, not just the odds ratio.
 
-One warning specific to the log-odds scale: because the effect on the *probability* depends on where you start (the same odds ratio moves $p = 0.5$ much more than $p = 0.01$), always report what a coefficient means for realistic values of the predictors, not only the odds ratio.
-
-::: {.callout-tip icon="false" title="Exercise 2.4"}
-A logistic regression of hospital readmission on frailty score (standardized) gives $\hat\alpha = -1.5$, $\hat\beta = 0.4$. (a) Interpret $\hat\beta$ on the log-odds scale, exactly. (b) Give the odds ratio and check the rule of thumb. (c) Compute the predicted readmission probability for patients at average frailty and at two standard deviations above average. (d) A colleague summarizes: "each SD of frailty raises readmission probability by 40%." Correct them precisely.
+::: {.callout-tip icon="false" title="Exercise 2.3"}
+A logistic regression of hospital readmission on standardized frailty gives $\hat\alpha = -1.5$, $\hat\beta = 0.4$. (a) Interpret $\hat\beta$ exactly. (b) Give the odds ratio; check the rule of thumb. (c) Compute readmission probabilities at frailty $0$ and $+2$ SD. (d) A colleague summarizes: "each SD of frailty raises readmission probability by 40%." Correct them precisely.
 :::
 
-::: {.callout-note collapse="true" icon="false" title="Answer 2.4"}
-(a) Each additional standard deviation of frailty increases the log-odds of readmission by 0.4, other things (there are none here) equal. (b) $e^{0.4} = 1.49$: odds multiply by about 1.5. The rule of thumb says $1 + 0.4 = 1.4$ — usable but rough at $\beta = 0.4$, which is at the edge of the rule's range. (c) At average frailty: $\text{plogis}(-1.5) = 0.18$. At $+2$ SD: $\text{plogis}(-1.5 + 0.8) = \text{plogis}(-0.7) = 0.33$. (d) The 0.4 lives on the log-odds scale, not the probability scale: odds — not probability — increase by roughly 49% per SD. In probability terms the effect depends on the starting point; here, going from average to $+1$ SD moves the probability from 0.18 to about 0.25.
+::: {.callout-note collapse="true" icon="false" title="Answer 2.3"}
+(a) Each SD of frailty adds $0.4$ to the log-odds of readmission. (b) $e^{0.4} = 1.49$; the rule of thumb says $\approx 1.4$ — serviceable, though $0.4$ sits at the edge of its range. (c) `plogis(-1.5)` $= .18$; `plogis(-0.7)` $= .33$. (d) It is the *odds*, not the probability, that rise by (roughly) half per SD. On the probability scale the change depends on the starting point: here, average to $+1$ SD moves $.18 \rightarrow .25$, which is a 7-point (about 39% *relative*) rise — a coincidence of this baseline, not a general rule.
 :::
 
 ## Why only linear models here?
 
-Readers who have heard of random forests or neural networks may feel a growing unease: real relationships are not all linear-and-additive, so why is this chapter pretending they are? Three honest reasons.
+If you have heard of random forests, you may be feeling uneasy: real relationships are not all linear-and-additive, so why is this chapter pretending? Three honest reasons.
 
-First, nothing about the chain *question → design → assumptions → model → interpretation* is specific to linear models. Flexible, nonparametric methods relax the linearity and additivity assumptions, but they answer research questions through a design and a model in precisely the same way — the logic is just harder to see under the extra mathematics and computation. Learn the logic where it is transparent.
+First, nothing about the chain *question → design → assumptions → model → interpretation* is specific to linear models. Flexible methods relax linearity and additivity, but they answer questions through a design and a set of assumptions in exactly the same way — the logic is just harder to see under the extra mathematics and computation. Learn it where it is visible.
 
-Second, in the modest sample sizes typical of social and health research, the data often cannot support much more than linear-with-a-few-terms anyway: flexibility must be paid for with data, and the linear model is frequently all we can afford — a decent local approximation estimated precisely, rather than the true curve estimated as noise.
+Second, at the sample sizes typical of social and health research, the data often cannot support much beyond linear-with-a-few-terms anyway. Flexibility is bought with data; the linear model is frequently all we can afford — a decent approximation estimated precisely beats the true curve estimated as noise.
 
-Third, when you do have the data for it — large samples, many interactions, strong nonlinearities, prediction as the goal — flexible methods are the right tool, and later chapters use them. When you get there, bring this chapter along: those methods, too, produce answers only through assumptions that some design must make plausible.
+Third, when you do have the data — large samples, strong nonlinearities, prediction as the goal — the flexible methods of the later chapters are the right tool. Bring this chapter along when you go: those methods, too, produce answers only through assumptions that some design must make plausible.
+
+One more thing the school study can still teach us. Its model fit; its coefficients were significant; its story was plausible. Is the story therefore right? The next chapter is about a disturbing family of cases where the answer is *provably unknowable* — where a different story, with arrows reversed or confounders at work, fits any possible dataset exactly as well. The design, it turns out, decides which questions have answers at all.
 
 ## Test yourself {.unnumbered}
 
 ::: {.callout-tip icon="false" title="Exercise 2.A"}
-Consider this verbal theory: "Neighborhood deprivation harms adolescents' school performance in two ways: it reduces access to quiet study space, and it increases exposure to stressors. Stressor exposure harms performance only by disrupting sleep. Study space has no relationship with sleep."
+Take this verbal theory: "Neighborhood deprivation harms adolescents' school performance in two ways: it reduces access to quiet study space, and it increases exposure to stressors. Stressors harm performance only by disrupting sleep. Study space has no relationship with sleep."
 
-(a) Distill the theory into directed claims, including all claims of absence.
-(b) Define the variables, state which are exogenous, and write the structural equations (standardized), including error terms.
-(c) Draw the path diagram (paper and pencil suffice).
-(d) Using the tracing rules, derive the model-implied correlation between deprivation and performance, in terms of your coefficients.
-(e) State one constraint on observable correlations that could falsify the "only by disrupting sleep" claim.
+(a) Apply the three-step recipe: variables, causal order, directed claims — including every claim of absence.
+(b) Write the structural equations (standardized), with disturbances.
+(c) Draw the path diagram (pencil and paper).
+(d) Use the tracing rules to express the implied deprivation–performance correlation in your coefficients, naming each component.
+(e) State one implication of "only by disrupting sleep" that data could refute.
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 2.A"}
-(a) Directed claims: deprivation reduces study space (−); deprivation increases stressor exposure (+); stressor exposure disrupts sleep (−); sleep improves performance (+); study space improves performance (+). Claims of absence: no direct stressors → performance ("only by disrupting sleep"); no path between study space and sleep ("no relationship"); no direct deprivation → sleep or deprivation → performance (deprivation works only the two named ways). (b) Let deprivation $N$ (exogenous), study space $Q$, stressor exposure $X$, sleep $Z$, performance $Y$:
-$Q = \gamma_1 N + \varepsilon_Q$ ($\gamma_1 < 0$); $X = \gamma_2 N + \varepsilon_X$ ($\gamma_2 > 0$); $Z = \gamma_3 X + \varepsilon_Z$ ($\gamma_3 < 0$); $Y = \gamma_4 Q + \gamma_5 Z + \varepsilon_Y$ ($\gamma_4 > 0, \gamma_5 > 0$). (c) Five boxes, five single-headed arrows, an error on each endogenous variable — check your diagram against the equations: every arrow a coefficient, every missing arrow a claim of absence. (d) Two valid traces connect $N$ and $Y$: $N \rightarrow Q \rightarrow Y$ and $N \rightarrow X \rightarrow Z \rightarrow Y$, so $\rho_{NY} = \gamma_1\gamma_4 + \gamma_2\gamma_3\gamma_5$. (e) The model implies that the partial association between $X$ and $Y$, holding $Z$ and $N$ constant, is zero: stressors carry no information about performance once sleep is held constant (and deprivation too, since deprivation connects $X$ to $Y$ through the study-space path). A clearly nonzero $X$–$Y$ association given $Z$ and $N$ falsifies the "only by disrupting sleep" claim — conditional, as always, on the rest of the model.
+(a) Variables: deprivation $N$ (exogenous), study space $Q$, stressor exposure $X$, sleep $Z$, performance $Y$. Order: $N$ first; $Q$ and $X$ next; $Z$ after $X$; $Y$ last. Claims: $N \rightarrow Q$ (−), $N \rightarrow X$ (+), $X \rightarrow Z$ (−), $Z \rightarrow Y$ (+), $Q \rightarrow Y$ (+). Absences: no $X \rightarrow Y$ ("only by disrupting sleep"); no path between $Q$ and $Z$ ("no relationship"); no direct $N \rightarrow Z$ or $N \rightarrow Y$ (deprivation works only the two named ways). (b) $Q = \gamma_1 N + \zeta_Q$; $X = \gamma_2 N + \zeta_X$; $Z = \gamma_3 X + \zeta_Z$; $Y = \gamma_4 Q + \gamma_5 Z + \zeta_Y$. (d) Two traces, both indirect: $N \rightarrow Q \rightarrow Y$ giving $\gamma_1\gamma_4$, and $N \rightarrow X \rightarrow Z \rightarrow Y$ giving $\gamma_2\gamma_3\gamma_5$; so $\rho(N, Y) = \gamma_1\gamma_4 + \gamma_2\gamma_3\gamma_5$ — no direct, spurious, or joint components, because $N$ is the sole exogenous variable and has no direct arrow to $Y$. (e) The model implies the $X$–$Y$ association vanishes once $Z$ and $N$ are held constant (deprivation must be held too: it connects $X$ to $Y$ through the study-space path). A clearly nonzero conditional association refutes the claim — conditionally, as always, on the rest of the model.
 :::
 
 ::: {.callout-tip icon="false" title="Exercise 2.B"}
-A researcher fits the stress model of this chapter to real data from 600 employees and obtains $\hat\beta_1 = 0.35$, $\hat\beta_2 = -0.05$ (n.s.), $\hat\beta_3 = 0.45$, and the chi-square test of the omitted $D \rightarrow C$ path rejects ($p < 0.001$), with the freed direct effect estimated at $0.30$.
+A researcher fits the four-variable school model to new data from another country and finds: $\hat\gamma_{11} = .31$, $\hat\gamma_{12} = .03$ (n.s.), $\hat\beta_{21} = .68$, and the restricted model with $\gamma_{21} = \gamma_{22} = 0$ gives $\chi^2(2) = 1.9$, $p = .39$.
 
-(a) What do these results say about each of the theory's four claims?
-(b) The researcher concludes: "autonomy does not protect against stress." Give two distinct reasons this conclusion overreaches, one statistical and one design-based.
-(c) The researcher adds the direct path $D \rightarrow C$ and reports the revised model as confirmed by the same data. Which idea from @sec-rq-to-interpretation does this violate, and what would be the sound way to proceed?
+(a) What does each result say about the corresponding claim of the theory?
+(b) The researcher concludes "parental status plays no role in school careers here." Give two distinct reasons this overreaches — one statistical, one about the model.
+(c) A colleague replies that the excellent fit of the restricted model "confirms the blind-committee theory." Quote-and-explain the two cautions from this chapter that apply.
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 2.B"}
-(a) Claim 1 (demands raise stress) is supported in sign and size; claim 2 (autonomy protects) is not supported — the estimate is near zero; claim 3 (stress raises complaints) is supported; claim 4 (no direct effect) is falsified given the rest of the model: demands appear to affect complaints partly outside the stress path. (b) Statistical: a nonsignificant coefficient is not evidence of absence; the confidence interval may include protective effects of practical size (absence of evidence ≠ evidence of absence). Design-based: the error-term assumption may fail — e.g., people prone to stress may select into (or report) low-autonomy jobs, biasing $\hat\beta_2$ toward zero; or autonomy may be measured with error, attenuating its coefficient. (c) It converts an exploratory finding into a pretend-confirmatory one: the revised model was chosen *because* it fit these data, so the "confirmation" is circular. Sound: report the modification as exploratory and test the revised model on new data (or a held-out portion collected for that purpose).
+(a) School quality → achievement: supported, moderate size. Status → achievement: not supported (near zero). Achievement → choice: supported, large. The claims of absence ($\gamma_{21} = \gamma_{22} = 0$): survive — $\chi^2$ near its degrees of freedom is exactly what true restrictions produce. (b) Statistical: nonsignificance is not evidence of absence; the confidence interval around $.03$ may cover effects of real size. Model-based: the estimate is unbiased only if the disturbance assumption holds — if status affects achievement through an omitted path (private tutoring, measured badly or not at all) correlated with the measured status score, $\hat\gamma_{12}$ can be pushed toward zero; and measurement error in the status variable attenuates its coefficient. (c) First: "tests are conditional on the model" — the restricted model's fit is a statement about these five claims jointly, not about any one of them in isolation. Second: fit is not truth — models with different causal stories (some with arrows reversed) reproduce this correlation matrix equally well; the test eliminated one rival, not all of them. The next chapter makes this precise.
 :::
 
 ::: {.callout-tip icon="false" title="Exercise 2.C"}
-A study of smoking cessation reports a logistic regression of quitting ($Y = 1$) on number of counseling sessions attended ($X$, range 0–10): $\hat\alpha = -2.2$, $\hat\beta = 0.25$.
+A smoking-cessation study reports a logistic regression of quitting on number of counseling sessions attended ($0$–$10$): $\hat\alpha = -2.2$, $\hat\beta = 0.25$.
 
-(a) Interpret $\hat\beta$ exactly, and via the odds-ratio rule of thumb.
-(b) Compute predicted quitting probabilities at 0, 4, and 8 sessions. Comment on how the *probability* change per session differs across that range, even though $\beta$ is constant.
-(c) An enthusiast concludes each additional session causes a 28% increase in the odds of quitting, so mandating 10 sessions would maximize quitting. Using the chain from @sec-rq-to-interpretation, identify the two distinct inferential leaps and the assumption each requires.
+(a) Interpret $\hat\beta$ exactly and via the rule of thumb.
+(b) Compute quitting probabilities at 0, 4, and 8 sessions, and comment on how the probability change per session varies even though $\beta$ does not.
+(c) An enthusiast concludes that mandating 10 sessions would maximize quitting. Identify the two inferential leaps, and the assumption each requires — use the chain from @sec-rq-to-interpretation.
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 2.C"}
-(a) Each additional session increases the log-odds of quitting by 0.25; odds ratio $e^{0.25} = 1.28$; rule of thumb: $\approx +25\%$, close to the exact 28%. (b) $\text{plogis}(-2.2) = 0.10$; $\text{plogis}(-2.2 + 1) = 0.23$; $\text{plogis}(-2.2 + 2) = 0.45$. From 0→4 sessions: +0.13; 4→8: +0.22 — the same odds ratio moves probability more near 0.5 than near 0. (c) Leap 1, association to causation: requires that attendance is as-good-as-random given the model — but motivated quitters attend more sessions (confounding); the design (observational attendance) does not support it. Leap 2, effect to policy: even granting causation among voluntary attenders, *mandating* sessions intervenes on a different variable (compulsory attendance) for a different population (including the unmotivated); extrapolating the coefficient to 10 sessions also assumes linearity on the log-odds scale to the end of the range. Each leap needs its own design — the second, ideally, an RCT of mandated counseling.
+(a) Each additional session adds $0.25$ to the log-odds of quitting; odds ratio $e^{0.25} = 1.28$, rule of thumb $\approx 1.25$ — close. (b) `plogis(-2.2)` $= .10$; `plogis(-1.2)` $= .23$; `plogis(-0.2)` $= .45$. The first four sessions "add" 13 points, the next four 22: same log-odds slope, different probability slopes — steepest near $.5$. (c) Leap one, association → causation: attendance was chosen, not assigned; motivated quitters attend more (a selection threat), so reading $\beta$ causally requires the no-confounding assumption the design does not buy. Leap two, effect → policy: *mandated* attendance is a different treatment applied to a different population (the unmotivated included), and pushing to 10 sessions extrapolates the linear log-odds form to the range's end. Each leap needs its own design — the second, ideally, a randomized trial of mandatory counseling.
 :::
