@@ -5,3 +5,5 @@ _freeze/
 *_files/
 .Rproj.user/
 .DS_Store
+
+/.quarto/

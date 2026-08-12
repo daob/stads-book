@@ -102,7 +102,7 @@ d2 <- data.frame(X, M = M2, Y = Y2)
 round(coef(sem("M ~ X \n Y ~ M + X", data = d2)), 2)
 ```
 
-The mediation analysis finds a healthy, "highly significant" $\hat b \approx 0.45$ and would report that a large share of... whatever effect exists... is "mediated by rumination." Every number is precisely estimated, and the conclusion is completely wrong: in this world, intervening on rumination would do *nothing*, because rumination does not cause symptoms — neuroticism merely makes the two travel together. Note also the estimate $\hat c'$: it is pushed *negative*, a spurious "suppression" effect, another artifact of the confounder. More data would only tighten the intervals around the wrong values. This is the observational wine-drinkers study of @sec-rq-to-interpretation, reborn inside an RCT.
+The mediation analysis finds a healthy, "highly significant" $\hat b \approx 0.48$ and would report that a large share of... whatever effect exists... is "mediated by rumination." Every number is precisely estimated, and the conclusion is completely wrong: in this world, intervening on rumination would do *nothing*, because rumination does not cause symptoms — neuroticism merely makes the two travel together. Note also the estimate $\hat c'$: it is pushed *negative*, a spurious "suppression" effect, another artifact of the confounder. More data would only tighten the intervals around the wrong values. This is the observational wine-drinkers study of @sec-rq-to-interpretation, reborn inside an RCT.
 
 ::: {.callout-tip icon="false" title="Exercise 3.3"}
 Explain, with a trace through the diagram $X \rightarrow M \leftarrow U \rightarrow Y$, why the regression of $Y$ on $M$ and $X$ yields a nonzero coefficient on $M$ even though $M$ does not cause $Y$. Then explain why randomizing $X$ did not protect us.
@@ -131,7 +131,7 @@ $$
 
 and $b$ is identified *without assuming away the confounding*: the error covariance becomes a free parameter the data can estimate. We have **traded the assumption "no $M$–$Y$ confounding" for the assumption "no direct effect $X \rightarrow Y$."** Neither is testable from these data — with $c'$ free the model is just-identified and fits perfectly, so the trade is struck on theoretical credit alone. In this role, $X$ is called an **instrumental variable** (IV): we are not actually interested in $X$; we use its randomness as a lever to move $M$ and watch what happens to $Y$ [@angrist1996].
 
-Does it work? In the same confounded data where naive regression told us $\hat b \approx 0.45$:
+Does it work? In the same confounded data where naive regression told us $\hat b \approx 0.48$:
 
 ```{r}
 #| label: iv-estimate
@@ -145,7 +145,7 @@ round(coef(sem(model_iv, data = d2))[c("a", "b")], 2)
 round(cov(d2$X, d2$Y) / cov(d2$X, d2$M), 2)
 ```
 
-The IV estimate lands on the truth, $b = 0$: the analysis correctly reports that rumination does nothing, in exactly the dataset that fooled the ordinary mediation analysis.
+The IV estimate lands essentially on the truth, $b = 0$: the analysis correctly reports that rumination does nothing, in exactly the dataset that fooled the ordinary mediation analysis.
 
 There is fine print, and it is printed larger than usual. First, the recipe divides by $\rho_{XM} = a$: **the instrument must move the mediator**, and not feebly. With a small $a$, the estimator divides noise by nearly zero:
 
