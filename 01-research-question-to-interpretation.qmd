@@ -1,6 +1,6 @@
 # From research question to interpretation {#sec-rq-to-interpretation}
 
-In September 1967, the British government began a crackdown on drunk driving: the police could now stop drivers and test their breath.^[The study of this crackdown, by Ross, Campbell, and Glass [-@breathalyser1970], became a classic of research methodology; @shadish2002 use it as a showcase. The details here follow their account.] In the months that followed, traffic casualties fell. Ministers were pleased, newspapers reported success, and you can feel the question forming already: did the crackdown save lives, or did the numbers just happen to go down?
+In October 1967, the British government began a crackdown on drunk driving: the police could now stop drivers and test their breath.^[The study of this crackdown, by Ross, Campbell, and Glass [-@breathalyser1970], became a classic of research methodology; @shadish2002 use it as a showcase. The details here follow their account.] In the months that followed, traffic casualties fell. Ministers were pleased, newspapers reported success, and you can feel the question forming already: did the crackdown save lives, or did the numbers just happen to go down?
 
 That gap, between a number that moved and a question that got answered, is the subject of this chapter. Every empirical study is an argument that some numbers computed from data answer a question about the world. Once you can see the structure of that argument, you can read any study, from a clinical trial to a machine learning benchmark, and ask the same few questions of it. You will also be able to design studies whose arguments hold up.
 
@@ -30,7 +30,7 @@ Research questions come in a few recognizably different kinds, and the differenc
 
 A **descriptive** question asks what the world looks like. What proportion of Dutch adults had depressive symptoms last year? How much does income vary between neighborhoods? Description does not ask why.
 
-An **explanatory**, or plainly causal, question asks what would happen if we changed something. Does exercise reduce depressive symptoms? Did the Breathalyzer crackdown reduce casualties? The tell-tale sign is a hidden "if we intervened". Here we should be precise about what an "effect" even is. An effect is a comparison between what did happen and what would have happened without the cause [@shadish2002]. That second world is a "counterfactual": contrary to fact, and unobservable in principle. We never get to see September 1967 without the crackdown. A central task of all cause-probing research is to construct a believable stand-in for that missing world and to understand exactly how the stand-in differs from the real thing.
+An **explanatory**, or plainly causal, question asks what would happen if we changed something. Does exercise reduce depressive symptoms? Did the Breathalyzer crackdown reduce casualties? The tell-tale sign is a hidden "if we intervened". Here we should be precise about what an "effect" even is. An effect is a comparison between what did happen and what would have happened without the cause [@shadish2002]. That second world is a "counterfactual": contrary to fact, and unobservable in principle. We never get to see October 1967 without the crackdown. A central task of all cause-probing research is to construct a believable stand-in for that missing world and to understand exactly how the stand-in differs from the real thing.
 
 A **predictive** question asks what will happen, or what is the case, for units we have not observed. Which patients will miss their appointment next week? Is this email spam? Prediction does not ask why either. A variable can predict superbly without causing anything; ashtrays predict lung cancer.
 
@@ -87,13 +87,13 @@ An inference from a study can fail in many ways, and methodologists have spent d
 
 **Construct validity** concerns the inference from the study's concrete operations to the theory's abstract terms. You manipulated "a 20-minute mindfulness app session" and measured "a seven-item mood scale"; the paper's title says "mindfulness improves wellbeing". Whether the operations deserve those labels is a separate argument, and threats include reactivity (participants respond to being studied) and experimenter expectancy.
 
-**External validity** concerns the inference that the causal relationship holds beyond this study: for other people, treatments, outcomes, and settings. The threats are all of the form "the effect depends on something this study held fixed".
+**External validity** concerns the inference that the causal relationship holds beyond this study: for other people, treatments, outcomes, and settings. The threats are all of the form "the effect depends on something this study held fixed", as when a psychotherapy effect demonstrated on student volunteers fails to appear in older patients in routine care.
 
-The threat lists are not a bureaucratic checklist to recite. They are a repertoire of rival explanations, and their practical use is the question: *which of these rivals does my design silence, and which are left talking?* That question brings us to designs.
+Treat the threat lists as a repertoire of rival explanations rather than a checklist to recite; their practical use is the question: *which of these rivals does my design silence, and which are left talking?* That question brings us to designs.
 
 ## Designs, and the threats they remove
 
-A **research design** is a plan for producing data: whom to measure, what to measure, when, and who gets exposed to what. Campbell and his successors developed a compact notation for designs which I will modernize slightly. Each row is a group; time runs left to right; $O$ is an observation (a measurement), $X$ is exposure to the treatment, and $R$ marks groups formed by random assignment. The value of a design lies in which threats it removes, and the analysis of a design is a regression equation whose coefficients answer the research question, given the assumptions the design supports. Walking through the catalogue shows the logic.
+A **research design** is a plan for producing data: whom to measure, what to measure, when, and who gets exposed to what. Campbell and his successors developed a compact notation for designs, which I will modernize slightly. Each row is a group; time runs left to right; $O$ is an observation (a measurement), $X$ is exposure to the treatment, and $R$ marks groups formed by random assignment. The value of a design lies in which threats it removes. Its analysis is a regression equation whose coefficients answer the research question, given the assumptions the design supports. Walking through the catalogue shows the logic.
 
 **The randomized experiment.**
 
@@ -102,7 +102,7 @@ A **research design** is a plan for producing data: whom to measure, what to mea
 | $R$ | $X$ | $O$ |
 | $R$ | | $O$ |
 
-Units are assigned to conditions by a coin flip and measured afterwards. Randomization removes *selection* in one stroke: it "equates groups on expectations of every variable before treatment, whether observed or not" [@shadish2002]. Not on the observed values, on expectations; the groups differ only by chance, including on everything nobody thought to measure. Shared *history* and *maturation* are absorbed by the comparison group, since whatever else was going on was going on for both. The analysis is the simplest regression there is,
+Units are assigned to conditions by a coin flip and measured afterwards. Randomization removes selection in one stroke: it "equates groups on expectations of every variable before treatment, whether observed or not" [@shadish2002]. Not on the observed values, on expectations; the groups differ only by chance, including on everything nobody thought to measure. Shared history and maturation are absorbed by the comparison group, since whatever else was going on was going on for both. The analysis is the simplest regression there is,
 
 $$
 y = \beta_0 + \beta_1 T + \varepsilon,
@@ -134,7 +134,7 @@ $$
 y = \beta_0 + \beta_1 G + \beta_2 \, \text{Post} + \beta_3 (G \times \text{Post}) + \varepsilon,
 $$
 
-where $G$ marks the exposed group and Post the after-period. $\hat\beta_3$, the extra change in the exposed group, estimates the effect under the assumption that the two groups would have changed in parallel without the treatment. Stable selection is removed; what remains is selection combined with maturation, groups changing at different rates for their own reasons, and selection combined with regression artifacts, as when schools adopt a policy right after an unusually bad year and rebound anyway.
+where $G$ marks the exposed group and Post the after-period. $\hat\beta_3$, the extra change in the exposed group, estimates the effect under the assumption that the two groups would have changed in parallel without the treatment. Stable selection is removed; what remains is selection combined with maturation (groups changing at different rates for their own reasons); and selection combined with regression artifacts, as when schools adopt a policy right after an unusually bad year and rebound anyway.
 
 **The interrupted time series.**
 
@@ -185,11 +185,11 @@ The function simulates one study; the `replicate` lines run a thousand of each k
 
 ## Random sampling and random assignment
 
-Selection and its cures concern comparisons *within* the data. A second family of assumptions concerns reaching *beyond* the data: for whom does the answer hold?
+Selection and its cures concern comparisons within the data. A second family of assumptions concerns reaching beyond the data: for whom does the answer hold?
 
 When units enter the sample through a known chance mechanism, a probability sample, the sample statistics estimate population quantities, and we can even quantify the uncertainty. That is what random sampling is for. When units enter by convenience, as with students in a hallway or volunteers on a website, the assumption "these people behave like the population I care about" must stand on its own argument. Sometimes it can; basic visual perception probably works similarly in students and everyone else. Sometimes it cannot; the political attitudes of hallway volunteers speak for no one.
 
-The two chance mechanisms do different jobs and are often confused, since both contain the word "random". Random *assignment* supports causal comparison within the study. Random *sampling* supports generalization beyond it. The two rarely appear together; random sampling is hardly ever feasible in experiments [@shadish2002]. Most studies are therefore local achievements with general ambitions, and the argument that an effect travels rests on knowing why the effect occurs and what it needs to operate.
+The two chance mechanisms do different jobs and are often confused, since both contain the word "random". Random assignment supports causal comparison within the study. Random sampling supports generalization beyond it. The two rarely appear together; random sampling is hardly ever feasible in experiments [@shadish2002]. Most studies are therefore local achievements with general ambitions, and the argument that an effect travels rests on knowing why the effect occurs and what it needs to operate.
 
 ::: {.callout-tip icon="false" title="Exercise 1.5"}
 An online panel of two million self-registered users is weighted so that its age, gender, and education distribution matches the country's. It is then used to estimate national vaccine hesitancy. What assumption replaces random sampling, and how could it fail?
@@ -205,7 +205,7 @@ So far the chain has run forwards: question, then design, then model. Often rese
 
 Exploratory research is not bad. Pretending it was confirmatory can be, because the pretense invalidates the assumptions behind the reported statistics. A $p$-value of .05 means that results this extreme occur by chance one time in twenty, *when this single test was fixed in advance*. Run twenty tests and report the best, and the chance of finding something this extreme somewhere is .64; at fifty tests it is .92 [@shadish2002]. The design that justified the error rates, "I will test this one hypothesis", never happened. Statisticians call the practice "fishing". Prediction is not immune either: given free choice of task, metric, and data cleaning, the same model on the same data can be made to look impressively accurate or barely better than guessing [@hofman2017]. An analysis flexible enough to find anything will find something.
 
-The honest courses of action are easy to state. Label exploration as exploration; it is legitimate the moment it is clearly described as such. Better still, let the exploratory data generate the question and let fresh data answer it: a new sample, a preregistered replication, or a held-out portion of the data never touched during exploration. Then the chain of @fig-chain is restored, with the question in place before the design that answers it.
+The remedies are easy to state. Label exploration as exploration; it is legitimate the moment it is clearly described as such. Better still, let the exploratory data generate the question and let fresh data answer it: a new sample, a preregistered replication, or a held-out portion of the data never touched during exploration. Then the chain of @fig-chain is restored, with the question in place before the design that answers it.
 
 ::: {.callout-tip icon="false" title="Exercise 1.6"}
 A team studying diet measures 120 food items and 40 health outcomes, and reports: "Yogurt consumption was significantly associated with lower blood pressure ($p = 0.01$)." In what way might this be exploratory research pretending to be confirmatory, and what happens to the meaning of the $p$-value?
