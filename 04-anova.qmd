@@ -1,0 +1,248 @@
+# ANOVA is still cool! {#sec-anova}
+
+In a famous sleep laboratory study, eighteen volunteers were restricted to three hours of sleep per night for ten days, and their reaction times were measured daily.^[The data ship with the R package lme4 as `sleepstudy` [@gelmanhill2007 discuss closely related designs]. The original study is by Belenky and colleagues; the dataset has become the fruit fly of multilevel modeling.] Two things obviously drive those reaction times: how sleep-deprived you are, and who you are. The analysis of this utterly ordinary design, measurements crossed by persons and conditions, is called the **analysis of variance**, ANOVA, and it has an image problem. The name evokes agricultural experiments, mid-century textbooks, and tables full of capital letters. Econometricians see an uninteresting special case of regression; Bayesians see an inflexible classical method [@gelman2005]. This chapter argues both are missing the point. Read the right way, ANOVA is one idea, and the idea is load-bearing for half of modern statistics: *group the coefficients of a (generalized) linear model into batches, and study the variation within each batch*. Follow that idea and you walk, in four small steps, from a century-old F table to Bayesian multilevel models, and, at the end of this chapter, to meta-analysis.
+
+## The coefficient wall
+
+Following @sec-theory-to-glm, we can model reaction time with a linear regression. Treat both day and person as categorical predictors, so each gets a set of 0/1 variables:
+
+```{r}
+#| label: sleep-lm
+library(lme4)   # provides the sleepstudy data
+sleep <- transform(sleepstudy, Days = factor(Days), Subject = factor(Subject))
+fit_lm <- lm(Reaction ~ Days + Subject, data = sleep)
+length(coef(fit_lm))
+```
+
+The first line loads the data; the second makes day and person into factors; the third fits the regression. It has 27 coefficients: an intercept, nine day effects (day 0 is the reference), and seventeen person effects (subject 308 is the reference). A few are worth reading. The day-9 coefficient is 94.2: after nine days of deprivation, people are on average 94 milliseconds slower than on day 0, a large and frightening effect if you drive a car. The subject coefficients range from $-127$ to $+34$: people differ from the reference person by up to a tenth of a second in either direction. And here the trouble starts. Seventeen person coefficients answer seventeen questions nobody asked. We do not care that subject 309 is 126.9 ms faster than subject 308; we care *how much people differ in general*. The regression output answers the wrong question, and the coefficient wall only grows with the data: a study with 500 subjects would print 499 numbers.
+
+ANOVA is the classical answer to exactly this complaint. Instead of printing every coefficient, summarize each *batch* of coefficients, the day-batch and the person-batch, by how much variation it accounts for.
+
+## Sums of squares: the classical machinery
+
+Start with one batch to see the mechanics. Ignore days for a moment and ask only: how much of the variation in reaction time is between persons, and how much within? Write $y_{ij}$ for measurement $j$ of person $i$, $\bar y_i$ for person $i$'s mean, and $\bar y$ for the grand mean. Every observation's deviation from the grand mean splits into two pieces,
+
+$$
+y_{ij} - \bar y = (\bar y_i - \bar y) + (y_{ij} - \bar y_i),
+$$
+
+a between-person piece and a within-person piece. Square and sum over the whole dataset, and (the cross-terms cancel) the total variation splits the same way:
+
+$$
+\underbrace{\textstyle\sum_{ij} (y_{ij} - \bar y)^2}_{\text{total SS}} \;=\;
+\underbrace{\textstyle\sum_i n_i (\bar y_i - \bar y)^2}_{\text{between SS}} \;+\;
+\underbrace{\textstyle\sum_{ij} (y_{ij} - \bar y_i)^2}_{\text{within SS}} .
+$$
+
+"SS" stands for sum of squares, and this decomposition is the analysis of variance, literally: variance, analyzed into parts. With two batches, the same logic splits the total into a days part, a persons part, and a residual. R's `aov()` presents the result as the classical table:
+
+```{r}
+#| label: sleep-aov
+fit_aov <- aov(Reaction ~ Days + Subject, data = sleep)
+summary(fit_aov)
+```
+
+Read the table column by column. Each sum of squares measures how much variation a batch accounts for: about 166,000 for days, 251,000 for persons, 151,000 left over. The degrees of freedom (df) count the coefficients in each batch: 9, 17, and 153 for the residuals. The **mean square**, SS divided by df, is variation *per coefficient*, which puts big and small batches on comparable footing. And each $F$ statistic is a mean square divided by the residual mean square: how much more variation this batch carries than chance would give a batch of its size. Under the null hypothesis that a batch's coefficients are all zero, $F$ hovers around 1; the observed values, 18.7 for days and 14.9 for persons, are astronomically far from 1, and the $p$-values are correspondingly microscopic.
+
+One habit to build immediately: the mean squares, not the raw sums of squares, carry the comparisons. Persons have the biggest SS (251,000 against 166,000) but the smaller mean square, because the persons batch spends 17 coefficients to the days batch's 9. Sums of squares reward batches for being big; mean squares measure the strength of each source of variation.
+
+::: {.callout-tip icon="false" title="Exercise 4.1"}
+A one-way ANOVA of exam scores across 4 tutorial groups (25 students each) gives between-groups SS = 1,200 and within-groups SS = 19,200. (a) Fill in the degrees of freedom, mean squares, and $F$. (b) What proportion of the variance do group differences account for? (c) Your colleague concludes from the significant $F$ that "the tutorial groups differ a lot". What is a better summary?
+:::
+
+::: {.callout-note collapse="true" icon="false" title="Answer 4.1"}
+(a) df between $= 3$, within $= 96$; MS between $= 400$, within $= 200$; $F = 2.0$. (b) $\eta^2 = 1200/20400 \approx 0.06$: about 6%. (c) With $F = 2.0$ on (3, 96) df the evidence for any difference is weak ($p \approx .12$), and even taking the estimates at face value the groups account for 6% of score variance. "Differ a lot" confuses a test statistic with an effect size; report the proportion of variance or the between-group standard deviation.
+:::
+
+## ANOVA is regression
+
+Now the first punchline, and you can check it yourself in one line:
+
+```{r}
+#| label: aov-is-lm
+anova(fit_lm)
+```
+
+This is the regression from the first section, summarized by `anova()`, and the table is identical to the `aov()` table: same sums of squares, same $F$s. ANOVA and regression are not two methods. They are one fit with two summaries: `summary(fit_lm)` prints every coefficient, `anova(fit_lm)` groups the coefficients into batches and reports the variation per batch.^[For balanced data, as here, the order of terms does not matter. In unbalanced data the sequential sums of squares depend on the order in which terms enter, a classical headache that the multilevel view below largely dissolves.] The $F$ test also has a regression reading worth knowing, because applied papers use it constantly: the $F$ for a batch compares the model with and without that batch's coefficients. "Does drinking improve the prediction of health, given everything else in the model?" is answered by fitting both models and calling `anova(fit_without, fit_with)`, the block test we promised in @sec-theory-to-glm.
+
+## Batching coefficients: the multilevel step
+
+The classical table summarizes batches after fitting all 27 coefficients by least squares. The modern move is to build the batch structure into the model itself. Seventeen person effects, viewed together, look like draws from a distribution: most people near the middle, a few fast, a few slow. So model them that way [@gelman2005; @gelmanhill2007]:
+
+$$
+y_{ij} = \mu + \beta_{d(j)} + u_i + \varepsilon_{ij},
+\qquad u_i \sim N(0, \sigma^2_{\text{Subject}}),
+\qquad \varepsilon_{ij} \sim N(0, \sigma^2) .
+$$
+
+The day effects $\beta$ stay as ordinary coefficients; the person effects $u_i$ get a normal distribution whose standard deviation is *estimated from the data*. The parameter of interest is no longer any individual $u_i$ (nobody asked) but $\sigma_{\text{Subject}}$: how much do people vary? Gelman and Hill put the shift in one sentence: instead of testing whether a variance component is zero, we estimate the standard deviation of the corresponding batch of coefficients. In R, this is `lmer()`, with `(1 | Subject)` read as "an intercept per subject, batched":
+
+```{r}
+#| label: sleep-lmer
+fit_lmer <- lmer(Reaction ~ Days + (1 | Subject), data = sleep)
+summary(fit_lmer)$varcor
+```
+
+Two numbers now summarize what seventeen coefficients could not. People vary with a standard deviation of about 37 ms; the residual noise is about 31 ms. Since the largest day effect was 94 ms, the three sources of variation are all of the same order: who you are matters about as much as how sleep-deprived you are. That sentence is the ANOVA of this dataset, and no $F$ table states it as plainly.
+
+The classical and multilevel machines are connected under the hood, and for balanced data the connection is exact. The expected mean squares satisfy $E(\text{MS}_{\text{Subject}}) = \sigma^2 + n\,\sigma^2_{\text{Subject}}$ with $n = 10$ measurements per person, so the classical table implies
+
+$$
+\hat\sigma^2_{\text{Subject}} = \frac{\text{MS}_{\text{Subject}} - \text{MS}_{\text{Residual}}}{n}
+= \frac{14742.24 - 987.59}{10} = 1375.5,
+$$
+
+which is, to the decimal, the variance `lmer` just reported ($37.09^2 \approx 1376$). The old $F$ table and the multilevel model estimate the same quantity; the multilevel model just says so out loud, and keeps working when the design is unbalanced, the batches are many, or the outcome is binary.
+
+::: {.callout-tip icon="false" title="Exercise 4.2"}
+(a) In the model above, what would $\sigma_{\text{Subject}} = 0$ mean substantively, and which classical hypothesis does it correspond to? (b) A colleague fits the same data with 17 subject dummies and reports subject 310's coefficient with a confidence interval. You fit `lmer` and report $\sigma_{\text{Subject}}$ with an interval. Describe one research goal for which each output is the right one.
+:::
+
+::: {.callout-note collapse="true" icon="false" title="Answer 4.2"}
+(a) People do not differ in baseline reaction time; all variation is noise and day effects. It corresponds to the classical $F$ test of the Subject batch (all subject coefficients zero). (b) The dummies answer questions about *these* people, as when subject 310 is a patient being monitored or a machine being audited. The batch SD answers questions about people in general, as when planning how large future studies must be, or comparing person variation with treatment effects. The choice previews the fixed-versus-random question below.
+:::
+
+## The Bayesian version, and a better ANOVA table
+
+One more step up the same staircase. The multilevel model is begging for a Bayesian treatment: every batch SD is a parameter with uncertainty, and the classical table never shows that uncertainty.^[There is also a practical reason: when a batch has few levels or its SD is near zero, the likelihood-based point estimate often collapses to exactly zero, hiding real but modest variation. A posterior distribution shows how uncertain the SD is instead of pretending certainty either way [@gelman2005].] The brms package fits the same model by Markov chain Monte Carlo with one changed function name:
+
+```{r}
+#| label: sleep-brm
+#| cache: true
+#| message: false
+#| warning: false
+#| results: "hide"
+library(brms)
+fit_brm <- brm(Reaction ~ Days + (1 | Subject), data = sleep,
+               chains = 4, iter = 2000, warmup = 1000, seed = 1234,
+               refresh = 0, silent = 2)
+fit_brm2 <- brm(Reaction ~ (1 | Days) + (1 | Subject), data = sleep,
+                chains = 4, iter = 2000, warmup = 1000, seed = 1234,
+                refresh = 0, silent = 2)
+```
+
+```{r}
+#| label: sleep-brm-summary
+round(summary(fit_brm)$random$Subject[, 1:4], 1)
+```
+
+The posterior for $\sigma_{\text{Subject}}$ centers near 40 ms with a 95% interval of roughly 28 to 57: people definitely differ, by an amount known only to within a factor of two. The second model, `fit_brm2`, goes all the way and batches *both* factors, days as well as subjects, so that every row of the old ANOVA table becomes an estimated standard deviation. Plotting the posteriors of the batch SDs side by side gives what @gelman2005 proposed as the modern replacement for the $F$ table:
+
+```{r}
+#| label: fig-anova-display
+#| fig-cap: "An ANOVA display: posterior distributions of the batch standard deviations (points: medians; bars: 50% and 95% intervals) and the residual SD, in milliseconds. Larger SD means that source contributes more variation to reaction times."
+#| message: false
+library(ggdist); library(tidyverse)
+as_draws_df(fit_brm2) |>
+  select(starts_with("sd_"), sigma) |>
+  pivot_longer(everything()) |>
+  mutate(name = recode(name,
+    "sd_Days__Intercept" = "Days",
+    "sd_Subject__Intercept" = "Subjects",
+    "sigma" = "Residual")) |>
+  ggplot(aes(x = value, y = name)) +
+  stat_halfeye() +
+  labs(x = "standard deviation (ms)", y = NULL) +
+  xlim(0, 100) +
+  theme_minimal()
+```
+
+Read the display as the answer to "where does the variation come from?": days and subjects each contribute variation on the order of 30 to 40 ms around their means, comparable to the residual noise.^[The Days SD summarizes the spread of the ten day-means; it does not show the fact that the day effects are steadily *increasing*, which the coefficients themselves reveal. Displays summarize; they do not replace looking.] This picture answers the question the classical table is usually misread as answering. Sums of squares cannot be compared across rows, mean squares only indirectly; the batch SDs can, and they come with uncertainty attached.
+
+## Fixed or random? Answer with the goal
+
+The person effects above are called "random effects", the day coefficients "fixed effects", and no terminology in statistics causes more confusion. @gelman2005 collects five incompatible definitions from the literature and shows they contradict each other in ordinary datasets; his advice is to drop the words and say *constant* versus *varying* coefficients. What actually matters, and what exam questions actually probe, is the inferential goal:
+
+> Model a batch with dummies ("fixed") when the levels in the data are the whole story and you want to control for or estimate *these particular* levels. Model a batch with a distribution ("random") when the levels stand in for a larger population you care about, so the target is the population's variation, or a prediction for a level you have not seen.
+
+Four versions of the same decision, all taken from past exams. Repeated measurements of the same panel respondents, with the goal of controlling all stable person characteristics and no wish to generalize to other people: person dummies, fixed, since the persons are not a sample standing in for anything. Each respondent rated by three interviewers from a large interviewer pool: random, since the interviewers stand in for interviewers in general, and their variation is itself of interest. Survey respondents nested in 24 countries, with the goal of generalizing to all countries: random, because the question is about the population of countries. Thirteen historical studies of a vaccine, with the goal of predicting what a new study would find: random, and this last one deserves its own section.
+
+::: {.callout-tip icon="false" title="Exercise 4.3"}
+Choose fixed or random, and justify from the goal, for each: (a) hospital effects, in a study auditing which of the country's 8 academic hospitals have excess mortality; (b) school effects, in a study of how much schools in general differ in value-added; (c) year effects for 2015 to 2024, controlling for macroeconomic shocks in a wage analysis; (d) word effects, in a psycholinguistic experiment where 60 words were sampled from the dictionary to represent "concrete nouns".
+:::
+
+::: {.callout-note collapse="true" icon="false" title="Answer 4.3"}
+(a) Fixed: the 8 hospitals are the complete population of interest, and the goal is estimates for each one by name. (b) Random: schools stand in for schools in general and the target is their variation, $\sigma_{\text{School}}$. (c) Fixed: the years are these years, included as controls, with no population of years to generalize to. (d) Random: the words are a sample from a larger population of possible stimuli, and treating them as fixed would license conclusions only about these 60 words, a classic error in that field.
+:::
+
+## Meta-analysis: ANOVA's twin
+
+The batching idea has a famous application in which the "units" are entire studies. Thirteen trials, conducted between 1948 and 1980 across several continents, tested whether the BCG vaccine protects against tuberculosis [@colditz1994]. Each study $i$ reports an effect estimate $y_i$, here a log odds ratio from @sec-theory-to-glm, and because each study also reports its standard error $\sigma_i$, we know exactly how noisy each estimate is:
+
+$$
+y_i \sim N(\theta_i, \sigma_i^2),
+$$
+
+where $\theta_i$ is the true effect *in study $i$'s setting*. This is a meta-analysis: the data are estimates. The modeling question should now feel familiar. Thirteen $\theta_i$ are a batch of coefficients. Do we force them to be identical, $\theta_i = \theta$ for all $i$, the **fixed-effects** (equal-effects) model? Or do we batch them, $\theta_i \sim N(\mu, \tau^2)$, the **random-effects** model, in which studies have genuinely different true effects, varying with standard deviation $\tau$? The metafor package fits both:
+
+```{r}
+#| label: bcg
+library(metafor)
+bcg <- data.frame(
+  yi  = c(-0.94, -1.67, -0.96, -1.39, -1.40, -0.47, 0.45,
+          -0.22, -1.63, -0.34, -0.02, -1.46, 0.01),
+  sei = c(0.598, 0.456, 0.100, 0.658, 0.275, 0.239, 0.731,
+          0.228, 0.476, 0.112, 0.268, 0.143, 0.063))
+fe <- rma(yi, sei = sei, data = bcg, method = "FE")
+re <- rma(yi, sei = sei, data = bcg, method = "REML")
+round(c(fixed = coef(fe), se = fe$se, random = coef(re), se = re$se,
+        tau = sqrt(re$tau2)), 3)
+```
+
+Interpret the estimates first. Both are negative: the vaccine protects. The fixed-effects estimate, $-0.434$, says the common log odds ratio corresponds to cutting the odds of tuberculosis by about a third ($e^{-0.43} \approx 0.65$); the random-effects estimate, $-0.746$, says the *average* study-effect corresponds to cutting them by half, with individual studies varying around that average with $\hat\tau = 0.58$, a spread as large as the average effect itself. The two models answer different questions: "what is the one common effect?" versus "what is the distribution of effects across settings?".
+
+Which is right here? Substantively, thirteen studies spanning four decades, different countries, different populations, and different allocation methods can hardly share one true effect; BCG's efficacy is known to vary with latitude, among other things. Statistically the data agree, spectacularly: the model fit comparison (AIC 154 for fixed against 29 for random) is a rout. And the choice has visible consequences. The random-effects standard error (0.186) is four times the fixed-effects one (0.042). This is not a flaw. The fixed-effects analysis, by *assuming* all studies estimate the same number, treats 13 studies as one big sample and reports precision that is real only if the assumption is; the random-effects analysis admits between-study variation as an extra source of uncertainty, since with heterogeneous true effects, seeing 13 of them still leaves you unsure about the average of all possible settings.
+
+Two extensions complete the toolkit. First, heterogeneity invites explanation: the studies differ in year and in how patients were allocated (randomized, alternated, or physician-selected), and regressing $\theta_i$ on such study characteristics is called **meta-regression**, ordinary regression one level up. Second, the random-effects model *predicts*. Asked what a new study in a new setting would find, it answers $\theta_{\text{new}} \sim N(\hat\mu, \hat\tau^2)$: somewhere between mild and strong protection, an honest and wide interval that the fixed-effects model, with its single $\theta$, cannot even formulate. This predictive reading of a batch distribution returns in force in @sec-explanation-prediction.
+
+::: {.callout-tip icon="false" title="Exercise 4.4"}
+(a) Write down the random-effects model for the $\theta_i$ in one line, defining each symbol. (b) Explain conceptually, without formulas, why the random-effects standard error is larger than the fixed-effects one. (c) Study 13 (Madras, 1980, $y_i = 0.01$, the largest trial, $\sigma_i = 0.063$) found no protection. Under each model, what do you make of it?
+:::
+
+::: {.callout-note collapse="true" icon="false" title="Answer 4.4"}
+(a) $\theta_i \sim N(\mu, \tau^2)$: study-specific true effects $\theta_i$ scatter around a grand mean $\mu$ with between-study standard deviation $\tau$. (b) The fixed-effects model assumes every study measures the same quantity, so all data pool into one precise estimate; the random-effects model adds real between-study variation to the uncertainty, since even perfectly measured studies would disagree, and the average of a varying quantity is harder to pin down. (c) Under the fixed-effects model Madras is an embarrassment: the most precise study contradicts the common effect, which is evidence against the model itself. Under the random-effects model Madras is a low-$\theta_i$ setting, informative about $\tau$ and entirely expected given $\hat\tau = 0.58$; the model invites the follow-up question *why* (climate, strain, population), which meta-regression pursues.
+:::
+
+## Where this leads
+
+The staircase you just climbed, dummies to batches to batch distributions to distributions of study effects, is the entrance to multilevel modeling, one of the workhorses of modern social and health research. Everything scales: batches of slopes rather than intercepts, batches in logistic regressions, crossed batches (persons and stimuli), batches of batches. The constant idea is the one this chapter began with. Group the coefficients; make the group variation the target; and choose dummies or distributions by asking what you want to generalize to. The next chapter changes register: having spent four chapters on models whose parameters we interpret, we ask what it means for a model to predict, and why anyone would want a model whose parameters they do not interpret at all.
+
+## Test yourself {.unnumbered}
+
+::: {.callout-tip icon="false" title="Exercise 4.A"}
+The table below summarizes the 13 BCG studies (log odds ratios $y_i$, standard errors $\sigma_i$, and each study's allocation method: randomized, alternated, or selected by physicians). Output for the fixed-effects model: estimate $-0.436$ (SE 0.042). For the random-effects model: estimate $-0.745$ (SE 0.186), $\hat\tau^2 = 0.34$.
+
+(a) Interpret both estimates on the odds scale.
+(b) Which model do you find more appropriate here? Give one substantive and one data-fit argument.
+(c) Write down the random-effects model for $\theta_i$.
+(d) The 2025 goal is to predict the log odds ratio $\theta'$ in a newly planned trial. Explain why the random-effects model is the natural tool, and what two quantities determine the width of the prediction.
+(e) Do you think allocation method or study year matter here? How would you incorporate them?
+:::
+
+::: {.callout-note collapse="true" icon="false" title="Answer 4.A"}
+(a) Fixed: one common effect, odds of tuberculosis multiplied by $e^{-0.436} \approx 0.65$, a 35% reduction. Random: the average of the study-specific effects multiplies the odds by $e^{-0.745} \approx 0.47$, about a halving, with true effects varying around this average ($\tau \approx 0.58$). (b) Substantive: studies span 1948-1980, several continents, and three allocation methods; one shared true effect is implausible, and BCG efficacy is known to vary by setting. Fit: AIC/BIC favor the random-effects model overwhelmingly (about 154 versus 29). (c) $\theta_i \sim N(\mu, \tau^2)$. (d) A new trial is a new draw from the batch: $\theta' \sim N(\hat\mu, \hat\tau^2)$; the prediction's width is driven by $\hat\tau$ (between-study variation) plus the uncertainty in $\hat\mu$ itself. (e) Plausibly: nonrandomized allocation may exaggerate effects, and efficacy may drift over time; incorporate them by meta-regression, regressing the study effects on allocation type and year, and see whether $\tau$ shrinks.
+:::
+
+::: {.callout-tip icon="false" title="Exercise 4.B"}
+A colleague analyzes the sleep data with `lm(Reaction ~ Days + Subject)` and, separately, with `lmer(Reaction ~ Days + (1|Subject))`, and is puzzled: "the Days coefficients are the same in both, so what did the multilevel model buy me?"
+
+(a) Explain why the Days coefficients (and their standard errors) agree here.
+(b) Name two things the multilevel output provides that the dummy regression does not.
+(c) Describe a version of this study, with a different design or goal, where the two analyses would give importantly different answers, and say which you would trust.
+:::
+
+::: {.callout-note collapse="true" icon="false" title="Answer 4.B"}
+(a) The design is balanced: every person is measured on every day, so person differences cancel out of the day contrasts, and both models estimate the same within-person comparisons with the same precision. (b) The batch standard deviation $\sigma_{\text{Subject}}$ with its uncertainty (the answer to "how much do people differ?"), and sensible predictions for new persons; also shrunken person-level estimates rather than 17 noisy dummies. (c) Unbalanced data, for example if slower subjects dropped out on later days, or a goal involving generalization, such as predicting reaction times for new recruits. With imbalance the dummy regression's day contrasts lean on the observed persons in an uncontrolled way, while the multilevel model weighs information by its precision; for generalization the batch distribution is the only honest tool.
+:::
+
+::: {.callout-tip icon="false" title="Exercise 4.C"}
+An education researcher studies grading strictness. Each of 2,000 essays is graded by 3 of the university's 40 examiners; essays are also scored by a text-analysis algorithm as a benchmark.
+
+(a) Write a model for the grade of essay $e$ by examiner $x$, batching what should be batched, and define each term.
+(b) The department head wants to know whether examiner 17, up for promotion, grades too strictly. The dean wants to know whether examiner differences are large enough to justify double grading in general. Which output answers each question, and why are they different questions?
+(c) The variance components come out as: essays 60%, examiners 8%, residual 32% of the total. Draft the one-sentence summary you would give the dean.
+:::
+
+::: {.callout-note collapse="true" icon="false" title="Answer 4.C"}
+(a) $g_{ex} = \mu + \beta\, s_e + u_e + v_x + \varepsilon_{ex}$, with $s_e$ the algorithm score (constant coefficient), $u_e \sim N(0, \sigma^2_{\text{essay}})$ essay quality beyond the algorithm, $v_x \sim N(0, \sigma^2_{\text{examiner}})$ examiner strictness, and $\varepsilon_{ex}$ the grading noise of one examiner reading one essay. (b) Examiner 17's question is about a particular level: their (shrunken) $v_{17}$ with an interval, or a fixed-effect estimate for that examiner. The dean's question is about the batch: $\sigma_{\text{examiner}}$, compared with the other components. One asks about a coefficient, the other about a variance. (c) "Examiners differ systematically, but their strictness accounts for about 8% of grade variation, small relative to genuine essay differences (60%) and to the noise of any single reading (32%), which argues more for a second reading of borderline essays than for double-grading everything."
+:::
