@@ -80,7 +80,8 @@ The day effects $\beta$ stay as ordinary coefficients; the person effects $u_i$ 
 ```{r}
 #| label: sleep-lmer
 fit_lmer <- lmer(Reaction ~ Days + (1 | Subject), data = sleep)
-summary(fit_lmer)$varcor
+vc <- as.data.frame(VarCorr(fit_lmer))
+data.frame(source = vc$grp, variance = round(vc$vcov, 1), sd = round(vc$sdcor, 2))
 ```
 
 Two numbers now summarize what seventeen coefficients could not. People vary with a standard deviation of about 37 ms; the residual noise is about 31 ms. Since the largest day effect was 94 ms, the three sources of variation are all of the same order: who you are matters about as much as how sleep-deprived you are. That sentence is the ANOVA of this dataset, and no $F$ table states it as plainly.
@@ -132,8 +133,8 @@ The posterior for $\sigma_{\text{Subject}}$ centers near 40 ms with a 95% interv
 #| label: fig-anova-display
 #| fig-cap: "An ANOVA display: posterior distributions of the batch standard deviations (points: medians; bars: 50% and 95% intervals) and the residual SD, in milliseconds. Larger SD means that source contributes more variation to reaction times."
 #| message: false
-library(ggdist); library(tidyverse)
-as_draws_df(fit_brm2) |>
+library(ggdist); library(dplyr); library(tidyr); library(ggplot2)
+posterior::as_draws_df(fit_brm2) |>
   select(starts_with("sd_"), sigma) |>
   pivot_longer(everything()) |>
   mutate(name = recode(name,
@@ -210,7 +211,7 @@ The staircase you just climbed, dummies to batches to batch distributions to dis
 ## Test yourself {.unnumbered}
 
 ::: {.callout-tip icon="false" title="Exercise 4.A"}
-The table below summarizes the 13 BCG studies (log odds ratios $y_i$, standard errors $\sigma_i$, and each study's allocation method: randomized, alternated, or selected by physicians). Output for the fixed-effects model: estimate $-0.436$ (SE 0.042). For the random-effects model: estimate $-0.745$ (SE 0.186), $\hat\tau^2 = 0.34$.
+The table below summarizes the 13 BCG studies (log odds ratios $y_i$, standard errors $\sigma_i$, and each study's allocation method: randomized, alternated, or selected by physicians). Output for the fixed-effects model: estimate $-0.434$ (SE 0.042). For the random-effects model: estimate $-0.746$ (SE 0.186), $\hat\tau^2 = 0.34$.
 
 (a) Interpret both estimates on the odds scale.
 (b) Which model do you find more appropriate here? Give one substantive and one data-fit argument.
@@ -220,7 +221,7 @@ The table below summarizes the 13 BCG studies (log odds ratios $y_i$, standard e
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 4.A"}
-(a) Fixed: one common effect, odds of tuberculosis multiplied by $e^{-0.436} \approx 0.65$, a 35% reduction. Random: the average of the study-specific effects multiplies the odds by $e^{-0.745} \approx 0.47$, about a halving, with true effects varying around this average ($\tau \approx 0.58$). (b) Substantive: studies span 1948-1980, several continents, and three allocation methods; one shared true effect is implausible, and BCG efficacy is known to vary by setting. Fit: AIC/BIC favor the random-effects model overwhelmingly (about 154 versus 29). (c) $\theta_i \sim N(\mu, \tau^2)$. (d) A new trial is a new draw from the batch: $\theta' \sim N(\hat\mu, \hat\tau^2)$; the prediction's width is driven by $\hat\tau$ (between-study variation) plus the uncertainty in $\hat\mu$ itself. (e) Plausibly: nonrandomized allocation may exaggerate effects, and efficacy may drift over time; incorporate them by meta-regression, regressing the study effects on allocation type and year, and see whether $\tau$ shrinks.
+(a) Fixed: one common effect, odds of tuberculosis multiplied by $e^{-0.434} \approx 0.65$, a 35% reduction. Random: the average of the study-specific effects multiplies the odds by $e^{-0.745} \approx 0.47$, about a halving, with true effects varying around this average ($\tau \approx 0.58$). (b) Substantive: studies span 1948-1980, several continents, and three allocation methods; one shared true effect is implausible, and BCG efficacy is known to vary by setting. Fit: AIC/BIC favor the random-effects model overwhelmingly (about 154 versus 29). (c) $\theta_i \sim N(\mu, \tau^2)$. (d) A new trial is a new draw from the batch: $\theta' \sim N(\hat\mu, \hat\tau^2)$; the prediction's width is driven by $\hat\tau$ (between-study variation) plus the uncertainty in $\hat\mu$ itself. (e) Plausibly: nonrandomized allocation may exaggerate effects, and efficacy may drift over time; incorporate them by meta-regression, regressing the study effects on allocation type and year, and see whether $\tau$ shrinks.
 :::
 
 ::: {.callout-tip icon="false" title="Exercise 4.B"}
