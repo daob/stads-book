@@ -15,13 +15,7 @@ Y &= c'\,X + b\,M + \zeta_Y ,
 \end{aligned}
 $$ {#eq-mediation}
 
-```{mermaid}
-%%| fig-cap: "The mediation model. The effect of X on Y splits into a direct part (c′) and an indirect part through M (a × b)."
-flowchart LR
-  X[Encouragement X] -->|a| M[Study time M]
-  M -->|b| Y[Test score Y]
-  X -->|c′| Y
-```
+![The mediation model. The effect of $X$ on $Y$ splits into a direct part ($c'$) and an indirect part through $M$ ($a \times b$).](diagrams/mediation.png){#fig-mediation width="85%" fig-align="center"}
 
 and the tracing rules hand us the payoff immediately. Two traces connect $X$ and $Y$: the direct path, and the path through $M$. So
 

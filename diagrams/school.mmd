@@ -1,0 +1,9 @@
+flowchart LR
+  x1[School quality] -->|γ₁₁| y1[Achievement]
+  x2[Parents' status] -->|γ₁₂| y1
+  y1 -->|β₂₁| y2[School choice]
+  x1 -->|γ₂₁| y2
+  x2 -->|γ₂₂| y2
+  x1 <-.->|φ₂₁| x2
+  z1((ζ₁)) --> y1
+  z2((ζ₂)) --> y2

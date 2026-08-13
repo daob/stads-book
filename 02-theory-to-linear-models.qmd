@@ -53,18 +53,7 @@ Read the first equation aloud: achievement is school quality times $\gamma_{11}$
 
 A picture says the same thing. In a **path diagram**, every arrow is a coefficient, every *missing* arrow a claim of absence, the curved double-headed arc an unexplained covariance, and the $\zeta$'s the everything-else:
 
-```{mermaid}
-%%| fig-cap: "The simplified school-career model. Rectangles: observed variables. Single arrows: causal claims. The curved double arrow: covariation we allow but do not explain."
-flowchart LR
-  x1[School quality] -->|γ₁₁| y1[Achievement]
-  x2[Parents' status] -->|γ₁₂| y1
-  y1 -->|β₂₁| y2[School choice]
-  x1 -->|γ₂₁| y2
-  x2 -->|γ₂₂| y2
-  x1 <-.->|φ₂₁| x2
-  z1((ζ₁)) --> y1
-  z2((ζ₂)) --> y2
-```
+![The simplified school-career model. Rectangles: observed variables. Single arrows: causal claims. The curved double arrow: covariation we allow but do not explain.](diagrams/school.png){#fig-school width="100%" fig-align="center"}
 
 The diagram *is* the model — the same information as the equations, in a notation that will start doing real work in the next section.
 

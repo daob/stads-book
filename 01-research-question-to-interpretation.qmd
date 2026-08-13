@@ -8,17 +8,7 @@ This chapter is about the gap between those two things — a number that moved, 
 
 Here is the structure in one picture:
 
-```{mermaid}
-%%| fig-cap: "The chain from research question to interpretation. The design makes the assumptions plausible; the assumptions define the model; the model turns data into results; and the results answer the question only as far as the assumptions hold."
-flowchart LR
-  Q[Research question] --> D[Research design]
-  D -->|makes plausible| A[Assumptions]
-  A -->|define| M[Model]
-  D -->|produces| DATA[Data]
-  DATA --> M
-  M --> R[Results]
-  R -->|"if the assumptions hold"| I[Answer to the question]
-```
+![The chain from research question to interpretation. The design makes the assumptions plausible; the assumptions define the model; the model turns data into results; and the results answer the question only as far as the assumptions hold.](diagrams/chain.png){#fig-chain width="45%" fig-align="center"}
 
 In words: a **research question** motivates a **research design** — a plan for which data to collect and how. The design does something subtle and crucial: it makes a set of **assumptions** plausible. Those assumptions, taken together, are the **model**. Fitting the model to the data gives **results** — estimates, intervals, predictions. And the results answer the research question, *to the extent that the assumptions hold*.
 

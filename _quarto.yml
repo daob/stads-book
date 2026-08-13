@@ -6,6 +6,7 @@ book:
   subtitle: "A broad perspective for social and health scientists"
   author: "Daniel Oberski"
   date: today
+  output-file: "stads-book"
   chapters:
     - index.qmd
     - 01-research-question-to-interpretation.qmd
@@ -24,6 +25,44 @@ format:
     code-fold: false
     fig-width: 6
     fig-height: 4
+  pdf:
+    documentclass: scrbook
+    classoption: [twoside, openright]
+    pdf-engine: xelatex
+    mainfont: "Fira Sans"
+    sansfont: "Fira Sans"
+    monofont: "Fira Code"
+    monofontoptions:
+      - Scale=0.82
+    fontsize: 10pt
+    linestretch: 1.15
+    geometry:
+      - paperwidth=6in
+      - paperheight=9in
+      - inner=0.875in
+      - outer=0.625in
+      - top=0.8in
+      - bottom=0.9in
+      - marginparwidth=0in
+    toc: true
+    toc-depth: 2
+    number-sections: true
+    colorlinks: true
+    linkcolor: "black"
+    citecolor: "black"
+    urlcolor: "black"
+    fig-width: 4.5
+    fig-height: 3.2
+    include-in-header:
+      text: |
+        % ragged-right footnotes and tighter lists for the narrow page
+        \usepackage[hang,flushmargin]{footmisc}
+        \KOMAoptions{parskip=false}
+        \setlength{\emergencystretch}{3em}
+        % keep code blocks from overflowing the 6in page
+        \ifdefined\Shaded
+          \renewenvironment{Shaded}{\begin{snugshade}\small}{\end{snugshade}}
+        \fi
 
 execute:
   echo: true
