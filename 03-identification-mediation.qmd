@@ -1,12 +1,14 @@
 # The design limits the questions: identification {#sec-identification}
 
-In the north of the Netherlands, decades of gas extraction have caused earthquakes, and the people who live above the gas field vote differently from the rest of the country. Researchers surveying the region proposed a chain of explanations: experiencing earthquakes erodes trust in the national government, feeds a sense of injustice, and strengthens regional identification, and each of these in turn pushes people toward a protest vote [@otjes2020]. Note the shape of the claim. It does not stop at "earthquakes cause protest voting"; it says the effect runs *through* something. Questions of this shape, called **mediation** questions, are among the most asked in the social and health sciences, because a mechanism is what a theory is made of, and because a mediator suggests a lever: if distrust carries the effect, perhaps restoring trust can interrupt it.
+In the north of the Netherlands, decades of gas extraction have caused earthquakes, and the people who live above the gas field vote differently from the rest of the country. Researchers who surveyed the region proposed a chain of explanations [@otjes2020]: experiencing earthquakes erodes trust in the national government, feeds a sense of injustice, and strengthens regional identification, and each of these in turn pushes people toward a protest vote. @fig-otjes draws the claim, and the drawing shows its shape. The theory does not stop at "earthquakes cause protest voting"; it says the effect runs *through* something. Questions of this shape are called **mediation** questions, and the social and health sciences ask them constantly, because a mechanism is what a theory is made of, and because a mediator suggests a lever: if distrust carries the effect, restoring trust might interrupt it.
 
-This chapter uses mediation as a case study in something larger. The previous chapter warned that a model which fits the data is not thereby true. Here we meet the hard version of that warning. For some questions, no amount of data can distinguish the truth from a rival story, because the design never put the answer into the data in the first place. Statisticians call this the problem of "identification". The word sounds bureaucratic; what it names is a limit on knowledge, and the design, not the sample size, sets the limit.
+![The protest-voting theory of @otjes2020 as a path diagram: earthquake experience works on the protest vote through several parallel mediators.](diagrams/otjes.png){#fig-otjes width="85%" fig-align="center"}
+
+Mediation is also the sharpest illustration I know of a larger predicament, and that predicament is my real subject. The last chapter warned that a model which fits the data is not thereby true. Here you meet the hard version of the warning: some questions cannot be settled by any amount of data, because the design never put the answer into the data in the first place. Statisticians call this the problem of "identification". The word sounds bureaucratic. What it names is a limit on knowledge, and the design, not the sample size, sets the limit.
 
 ## The mediation model
 
-By the recipe of @sec-theory-to-glm, the simplest mediation theory becomes two equations. Write $X$ for the cause, $M$ for the mediator, $Y$ for the outcome, all standardized:
+The recipe of @sec-theory-to-glm turns the simplest mediation theory into two equations. Write $X$ for the cause, $M$ for the mediator, and $Y$ for the outcome, all standardized:
 
 $$
 \begin{aligned}
@@ -15,27 +17,27 @@ Y &= b\,M + c\,X + \zeta_Y .
 \end{aligned}
 $$ {#eq-mediation}
 
-The tracing rules hand us the decomposition that makes mediation attractive. Two traces connect $X$ and $Y$: the direct path, contributing $c$, and the path through the mediator, contributing $a \times b$. Their sum, the model-implied correlation, is called the **total effect**; $ab$ is the **indirect effect**; $c$ the **direct effect**. Estimate the equations, multiply, and you have "the share of the effect that runs through the mediator".^[This estimation recipe has circulated in psychology for decades under the name of @baron1986. Our subject is what the numbers mean, not the estimation recipe.]
+The tracing rules hand us the decomposition that makes mediation attractive. Two traces connect $X$ and $Y$: the direct path, which contributes $c$, and the path through the mediator, which contributes $a \times b$. Their sum, the model-implied correlation, is the **total effect**; $ab$ is the **indirect effect**; $c$ is the **direct effect**. Estimate the two equations, multiply, and you can report "the share of the effect that runs through the mediator".^[This estimation recipe has circulated in psychology for decades under the name of @baron1986. My subject is what the numbers mean, not how to compute them.]
 
 ::: {.callout-tip icon="false" title="Exercise 3.1"}
 In a study of education ($X$), health knowledge ($M$), and longevity ($Y$), the estimates are $\hat a = 0.5$, $\hat b = 0.4$, $\hat c = 0.1$. Compute the indirect, direct, and total effects and the proportion mediated. Then state in one sentence what the indirect effect claims about the world, if the model is true.
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 3.1"}
-Indirect $= 0.5 \times 0.4 = 0.20$; direct $= 0.10$; total $= 0.30$; proportion mediated $= 0.20/0.30 = 2/3$. The claim: two thirds of education's benefit for longevity comes about because education raises health knowledge, which raises longevity, so that an intervention on health knowledge alone could capture most of the benefit. Feel the size of that claim. The rest of this chapter asks what entitles anyone to it.
+Indirect $= 0.5 \times 0.4 = 0.20$; direct $= 0.10$; total $= 0.30$; proportion mediated $= 0.20/0.30 = 2/3$. The claim: two thirds of education's benefit for longevity arises because education raises health knowledge, which raises longevity, so an intervention on health knowledge alone could capture most of the benefit. Feel the size of that claim. Everything that follows asks what entitles anyone to it.
 :::
 
 ## The assumptions behind the arrows
 
-Equations [-@eq-mediation] are claims, and by now you know where their credibility must come from. Reading $\hat a$, $\hat b$, and $\hat c$ causally requires, beyond linearity and additivity: no confounding of $X$ and $M$; no confounding of $M$ and $Y$, which is to say $\zeta_M$ and $\zeta_Y$ are uncorrelated; and the correct causal order, with the arrows pointing the way drawn.
+Equations [-@eq-mediation] are claims, and by now you know where claims get their credibility. To read $\hat a$, $\hat b$, and $\hat c$ causally you must grant, beyond linearity and additivity: that nothing confounds $X$ and $M$; that nothing confounds $M$ and $Y$, which is to say that $\zeta_M$ and $\zeta_Y$ are uncorrelated; and that the arrows point the way drawn.
 
-Here is mediation's trap. Randomizing $X$, the strongest design feature we own, buys the first assumption completely, since a coin flip has no common causes with anything. It buys nothing for the other two. Nobody randomized the mediator. Within each arm of a randomized experiment, the people with high mediator values are simply different people from those with low values, and whatever makes them different may drive the outcome on its own. The $b$ path is an observational study smuggled inside the experiment. Methodologists have said this plainly for a long time: the mediator-outcome assumption "is needed even in the randomized trial context because, in a trial, although the exposure has been randomized, the mediator typically has not been" [@vanderweele2016]. In one randomized trial of cognitive behavioral therapy, a naive mediation analysis of antidepressant use made the antidepressants look harmful; VanderWeele's verdict is that "we get nonsense from the traditional approach if we ignore mediator-outcome confounding".
+Here is mediation's trap. Randomizing $X$, the strongest design feature we own, buys the first assumption outright, because a coin flip shares no common causes with anything. It buys nothing for the other two. Nobody randomized the mediator. Within each arm of a randomized experiment, the people with high mediator values are simply different people from the people with low values, and whatever makes them different may drive the outcome on its own. The $b$ path is an observational study smuggled inside the experiment. Methodologists have said so plainly for years: the mediator-outcome assumption "is needed even in the randomized trial context because, in a trial, although the exposure has been randomized, the mediator typically has not been" [@vanderweele2016]. In one randomized trial of cognitive behavioral therapy, a naive mediation analysis of antidepressant use made the antidepressants look harmful; VanderWeele's verdict is that "we get nonsense from the traditional approach if we ignore mediator-outcome confounding".
 
-Instead of warning you further, let me have you watch the failures happen. Twice.
+Rather than stack up more warnings, I will let you watch the failures happen. Twice.
 
 ## Failure one: the arrows can be backwards
 
-We simulate a world where the mediation model is exactly true. The cause raises the mediator ($a = 0.5$), the mediator raises the outcome ($b = 0.7$), and there is no direct effect. Then we fit two models: the true chain, and the same chain with every arrow reversed.
+Start in a world where the mediation model is exactly true: the cause raises the mediator ($a = 0.5$), the mediator raises the outcome ($b = 0.7$), and no direct effect exists. To this world we fit two models: the true chain, and the same chain with every arrow reversed.
 
 ```{r}
 #| label: reversed-arrows
@@ -53,7 +55,7 @@ c(chain = fitMeasures(fit_chain, "chisq"),
   reversed = fitMeasures(fit_reversed, "chisq"))
 ```
 
-The simulation builds the world; the two `sem()` calls fit the rival stories; the last line prints their fit statistics. They are identical to every decimal, in this dataset and in every dataset either model will ever meet.
+The simulation builds the world; the two `sem()` calls fit the rival stories; the last line prints their fit statistics. The statistics agree to every decimal, in this dataset and in every dataset either model will ever meet.
 
 ::: {.callout-tip icon="false" title="Exercise 3.2"}
 Before reading on, explain this result using the tracing rules. What does each model imply about the three correlations among $x_1$, $x_2$, $x_3$? Then check a third story: fit the model in which $x_3$ causes both $x_1$ and $x_2$ (`"x1 ~ x3 \n x2 ~ x3"`). Does it also fit identically? Why (not)?
@@ -63,11 +65,11 @@ Before reading on, explain this result using the tracing rules. What does each m
 Both chains imply the same single restriction. The forward chain implies $\rho_{13} = \rho_{12}\,\rho_{23}$, since the only trace from $x_1$ to $x_3$ passes through $x_2$; the reversed chain implies $\rho_{13} = \rho_{23}\,\rho_{12}$, the same equation. Models that imply identical restrictions on the observable correlations cannot be told apart by any data. The common-cause story is different: it implies $\rho_{12} = \rho_{13}\,\rho_{23}$, a restriction that is false in this world, so its fit is visibly worse. Fit can eliminate some rivals; it cannot orient the chain.^[For the curious: with nonlinear relationships or non-normal variables the tie can sometimes be broken, because a reversed nonlinear relationship leaves distributional fingerprints. Under linearity and normality the equivalence is exact.]
 :::
 
-This situation has a name. Two models, or two parameter values, are **not identified** when they imply the same distribution of observable data. The data then have no opinion, however many of them you collect. @saris1984 supply the accounting perspective: a model with more parameters than observed variances and covariances cannot possibly be identified, but the counting rule is only a necessary condition, and the reversed chain passes it while the direction stays unidentifiable all the same. What can break the tie is design. If $x_1$ was randomized, an arrow into $x_1$ is absurd, because nothing in the system causes a coin flip; the reversed chain dies by design, not by fit. The earthquake study leans on the same logic in weaker form: earthquakes shake houses, opinions do not shake the ground, so the causal order of $X$ is secure. For the mediator-outcome pair, nothing is secure. Distrust may drive protest votes, or a protest identity may feed distrust, and the survey cannot tell.
+This situation has a name. Two models, or two parameter values, are **not identified** when they imply the same distribution of observable data. The data then have no opinion, however many of them you collect. @saris1984 supply the accounting: a model with more parameters than observed variances and covariances cannot possibly be identified. But the counting rule is only a necessary condition, and the reversed chain passes it while the direction stays unidentifiable all the same. Design can break the tie that fit cannot. If $x_1$ was randomized, an arrow into $x_1$ is absurd, because nothing in the system causes a coin flip; the reversed chain dies by design, not by fit. The earthquake study leans on the same logic in weaker form: earthquakes shake houses, and opinions do not shake the ground, so the causal order of $X$ is secure. For the mediator-outcome pair, nothing is secure. Distrust may drive protest votes, or a protest identity may feed distrust, and the survey cannot tell.
 
 ## Failure two: the hidden confounder
 
-Now the second assumption. In a new world, the cause still raises the mediator ($a = 0.5$), but the mediator does nothing whatsoever to the outcome. Instead, an unmeasured variable $U$ drives both mediator and outcome. Think of a randomized encouragement to study ($X$), study time ($M$), exam scores ($Y$), and conscientiousness ($U$).
+Now the second assumption. In a new world, the cause still raises the mediator ($a = 0.5$), but the mediator does nothing whatsoever to the outcome. An unmeasured variable $U$ drives both mediator and outcome instead. Picture a randomized encouragement to study ($X$), study time ($M$), test scores ($Y$), and conscientiousness ($U$).
 
 ```{r}
 #| label: hidden-confounder
@@ -82,7 +84,7 @@ d2 <- data.frame(X, M, Y)
 round(coef(sem("M ~ X \n Y ~ M + X", data = d2)), 2)
 ```
 
-The mediation analysis reports a healthy, highly significant $\hat b$ of about 0.5. A referee would read that studying strongly improves scores and that the encouragement works through study time. Every number is precisely estimated, and every causal number is wrong: in this world, forcing students to study more would achieve nothing, since study time does not cause scores. Conscientiousness merely makes the two travel together inside each arm of the experiment. Notice also the estimated direct effect, pushed spuriously *negative*.^[The books must balance. Randomization keeps the total effect unbiased, so when the confounder inflates the indirect share, the direct share is pushed down to compensate. Analysts then solemnly interpret the negative direct path ("encouragement backfires unless you study"). It is an accounting artifact.] More data would only tighten the intervals around the wrong values.
+The mediation analysis reports a healthy, highly significant $\hat b$ of about 0.5. A referee would read it as evidence that studying strongly improves scores and that the encouragement works through study time. Every number is precisely estimated, and every causal number is wrong: in this world, forcing students to study more would achieve nothing, because study time does not cause scores. Conscientiousness merely makes the two travel together inside each arm of the experiment. Notice the estimated direct effect too, pushed spuriously *negative*.^[The books must balance. Randomization keeps the total effect unbiased, so when the confounder inflates the indirect share, the direct share must shrink to compensate. Analysts then solemnly interpret the negative direct path ("encouragement backfires unless you study"). It is an accounting artifact.] More data would only tighten the intervals around the wrong values.
 
 ::: {.callout-tip icon="false" title="Exercise 3.3"}
 Explain, with a trace through the diagram $X \rightarrow M \leftarrow U \rightarrow Y$, why the regression of $Y$ on $M$ and $X$ produces a nonzero coefficient on $M$ although $M$ does not cause $Y$. Then explain why randomizing $X$ did not protect us.
@@ -94,11 +96,11 @@ $M$ and $Y$ share the common cause $U$: high-$U$ students study more and also sc
 
 ## Trading one assumption for another: instrumental variables
 
-So far, demolition. The constructive turn begins by drawing the confounding into the model. Connect the two disturbances with a curved arrow and give it a parameter, $\rho$, the correlation between everything-else-about-$M$ and everything-else-about-$Y$.
+So far, demolition. The constructive turn begins by drawing the confounding into the model. Connect the two disturbances with a curved arrow and give the arrow a parameter: $\rho$, the correlation between everything-else-about-$M$ and everything-else-about-$Y$.
 
 ![The confounded mediation model. The curved arrow between the disturbances represents unmeasured common causes of mediator and outcome. There is no direct path from X to Y.](diagrams/mediation.png){#fig-iv width="70%" fig-align="center"}
 
-Count, as @saris1984 taught. With the direct path included, the unknowns are $a$, $b$, $c$, and $\rho$: four parameters facing three observable correlations. One short; not identified, and this time the counting rule alone convicts. But suppose the theory can credibly assert that there is *no direct path*: $X$ touches $Y$ only through $M$. Then the parameters are three, and the tracing rules give three equations:
+Count, as @saris1984 taught. With the direct path included, the unknowns are $a$, $b$, $c$, and $\rho$: four parameters facing three observable correlations. One short; not identified, and this time the counting rule alone convicts. But suppose the theory can credibly assert that there is *no direct path*, that $X$ touches $Y$ only through $M$. Then the parameters number three, and the tracing rules give three equations:
 
 $$
 \rho_{XM} = a, \qquad
@@ -106,15 +108,15 @@ $$
 \rho_{XY} = a\,b .
 $$
 
-The middle equation says the naive mediator-outcome correlation is contaminated: it contains $b$ plus a contribution from the correlated disturbances. But look at the other two. Neither contains $\rho$ at all, because no valid trace from $X$ runs through the curved arrow. Divide:
+The middle equation says the naive mediator-outcome correlation is contaminated: it contains $b$ plus a contribution from the correlated disturbances. Now look at the other two. Neither contains $\rho$ at all, because no valid trace from $X$ runs through the curved arrow. Divide:
 
 $$
 b = \frac{\rho_{XY}}{\rho_{XM}} .
 $$
 
-The causal effect of the mediator is identified *without assuming away the confounding*; $\rho$ has become just another parameter the data estimate. Read the trade in plain terms. We swapped the assumption "no mediator-outcome confounding" for the assumption "no direct effect", which in this role is called the **exclusion restriction**. Neither assumption is testable from these data. The swap is struck entirely on theoretical credit, and when the credit is good, $X$ earns a new job title: an **instrumental variable** [@angrist1996]. We are not interested in $X$ for its own sake; we use its randomness as a lever to wiggle $M$ and watch what happens to $Y$.
+The causal effect of the mediator is identified *without assuming away the confounding*; $\rho$ has become just another parameter for the data to estimate. Read the trade in plain terms. We swapped the assumption "no mediator-outcome confounding" for the assumption "no direct effect", which in this role is called the **exclusion restriction**. Neither assumption is testable from these data. The swap is struck entirely on theoretical credit, and when the credit is good, $X$ earns a new job title: an **instrumental variable** [@angrist1996]. We no longer care about $X$ for its own sake; we use its randomness as a lever to wiggle $M$ and watch what happens to $Y$.
 
-Does it work? In the very dataset that fooled the mediation analysis:
+Does the lever work? In the very dataset that fooled the mediation analysis:
 
 ```{r}
 #| label: iv-estimate
@@ -127,17 +129,17 @@ round(coef(sem(model_iv, data = d2))[c("a", "b")], 2)
 round(cov(d2$X, d2$Y) / cov(d2$X, d2$M), 2)   # the same, by hand
 ```
 
-The estimate lands on the truth: studying does nothing, correctly reported, from confounded data. The second line shows that the whole apparatus reduces to one division.
+The estimate lands on the truth: studying does nothing, correctly reported, from confounded data. And the second line shows the whole apparatus collapsing into one division.
 
-The exam-style algebra deserves doing once with pure numbers. Suppose we observe $\rho_{XM} = 0.3$, $\rho_{MY} = 0.7$, and $\rho_{XY} = 0.15$. The instrumental-variable estimate is $b = 0.15/0.3 = 0.5$. The naive estimate, the raw mediator-outcome correlation, is $0.7$. The difference, $0.2$, is the confounding that the naive analysis mistook for causation.
+The algebra deserves doing once with pure numbers. Suppose we observe $\rho_{XM} = 0.3$, $\rho_{MY} = 0.7$, and $\rho_{XY} = 0.15$. The instrumental-variable estimate is $b = 0.15/0.3 = 0.5$. The naive estimate, the raw mediator-outcome correlation, is $0.7$. The difference, $0.2$, is confounding that the naive analysis booked as causation.
 
-Now the fine print, printed large, because each clause is an exam question and a research disaster in waiting.
+Now the fine print, printed large, because every clause below is a research disaster in waiting.
 
-*Relevance.* The recipe divides by $\rho_{XM} = a$. If the instrument barely moves the mediator, the division amplifies noise; if $a = 0$, there is nothing to divide by at all. Weak instruments do not merely widen intervals; they make the estimator erratic and, when the instrument is even slightly invalid, badly biased [@bound1995].
+*Relevance.* The recipe divides by $\rho_{XM} = a$. If the instrument barely moves the mediator, the division amplifies noise; if $a = 0$, there is nothing to divide by at all. Weak instruments do not merely widen intervals; they make the estimator erratic, as @fig-weak-instrument shows, and, when the instrument is even slightly invalid, badly biased [@bound1995].
 
 ```{r}
 #| label: fig-weak-instrument
-#| fig-cap: "Instrumental-variable estimates across 500 simulated studies (n = 1,000, true b = 0). Left: a strong instrument (a = 0.5). Right: a weak one (a = 0.05); same estimator, estimates clipped at plus or minus 10."
+#| fig-cap: "Instrumental-variable estimates across 500 simulated studies (n = 1,000, true b = 0), clipped at plus or minus 10. Both panels share the same scale: the strong-instrument estimates (a = 0.5, left) form the narrow spike at zero, while the weak-instrument estimates (a = 0.05, right) scatter across the whole range."
 one_iv <- function(a) {
   U <- rnorm(1000); X <- rnorm(1000)
   M <- a * X + 0.6 * U + rnorm(1000)
@@ -147,14 +149,17 @@ one_iv <- function(a) {
 set.seed(6)
 strong <- replicate(500, one_iv(0.5))
 weak   <- replicate(500, one_iv(0.05))
+strong_clipped <- pmax(pmin(strong, 10), -10)
+weak_clipped   <- pmax(pmin(weak, 10), -10)
+bins <- seq(-10.5, 10.5, by = 0.5)
 par(mfrow = c(1, 2))
-hist(strong, main = "Strong instrument", xlab = "IV estimate of b",
-     breaks = 30); abline(v = 0, lwd = 2)
-hist(pmax(pmin(weak, 10), -10), main = "Weak instrument",
-     xlab = "IV estimate of b", breaks = 30); abline(v = 0, lwd = 2)
+hist(strong_clipped, main = "Strong instrument", xlab = "IV estimate of b",
+     breaks = bins, xlim = c(-10, 10)); abline(v = 0, lwd = 2)
+hist(weak_clipped, main = "Weak instrument", xlab = "IV estimate of b",
+     breaks = bins, xlim = c(-10, 10)); abline(v = 0, lwd = 2)
 ```
 
-*Exclusion.* The restriction "no direct path" did real work in the algebra: it removed the direct-effect trace from $\rho_{XY}$, leaving only $ab$. If a direct path exists after all, the numerator contains $ab + c$, and the ratio silently delivers a corrupted answer. The data cannot check this, since the model with the direct path was not identified in the first place.
+*Exclusion.* The restriction "no direct path" did real work in the algebra: it removed the direct-effect trace from $\rho_{XY}$, leaving only $ab$. If a direct path exists after all, the numerator contains $ab + c$, and the ratio silently delivers a corrupted answer. The data cannot check this, because the model with the direct path was never identified in the first place.
 
 *Exogeneity.* And $X$ itself must be unconfounded with $Y$, which randomization buys and nature sometimes imitates.
 
@@ -168,19 +173,19 @@ Work through the full identification argument yourself, in the steps the algebra
 
 ## Instruments in the wild
 
-Where do credible instruments come from? Sometimes nature provides one. @hanandita2014 wanted the effect of poverty on mental health in Indonesia, where the naive association is hopelessly confounded (illness causes poverty too, and much causes both). Their instrument is the weather: rainfall anomalies across 440 districts shift household consumption, and a rainfall shock has no business affecting mental health except through the economic hardship it causes. With $N = 577{,}548$, relevance is checkable and strong, exogeneity is argued from meteorology, and the exclusion restriction is the debatable clause, as it always is.^[Is it airtight? Floods can destroy more than income: homes, and occasionally family members, are direct paths from rainfall to distress that bypass consumption. Every instrumental-variable argument has a clause like this, and the paper's robustness checks are aimed at it.] Their estimate: halving consumption raises the probability of mental illness by 0.06, about five times the naive association, which measurement error in consumption had attenuated.
+Where do credible instruments come from? Sometimes nature provides one. @hanandita2014 wanted the effect of poverty on mental health in Indonesia, where the naive association is hopelessly confounded: illness causes poverty too, and much causes both. Their instrument is the weather. Rainfall anomalies across 440 districts shift household consumption, and a rainfall shock has no business affecting mental health except through the economic hardship it causes. With $N = 577{,}548$, relevance is checkable and strong, exogeneity is argued from meteorology, and the exclusion restriction is the debatable clause, as it always is.^[Is it airtight? Floods can destroy more than income: homes, and occasionally family members, are direct paths from rainfall to distress that bypass consumption. Every instrumental-variable argument has a clause like this, and the paper's robustness checks are aimed at it.] Their estimate: halving consumption raises the probability of mental illness by 0.06, about five times the naive association, which measurement error in consumption had attenuated.
 
-Sometimes we build the instrument. In an **encouragement design**, we randomize not the behavior itself but an invitation to it, then use the randomized invitation as an instrument for the behavior [@holland1988]. The same logic runs any trial with imperfect compliance: assignment is randomized, treatment received is not, and assignment instruments treatment received. In the JOBS II trial for unemployed workers, only some of those assigned to job-search workshops attended; assignment served as the instrument for participation [@tingley2014].
+Sometimes we build the instrument. An **encouragement design** randomizes not the behavior itself but an invitation to it, then uses the randomized invitation as an instrument for the behavior [@holland1988]. The same logic runs any trial with imperfect compliance: assignment is randomized, treatment received is not, and assignment instruments treatment received. In the JOBS II trial for unemployed workers, only some of those assigned to job-search workshops attended, so assignment served as the instrument for participation [@tingley2014].
 
 And sometimes biology randomizes. **Mendelian randomization** uses genetic variants as instruments: a variant that raises alcohol consumption is dealt out at conception, plausibly independent of later confounders, and instruments the effect of drinking on, say, esophageal cancer [@daveysmith2003]. The exclusion worry here has its own name, "pleiotropy", one gene working through many pathways, and modern practice is largely a battery of partial defenses against it [@davies2018].
 
-Each example inherits the fine print in local dialect, and the criticisms of instrumental variables are the fine print grown up. Economists learned that celebrated instruments can be weak, with the quarter-of-birth instrument for schooling as the canonical case [@bound1995]. A subtler point is that even a valid instrument answers a narrower question than the one usually asked: it estimates the effect among "compliers", the units the instrument actually moved, and critics like @deaton2010 ask whether that local effect was the question anyone posed. Mediation analysis in psychology has its own bill of indictment: mediators measured minutes before outcomes, assumptions unstated, and a literature of causal-sounding conclusions resting on the naive $b$ path [@bullock2010; @rohrer2022]. The remedy is to keep the how-question but treat the mediation model as this book treats every model: as a set of assumptions waiting for a design.
+Each of these designs inherits the fine print in a local dialect, and the criticisms of instrumental variables are the fine print grown up. Economists learned that celebrated instruments can be weak; the quarter-of-birth instrument for schooling is the canonical case [@bound1995]. A subtler criticism: even a valid instrument answers a narrower question than the one usually asked, because it estimates the effect among "compliers", the units the instrument actually moved, and critics like @deaton2010 ask whether that local effect was the question anyone posed. Mediation analysis in psychology has its own bill of indictment: mediators measured minutes before outcomes, assumptions unstated, and a literature of causal-sounding conclusions resting on the naive $b$ path [@bullock2010; @rohrer2022]. The remedy is to keep the how-question but treat the mediation model as this book treats every model: as a set of assumptions waiting for a design.
 
 ## Modern mediation analysis, briefly
 
-The framework above is linear. Real mediation problems bring binary outcomes, interactions, and nonlinearity, and for those the modern literature defines the effects counterfactually before estimating anything [@vanderweele2016]. Two definitions are worth knowing because they are the workhorses of applied papers. The **natural direct effect** (NDE) compares the outcome under treatment versus control while the mediator is held at the value it would naturally take *under control*: the effect that does not run through the mediator. The **natural indirect effect** (NIE) holds treatment fixed and compares the outcome under the mediator value it would take with treatment versus without: the effect that does run through the mediator. The two add up to the total effect by construction, a decomposition as tidy as the linear one, and in the linear model without interactions the NIE is exactly $ab$. With interactions or a logistic outcome the classic formulas and the counterfactual ones part ways, and the counterfactual ones are right.
+The framework above is linear. Real mediation problems bring binary outcomes, interactions, and nonlinearity, and for those the modern literature defines the effects counterfactually before estimating anything [@vanderweele2016]. Two definitions are worth knowing, because applied papers run on them. The **natural direct effect** (NDE) compares the outcome under treatment versus control while the mediator is held at the value it would naturally take *under control*: the effect that does not run through the mediator. The **natural indirect effect** (NIE) holds treatment fixed and compares the outcome under the mediator value it would take with treatment versus without: the effect that does run through the mediator. The two add up to the total effect by construction, a decomposition as tidy as the linear one, and in the linear model without interactions the NIE is exactly $ab$. With interactions or a logistic outcome the classic formulas and the counterfactual ones part ways, and the counterfactual ones are right.
 
-The R package `mediation` computes these effects by simulation for a wide menu of models [@tingley2014], under the same no-confounding assumptions we met above (there called "sequential ignorability"). A classic demonstration uses a framing experiment: participants randomized to an anxiety-inducing immigration news story, with anxiety as mediator and sending an anti-immigration letter to Congress as the binary outcome [@brader2008].
+The R package `mediation` computes these effects by simulation for a wide menu of models [@tingley2014], under the same no-confounding assumptions we met above, there called "sequential ignorability". A classic demonstration uses a framing experiment: participants were randomized to an anxiety-inducing immigration news story, with anxiety as the mediator and sending an anti-immigration letter to Congress as the binary outcome [@brader2008].
 
 ```{r}
 #| label: brader
@@ -197,13 +202,13 @@ round(summary(med.out)$d.avg, 3)   # average causal mediation effect (NIE)
 round(summary(med.out)$z.avg, 3)   # average direct effect (NDE)
 ```
 
-The first model explains the mediator, the second the outcome; `mediate()` combines them into the average causal mediation effect (the NIE, here about 0.08 and significant) and the average direct effect (small and not significant). The treatment raised the probability of writing to Congress by about eight percentage points *through anxiety*. Since the identifying assumptions are untestable, careful papers add a sensitivity analysis, asking how strong an unmeasured mediator-outcome confounder would have to be to explain the result away; the package computes this too, and current reporting guidelines ask for exactly such statements.
+The first model explains the mediator, the second the outcome; `mediate()` combines them into the average causal mediation effect (the NIE, here about 0.08 and significant) and the average direct effect (small and not significant). The treatment raised the probability of writing to Congress by about eight percentage points *through anxiety*. Because the identifying assumptions are untestable, careful papers add a sensitivity analysis, which asks how strong an unmeasured mediator-outcome confounder would have to be to explain the result away; the package computes this too, and current reporting guidelines ask for exactly such statements.
 
 A closing word on standard errors, because the mediation literature is oddly obsessed with them. The indirect effect $ab$ is a product of two estimates, and lavaan's `:=` operator gives its standard error by the delta method in one line. Bootstrapping gives nearly the same answer at ordinary sample sizes.^[The product of two normal estimates is not itself normal, which matters near zero and in small samples [@mackinnon2007]; the bootstrap handles this and is a fine tool. What it cannot do is repair identification: no resampling scheme converts the naive $b$ into a causal effect. The field's energy is better spent on the assumptions than on the intervals around a possibly meaningless number.]
 
 ## Reading the chapter backwards
 
-Identification is a property of the question-design pair, not of the estimator, the sample size, or the software. The mediation story taught each general lesson in miniature. Two opposite models fit identically, so the data cannot orient an edge the design did not orient. A hidden confounder made every estimate precise and wrong, because assumptions the design does not buy fail silently. One untestable assumption, exclusion, bought back identification: assumptions are currency, and the design sets the exchange rate. And the instrument's own fine print moved the limits rather than abolishing them. When you meet an analysis, any analysis, ask the fifth checklist question of @sec-rq-to-interpretation with maximal severity: which feature of the design put the answer to this question into the data at all? If none did, no estimator will get it out. Mediation analysis is an if-then statement: if the assumptions hold, then this is the mediation process. Papers that claim mediation because the model said so are walking in a circle.
+Identification is a property of the question-design pair. It does not live in the estimator, and neither sample size nor software can buy it. The mediation story taught each general lesson in miniature. Two opposite models fit identically, so data cannot orient an edge the design did not orient. A hidden confounder made every estimate precise and wrong, because assumptions the design does not buy fail silently. One untestable assumption, exclusion, bought identification back: assumptions are currency, and the design sets the exchange rate. And the instrument's own fine print moved the limits rather than abolishing them. When you meet an analysis, any analysis, ask the fifth checklist question of @sec-rq-to-interpretation with maximal severity: which feature of the design put the answer to this question into the data at all? If none did, no estimator will get it out. Mediation analysis is an if-then statement: if the assumptions hold, then this is the mediation process. Papers that claim mediation because the model said so are walking in a circle.
 
 ## Test yourself {.unnumbered}
 
@@ -230,7 +235,7 @@ A published paper reports, from a cross-sectional survey of 2,000 adolescents: "
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 3.B"}
-(a) Correct causal order (use $\rightarrow$ sleep $\rightarrow$ symptoms): unsupported; all three variables were measured at once, and depressed adolescents may sleep badly and scroll more. No use-sleep confounding and no sleep-symptom confounding: unsupported; family conflict, for example, plausibly causes late nights, poor sleep, and distress. Linearity/additivity: conventional. (b) Let family conflict drive social media use, poor sleep, and symptoms, with no arrow from sleep to symptoms at all: the three correlations can reproduce the published coefficients, yet improving sleep changes nothing because sleep never caused the symptoms. (c) Very little. The bootstrap gives a valid interval around $ab$, but the number it brackets is causal only under the assumptions in (a); a precise confidence interval around an unidentified quantity is precision about the wrong thing.
+(a) Correct causal order (use $\rightarrow$ sleep $\rightarrow$ symptoms): unsupported; all three variables were measured at once, and depressed adolescents may sleep badly and scroll more. No use-sleep confounding and no sleep-symptom confounding: unsupported; family conflict, say, plausibly causes late nights, poor sleep, and distress. Linearity/additivity: conventional. (b) Let family conflict drive social media use, poor sleep, and symptoms, with no arrow from sleep to symptoms at all: the three correlations can reproduce the published coefficients, yet improving sleep changes nothing because sleep never caused the symptoms. (c) Very little. The bootstrap gives a valid interval around $ab$, but the number it brackets is causal only under the assumptions in (a); a precise confidence interval around an unidentified quantity is precision about the wrong thing.
 :::
 
 ::: {.callout-tip icon="false" title="Exercise 3.C"}

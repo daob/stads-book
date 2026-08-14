@@ -1,0 +1,19 @@
+flowchart LR
+  subgraph a[" association "]
+    direction LR
+    X1[x] <-.-> Y1[y]
+  end
+  subgraph d[" direct effect "]
+    direction LR
+    X2[x] --> Y2[y]
+  end
+  subgraph i[" indirect effect "]
+    direction LR
+    X3[x] --> M3[m] --> Y3[y]
+  end
+  subgraph r[" reciprocal effects "]
+    direction LR
+    X4[x] --> Y4[y]
+    Y4 --> X4
+  end
+  a ~~~ d ~~~ i ~~~ r

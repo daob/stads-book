@@ -1,7 +1,7 @@
 # Preface {.unnumbered}
 
 ::: {.callout-warning}
-**Draft.** This is an early, LLM-generated draft of the first five chapters, produced from an outline by Daniel Oberski and from extraction notes on the source literature (see `sources/extracts/` and `plans/` in the repository). Everything in it is provisional. The git history records what was written by the author and what was generated.
+**Draft 0.4.** This is an early, LLM-generated draft of the first five chapters, produced from an outline by Daniel Oberski and from extraction notes on the source literature (see `sources/extracts/` and `plans/` in the repository). Everything in it is provisional. The git history records what was written by the author and what was generated.
 :::
 
 Most statistics courses teach methods one at a time: here is the *t*-test, here is regression, here is ANOVA. You leave with a well-stocked toolbox and no manual. Which tool answers which question, and when should anyone believe the answer? This book starts from the other end. Every empirical study, from a survey to a transformer, follows the same basic logic:

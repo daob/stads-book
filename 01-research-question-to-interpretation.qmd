@@ -1,99 +1,95 @@
 # From research question to interpretation {#sec-rq-to-interpretation}
 
-In October 1967, the British government began a crackdown on drunk driving: the police could now stop drivers and test their breath.^[The study of this crackdown, by Ross, Campbell, and Glass [-@breathalyser1970], became a classic of research methodology; @shadish2002 use it as a showcase. The details here follow their account.] In the months that followed, traffic casualties fell. Ministers were pleased, newspapers reported success, and you can feel the question forming already: did the crackdown save lives, or did the numbers just happen to go down?
+On election day 2010, sixty-one million Americans logged into Facebook and, without noticing, took part in an experiment. Most saw a banner urging them to vote, along with the faces of friends who had already voted; a smaller group saw the banner without the faces; a control group saw nothing. The researchers then matched users to public voting records. The message with faces produced about 340,000 extra real-world votes, and a friend's face turned out to matter more than the message itself [@bond2012].
 
-That gap, between a number that moved and a question that got answered, is the subject of this chapter. Every empirical study is an argument that some numbers computed from data answer a question about the world. Once you can see the structure of that argument, you can read any study, from a clinical trial to a machine learning benchmark, and ask the same few questions of it. You will also be able to design studies whose arguments hold up.
+Why believe any of that? Not because the dataset was enormous. Sixty-one million observations of people who *chose* to see political messages would prove nothing about influence, since the kind of person who seeks out political content votes anyway. The finding stands because of one design decision: an algorithm assigned the banners at random. Everything in this chapter unfolds from that observation. Data never speak for themselves; a study answers its question through a chain of reasoning, and the strength of the chain decides whether numbers become knowledge.
 
-## The chain from question to answer
-
-Here is the structure in one picture:
+## The chain: question, design, model
 
 ![The chain from research question to interpretation. The design makes the assumptions plausible; the assumptions define the model; the model turns data into results; and the results answer the question only as far as the assumptions hold.](diagrams/chain.png){#fig-chain width="45%" fig-align="center"}
 
-In words: a **research question** motivates a **research design**, a plan for which data to collect and how. The design does something subtle and crucial: it makes a set of **assumptions** plausible. Those assumptions, taken together, are the **model**. Fitting the model to the data gives **results**: estimates, intervals, predictions. And the results answer the research question *to the extent that the assumptions hold*.
+@fig-chain shows the structure. A **research question** motivates a **research design**: a plan for which data to collect and how. The design has one job, and it is subtler than "gathering data". The design makes a set of **assumptions** plausible. Those assumptions, taken together, form the **model**. Fitting the model to the data yields **results**: estimates, intervals, predictions. And the results answer the research question *to the extent that the assumptions hold*.
 
-That last clause is the point of this chapter, so let me say it again in different words. The numbers that come out of an analysis are just numbers. They become an answer to a question about the world only through the assumptions, and the assumptions are believable only because of the design. A regression coefficient from a randomized experiment and the numerically identical coefficient from a volunteer web survey are different objects, because different assumptions stand behind them.
+The last clause carries all the weight, so consider it once more. Numbers that come out of an analysis are just numbers. They become an answer to a question about the world only through the assumptions, and the assumptions are believable only because of the design. In the Facebook experiment, comparing voting rates across banner groups estimates the banner's effect *if* the groups were alike before the banners appeared, and random assignment made that assumption plausible. A regression coefficient from a randomized experiment and a numerically identical coefficient from a self-selected sample are different objects: different assumptions stand behind them.
 
-The Breathalyzer researchers understood this. They did not stop at observing that casualties fell; they asked *when* the casualties fell. If the crackdown did the work, casualties should drop most during weekend nights, when the pubs empty onto the roads, and hardly at all on weekday mornings. That is the pattern they found. Series on miles driven and on alcohol sales ruled out the duller explanations, such as people simply driving less. The number moved, and it moved in the specific pattern the causal story demanded. The design did the convincing; the arithmetic only kept score.
+This chain also describes a job, the one this book trains you for. The methodologist formulates research questions worth asking; evaluates the available designs and data against the assumptions the model needs; proposes new data collection when the needed assumptions have no support; carries out the modeling, with estimates and their uncertainty; and judges how the inevitable violations of assumptions would change the conclusions. Notice what the list omits. No step reads "apply the standard method for this type of data". Methods enter only as consequences of assumptions.
+
+Research questions themselves come in kinds, and the kind matters because each demands different things from design and model [@shmueli2010; @hofman2021]. A **descriptive** question asks what the world looks like: how many students drop out, how much incomes vary. An **explanatory** question, or plainly a causal one, asks what would happen if we changed something; its tell-tale sign is a hidden "if we intervened", and its currency is the comparison between what happened and what would have happened otherwise, the "counterfactual" [@shadish2002]. A **predictive** question asks about units we have not observed: which patients will miss tomorrow's appointments. The same fitted equation can serve any of the three, so when reading a study, first establish which question is on the table. Prediction gets a chapter of its own (@sec-explanation-prediction); until then our questions are descriptive and, mostly, explanatory.
 
 ::: {.callout-tip icon="false" title="Exercise 1.1"}
-A newspaper reports: "People who drink moderate amounts of red wine live longer, a study of 50,000 adults finds." Write down (a) the research question the study presumably wants to answer, and (b) one assumption that must hold for the finding to answer that question.
+Classify as descriptive, explanatory, or predictive: (a) Does mandatory quarantine reduce influenza transmission? (b) How many students drop out of secondary school in Utrecht each year? (c) Which loan applicants will default? (d) Do students who use AI tools learn less? (e) Did the Facebook banner increase turnout among users who never post about politics?
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 1.1"}
-(a) Presumably: does moderate red wine consumption cause longer life? Nobody changes their behavior over a mere association. (b) That drinkers and non-drinkers are comparable in every other respect that affects longevity: income, health, social life, and so on. Nothing about observing 50,000 adults makes that plausible, since wealthier and healthier people drink wine at different rates than others. This assumption of "no confounding" will follow us through the whole book.
+(a) Explanatory. (b) Descriptive. (c) Predictive. (d) Explanatory; the causal claim hides in "because of the tools", and a mere association between tool use and learning would be descriptive. (e) Explanatory, asked within a subgroup; the experiment answers it as long as assignment was random within that subgroup too.
 :::
 
-## Research questions
+## The elements of a verbal theory
 
-Research questions come in a few recognizably different kinds, and the difference matters because each kind demands different things from the design and the model [@shmueli2010; @hofman2021].
+Research questions arrive wrapped in theories: verbal accounts of how some corner of the world works. Before any statistics can happen, the theory must be taken apart into standard elements. The dissection looks trivial. It is not, and everything downstream inherits its quality.
 
-A **descriptive** question asks what the world looks like. What proportion of Dutch adults had depressive symptoms last year? How much does income vary between neighborhoods? Description does not ask why.
+**Units of analysis.** The things the theory makes claims about: persons, families, hospitals, countries, occasions. Units hide in plain sight. "Neighborhood trust reduces crime" is a claim about neighborhoods, not people, and analyzing it at the wrong level produces answers to a question nobody asked.
 
-An **explanatory**, or plainly causal, question asks what would happen if we changed something. Does exercise reduce depressive symptoms? Did the Breathalyzer crackdown reduce casualties? The tell-tale sign is a hidden "if we intervened". Here we should be precise about what an "effect" even is. An effect is a comparison between what did happen and what would have happened without the cause [@shadish2002]. That second world is a "counterfactual": contrary to fact, and unobservable in principle. We never get to see October 1967 without the crackdown. A central task of all cause-probing research is to construct a believable stand-in for that missing world and to understand exactly how the stand-in differs from the real thing.
+**Variables.** The properties of units that vary. A constant explains nothing: "being human" cannot account for why some people are depressed. Two labels recur throughout this book. Variables the theory sets out to explain are **endogenous**; variables it takes as given are **exogenous**.
 
-A **predictive** question asks what will happen, or what is the case, for units we have not observed. Which patients will miss their appointment next week? Is this email spam? Prediction does not ask why either. A variable can predict superbly without causing anything; ashtrays predict lung cancer.
+**Relationships.** The claims connecting variables, and here vocabulary pays off immediately, because verbal theories mix two kinds of claims that demand different evidence. An **association** says that when one variable is high, the other tends to be high (a positive association) or low (a negative one). Association is symmetric: "wine drinkers live longer" and "long-lived people drink more wine" say the same thing. An **effect** says that changing one variable would change the other, and effects have direction. They come in shapes: a *direct* effect, an *indirect* effect running through an intermediate variable, and *reciprocal* effects where each variable influences the other. @fig-relationships draws the inventory.
 
-The three kinds are easy to confuse because the same technique can serve all three. A fitted regression equation can describe an association, estimate an effect, or forecast an outcome, depending on how it is used and what assumptions back it up [@hofman2021]. So the most useful habit is also the simplest: when you read a study, first identify which kind of question is being asked. Chapter 5 (@sec-explanation-prediction) returns to the boundary between explanation and prediction at length; until then, our questions are explanatory.
+![Four kinds of relationships between variables. A double-headed dashed arc claims association only; single-headed arrows claim effects.](diagrams/relationships.png){#fig-relationships width="100%" fig-align="center"}
+
+**Functional form.** Verbal theories also whisper claims about *how* effects operate, and two are worth extracting explicitly. Is each effect **linear**, the same change in the outcome for each unit change in the cause? And are the effects **additive**, each cause contributing its share regardless of the others' levels? A theory that says "provocation leads to aggression mainly in people who believe aggression is normal" denies additivity: one variable's effect depends on another's level. We call that a *conditional* relationship and draw it as an arrow pointing at another arrow.
+
+Watch the dissection on a real theory, one of the most cited in social science, the theory of planned behavior [@ajzen1991]:
+
+> People perform a behavior when they intend to; the stronger the intention, the more likely the performance. Intending is not enough, though: carrying out the behavior also requires actual control over it, such as time, money, and skill. People's perception of their control influences their intentions, and it also predicts the behavior directly.
+
+Units: individual people. Variables: intention, actual control, perceived control (all exogenous or endogenous as the arrows dictate), and the behavior. Effects: intention affects behavior; perceived control affects intention; perceived control affects behavior directly. And one claim is conditional: intention produces behavior *only when actual control is present*. Motivation without means achieves nothing, so the theory denies additivity, in words a careless reader would skim right past.
+
+A **path diagram** assembles the elements into one picture: boxes for variables, single-headed arrows for claimed effects, and curved double-headed arcs for associations the theory allows without explaining. One habit belongs in your hands from today: when exogenous variables could plausibly be associated, connect them with a curved arc unless the theory claims otherwise. Omitting these arcs is the most common error in diagram construction, and @sec-theory-to-glm shows that the arcs change the numbers.
+
+![The theory of planned behavior as a path diagram. Straight arrows claim effects; the dashed arrow onto an arrow is the conditional claim (intention yields behavior only given actual control).](diagrams/tpb.png){#fig-tpb width="80%" fig-align="center"}
 
 ::: {.callout-tip icon="false" title="Exercise 1.2"}
-Classify as descriptive, explanatory, or predictive: (a) Does mandatory quarantine reduce influenza transmission? (b) How many students drop out of secondary school in Utrecht each year? (c) Which loan applicants will default? (d) Do students who use AI tools learn less? (e) Among patients presenting with chest pain, who is having a heart attack?
+Dissect this micro-theory: "In neighborhoods where residents trust one another, people intervene when teenagers misbehave, and this informal social control reduces crime. Trust is higher where residential turnover is lower." Identify the units, the variables, and each relationship with its type (association or effect; direct, indirect, reciprocal, or conditional). Sketch the path diagram.
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 1.2"}
-(a) Explanatory. (b) Descriptive. (c) Predictive. (d) Explanatory; the causal claim hides in "learn less *because of the tools*". An association between tool use and learning would be merely descriptive. (e) Predictive, or more precisely diagnostic: we want to know a current unknown state, not the consequence of an intervention.
+Units: neighborhoods; every variable is a neighborhood property. Variables: residential turnover (exogenous), trust, informal social control, crime. All claims are effects, forming a chain: turnover lowers trust; trust raises informal control; informal control lowers crime. Trust therefore has an indirect effect on crime. The diagram is a four-box chain with three arrows; with only one exogenous variable, no curved arcs are needed. Criminologists know this theory as "collective efficacy".
 :::
 
-## The elements of a theory
-
-Research questions rarely arrive alone. They come wrapped in a theory: a verbal account of how some corner of the world works. Before any statistics can happen, the theory has to be taken apart into standard elements. This dissection looks trivial and is not; done sloppily, everything downstream inherits the sloppiness.
-
-The elements are these. The **units of analysis** are the things the theory makes claims about: persons, families, schools, countries, or occasions. The **variables** are the properties of those units that vary: age varies over persons, unemployment over countries. A constant cannot explain a variable, so "being human" explains nothing about why some people are depressed. The **relationships** are the claims connecting the variables, and they deserve some vocabulary of their own [@saris1984]. A relationship can be *direct* (aggression affects wellbeing), *indirect* (aggression affects wellbeing through sleep), or *reciprocal* (two variables affect each other). And a variable can change the strength of a relationship between two others, which we call a *conditional* relationship, drawn as an arrow pointing at another arrow.
-
-Let me dissect a real theory, one of the most cited in all of social science: the theory of planned behavior [@ajzen1991]. In compressed form:
-
-> People perform a behavior when they intend to. Intentions capture motivation; the stronger the intention, the more likely the performance. But intending is not enough: carrying out the behavior also requires actual control over it, such as time, money, skills, and the cooperation of others. People's *perception* of how much control they have influences their intentions, and it also predicts the behavior itself.
-
-The units are individual people. The variables are intention, actual behavioral control, perceived behavioral control, and the behavior. The relationships: intention affects behavior; perceived control affects intention; perceived control also affects behavior directly. And one relationship is conditional: intention produces behavior *only when actual control is present*. Motivation without means achieves nothing, and means without motivation achieves nothing either. The theory claims the two factors work together, which is a claim about their joint operation, and a claim we will learn to call "non-additivity" in @sec-theory-to-glm.
-
-Once dissected, the theory fits in a picture. A **path diagram** puts each variable in a box and each direct causal claim on an arrow. Variables the theory does not explain, the "exogenous" ones, may be related for reasons outside the theory, and we draw a curved double-headed arrow between them to say so without explaining why.^[Drawing those curved arrows is a habit worth acquiring now. When you construct a diagram from a theory, connect every pair of exogenous variables with a curved arrow unless the theory explicitly claims they are unrelated. Forgetting them is the single most common error in this task.]
-
-![The theory of planned behavior as a path diagram. Straight arrows are causal claims; the arrow pointing at an arrow is the conditional relationship (intention produces behavior only given actual control); the curved arrow is a correlation the theory does not explain.](diagrams/tpb.png){#fig-tpb width="80%" fig-align="center"}
-
 ::: {.callout-tip icon="false" title="Exercise 1.3"}
-Dissect this micro-theory: "In neighborhoods where residents trust one another, people intervene when they see teenagers misbehave, and this informal social control reduces crime. Trust is higher in neighborhoods with less residential turnover." Identify the units, the variables, and each relationship with its type; then sketch the path diagram.
+For each claim, association or effect? (a) "Children who sleep less use screens more." (b) "Screen use displaces sleep." (c) "Poor sleep and heavy screen use reinforce each other over time." Draw the mini-diagram for each.
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 1.3"}
-The units are neighborhoods, not people: every variable in the theory is a property of a neighborhood. Variables: residential turnover, trust, informal social control (intervening), and crime. Relationships, all direct claims in a chain: turnover lowers trust; trust raises informal control; informal control lowers crime. Trust therefore affects crime *indirectly*. The diagram is a four-box chain with three arrows; turnover is the only exogenous variable, so no curved arrows are needed. (This is the core of a famous theory in criminology, "collective efficacy".)
+(a) Association: the sentence survives swapping its halves; draw a dashed double-headed arc. (b) A direct effect of screens on sleep: one-headed arrow. (c) Reciprocal effects: arrows both ways. The three claims need three different designs to support them, which is why the vocabulary matters.
 :::
 
-## What can go wrong: threats to validity
+## Threats to validity
 
-An inference from a study can fail in many ways, and methodologists have spent decades cataloguing them. The catalogue of @shadish2002 sorts the failures, which they call "threats to validity", into four families. It helps to meet the whole map once, briefly, before zooming in.
+An inference can go wrong in many ways, and @shadish2002 spent careers cataloguing them as "threats to validity", sorted into four families.
 
-**Statistical conclusion validity** concerns the inference that two variables covary at all. Its main threats are low statistical power (too little data to detect what is there) and its mirror image, fishing through many tests until something "significant" turns up. Fishing gets its own section below.
+**Statistical conclusion validity** concerns the bare inference that two variables covary. Its enemies are low power, too little data to detect what is there, and fishing, searching until something "significant" appears; fishing returns in the final section.
 
-**Internal validity** concerns the inference that the covariation is causal: that A caused B in this study, for these units. Its threats are the classic villains, each a rival explanation for an observed difference:
+**Internal validity** concerns the inference that covariation reflects cause. Each threat is a rival explanation for an observed difference, and the classic villains deserve to be known by name:
 
-- *Ambiguous temporal precedence.* It is unclear which variable came first, so cause and effect may be swapped.
-- *Selection.* The groups being compared differed to begin with, in ways that also affect the outcome.
-- *History.* Something else happened at the same time as the treatment.
-- *Maturation.* People were already changing: growing older, healing, learning. They would have changed without treatment.
-- *Regression artifact.* Units selected for extreme scores drift back toward the middle when measured again.^[This one artifact explains a remarkable share of everyday miracles. Patients who seek therapy at their lowest point improve. Last season's worst football team does better after firing its coach. Extremes tend not to repeat, treatment or no treatment.]
-- *Attrition.* People drop out of the study, unevenly across groups.
-- *Testing.* Taking a measurement changes the next measurement, as when people learn the test.
-- *Instrumentation.* The measuring instrument changes over time, as when a police force redefines how it records crime.
+- *Ambiguous temporal precedence*: which variable came first is unclear, so cause and effect may be swapped.
+- *Selection*: the compared groups differed from the start in ways that also affect the outcome.
+- *History*: something else happened at the same time as the treatment.
+- *Maturation*: people were already changing (healing, aging, learning) and would have changed anyway.
+- *Regression artifact*: units selected for extreme scores drift back toward the middle on remeasurement.^[This one artifact explains a remarkable share of everyday miracles. Patients who enter therapy at their lowest point improve. The football team that fires its coach after a disastrous season does better. Extremes tend not to repeat, treatment or none.]
+- *Attrition*: people drop out, unevenly across groups.
+- *Testing*: being measured changes the next measurement.
+- *Instrumentation*: the measuring instrument drifts, as when a police force redefines how it records crime.
 
-**Construct validity** concerns the inference from the study's concrete operations to the theory's abstract terms. You manipulated "a 20-minute mindfulness app session" and measured "a seven-item mood scale"; the paper's title says "mindfulness improves wellbeing". Whether the operations deserve those labels is a separate argument, and threats include reactivity (participants respond to being studied) and experimenter expectancy.
+**Construct validity** concerns the leap from operations to concepts. You manipulated a twenty-minute app session and measured a seven-item mood scale; the title claims "mindfulness improves wellbeing". Whether the operations deserve the labels is its own argument, threatened by reactivity (people respond to being studied) and experimenter expectancy, among others.
 
-**External validity** concerns the inference that the causal relationship holds beyond this study: for other people, treatments, outcomes, and settings. The threats are all of the form "the effect depends on something this study held fixed", as when a psychotherapy effect demonstrated on student volunteers fails to appear in older patients in routine care.
+**External validity** concerns whether the causal relationship holds beyond this study, for other people, treatments, outcomes, and settings. Every threat has the same form: the effect depends on something this study held fixed, as when a therapy tested on student volunteers fails in older patients in routine care.
 
-Treat the threat lists as a repertoire of rival explanations rather than a checklist to recite; their practical use is the question: *which of these rivals does my design silence, and which are left talking?* That question brings us to designs.
+Treat these lists as a repertoire of rival explanations rather than a liturgy. Their working question is always: which rivals does this design silence, and which are left talking?
 
-## Designs, and the threats they remove
+## Designs, with their equations
 
-A **research design** is a plan for producing data: whom to measure, what to measure, when, and who gets exposed to what. Campbell and his successors developed a compact notation for designs, which I will modernize slightly. Each row is a group; time runs left to right; $O$ is an observation (a measurement), $X$ is exposure to the treatment, and $R$ marks groups formed by random assignment. The value of a design lies in which threats it removes. Its analysis is a regression equation whose coefficients answer the research question, given the assumptions the design supports. Walking through the catalogue shows the logic.
+A **research design** is a plan for producing data: whom to measure, when, and above all who becomes exposed to what, and how that was decided. Campbell's tradition writes designs in a compact notation that repays learning. Each row is a group, time runs left to right, $O$ is an observation, $X$ is exposure to treatment, and $R$ marks randomized assignment. For each design below, the notation comes first, then the threats it removes, then the regression that analyzes it, because a design without an analysis is a promise without a payoff.
 
 **The randomized experiment.**
 
@@ -102,24 +98,13 @@ A **research design** is a plan for producing data: whom to measure, what to mea
 | $R$ | $X$ | $O$ |
 | $R$ | | $O$ |
 
-Units are assigned to conditions by a coin flip and measured afterwards. Randomization removes selection in one stroke: it "equates groups on expectations of every variable before treatment, whether observed or not" [@shadish2002]. Not on the observed values, on expectations; the groups differ only by chance, including on everything nobody thought to measure. Shared history and maturation are absorbed by the comparison group, since whatever else was going on was going on for both. The analysis is the simplest regression there is,
-
+The coin flip removes *selection* in one stroke: randomization "equates groups on expectations of every variable before treatment, whether observed or not" [@shadish2002]. On expectations, mind, and on everything, including whatever nobody thought to measure. The comparison group absorbs shared history and maturation. The analysis is the simplest regression there is,
 $$
 y = \beta_0 + \beta_1 T + \varepsilon,
 $$
+with $T = 1$ for the treated; under the design's assumptions $\hat\beta_1$ estimates the average effect. The Facebook study is this design at planetary scale, with three rows instead of two. What randomization does not remove: attrition after assignment, and every construct and external validity threat. A banner effect among 2010 Facebook users is a fact about that platform, that year.
 
-where $T$ is 1 for treated units and 0 for controls. Under the design's assumptions, $\hat\beta_1$ estimates the average effect. What remains on the table: attrition (people dropping out after randomization brings selection back in through the side door), and every construct and external validity threat.
-
-**The cross-over experiment.**
-
-| | | | | |
-|---|---|---|---|---|
-| $R$ | $X_A$ | $O$ | $X_B$ | $O$ |
-| $R$ | $X_B$ | $O$ | $X_A$ | $O$ |
-
-Each unit receives both conditions, in randomized order, and serves as its own control: stable differences between persons vanish from the comparison entirely. The price is a new assumption, that the first condition does not linger into the second (no "carry-over"). The analysis compares each person's two outcomes, which is a regression of the within-person difference on condition order.
-
-**The matched case-control study.** Sampling starts from the outcome: cases who have the disease and controls who do not, matched on characteristics like age and sex, looking back at exposures. The design *constructs* comparability instead of randomizing it, and the analysis is a logistic regression (@sec-theory-to-glm) of case status on exposure. If you believe the matching did its job, this simple analysis answers the research question. That "if" is doing serious work: matching equates the groups only on the variables that were matched, whereas the coin flip equates them on everything. The design is genuinely useful, especially for rare diseases, and genuinely less convincing.
+**The natural experiment.** Sometimes bureaucracy flips the coin for us. During the Vietnam War, draft priority was assigned by a televised lottery over birth dates. @hearst1986 realized decades later that the lottery had randomized, in effect, an entire life exposure: men with unlucky numbers were more likely to have served. Comparing later mortality by lottery number, they found elevated suicide and motor-vehicle deaths among draft-eligible men. Notice the two questions such a design can answer. Comparing by *lottery number* estimates the effect of eligibility, the "intention-to-treat" effect, and inherits the lottery's full credibility. Estimating the effect of *actual service* takes more, since not all eligible men served; the repair, using the lottery as a lever on service, is the instrumental-variable idea of @sec-identification. The design's weak point is the exclusion of other pathways: a lottery number that changed lives in ways other than service (some men stayed in university to avoid the draft) muddies the comparison.
 
 **Two groups, before and after.**
 
@@ -128,33 +113,32 @@ Each unit receives both conditions, in randomized order, and serves as its own c
 | | $O$ | $X$ | $O$ |
 | | $O$ | | $O$ |
 
-No randomization: one group happens to become exposed (to a policy, say) and another does not, but both are measured before and after. Worried that the groups differ to begin with? The pre-measurement shows the initial difference, and the analysis compares the *changes*. Economists call this comparison of changes "difference-in-differences", and its regression form is
-
+No randomization: one group happens to become exposed, say to a policy, and both groups are measured before and after. The pre-measurement reveals the starting difference, and the analysis compares *changes* rather than levels, a comparison economists call **difference-in-differences**:
 $$
-y = \beta_0 + \beta_1 G + \beta_2 \, \text{Post} + \beta_3 (G \times \text{Post}) + \varepsilon,
+y = \beta_0 + \beta_1 G + \beta_2\,\text{Post} + \beta_3\,(G \times \text{Post}) + \varepsilon .
 $$
+$\hat\beta_3$, the extra change in the exposed group, estimates the effect under one assumption: without treatment the two groups would have changed in parallel. Stable selection differences cancel out. What survives is selection interacting with change, as when groups were already on different trends, or a group adopts a policy right after an untypically bad year and rebounds regardless (a regression artifact wearing policy clothes). Plotting the pre-period trends of both groups is the standard, and revealing, diagnostic. A cousin for single treated units, the synthetic control method, builds the comparison "group" as a weighted blend of untreated units; @andersson2019 evaluated Sweden's pioneering carbon tax against a synthetic Sweden mixed from other OECD economies, finding transport emissions about 11% lower than the counterfactual.
 
-where $G$ marks the exposed group and Post the after-period. $\hat\beta_3$, the extra change in the exposed group, estimates the effect under the assumption that the two groups would have changed in parallel without the treatment. Stable selection is removed; what remains is selection combined with maturation (groups changing at different rates for their own reasons); and selection combined with regression artifacts, as when schools adopt a policy right after an unusually bad year and rebound anyway.
+**The regression discontinuity.** Some treatments switch on at a sharp threshold: a passing grade, an income ceiling, a birthdate. In 1972 the United Kingdom raised its school-leaving age from fifteen to sixteen, and the rule bit according to birth month: children born after a cutoff date had to stay a year longer. @geruso2018 compare women born just before and just after the cutoff to estimate schooling's effect on early family formation. The logic: units just left and just right of a threshold are as good as randomized, since nobody controls their position that finely. The regression fits the outcome as a smooth function of the "running" variable (birth date) and looks for a jump at the cutoff:
+$$
+y = \beta_0 + \beta_1\,\mathbb{1}(\text{past cutoff}) + f(\text{running variable}) + \varepsilon .
+$$
+The estimate $\hat\beta_1$ is credible near the cutoff and silent far from it; the threats are misjudging the shape of $f$, and units manipulating their position around the threshold.
 
-**The interrupted time series.**
+**The cross-over experiment.**
 
-| | | | | | | | |
-|---|---|---|---|---|---|---|---|
-| | $O$ | $O$ | $O$ | $X$ | $O$ | $O$ | $O$ |
+| | | | | |
+|---|---|---|---|---|
+| $R$ | $X_A$ | $O$ | $X_B$ | $O$ |
+| $R$ | $X_B$ | $O$ | $X_A$ | $O$ |
 
-Many measurements before and after a known intervention moment: the Breathalyzer design. The long pre-series puts maturation and regression artifacts on display, because any ongoing trend is visible before the treatment arrives. The regression allows the intervention to shift the level (and, if desired, the slope) of the series. The remaining enemy is *history*, something else happening at the intervention moment, which is exactly why the pub-hours pattern and the alcohol-sales series earned their keep.
+Each unit receives both conditions in randomized order and serves as its own control, removing stable between-person differences entirely. The price is a fresh assumption: the first condition must not linger into the second ("no carry-over"), which is why the design suits reversible treatments, a drug that washes out, and not surgery or education.
 
-Two lessons from this catalogue. First, designs do not eliminate assumptions; they trade implausible assumptions for more plausible ones. The cross-over frees you from between-person comparability and charges you carry-over. Second, the catalogue is not exhaustive and does not need to be. New designs appear constantly, and data often arrive with no purposeful design at all, but the way of thinking transfers intact: ask what assumptions the analysis needs, and what feature of the data collection, if anything, makes them plausible. When a design feature is missing, the corresponding assumption does not disappear. It just stands there, unsupported, waiting for a referee to notice.
+**The matched case-control study.** For rare outcomes, waiting for cases is hopeless, so the design samples on the outcome: cases with the disease, controls without, matched on age, sex, and other characteristics, then compared on past exposures. Matching *constructs* comparability where randomization would have guaranteed it, and the analysis is a logistic regression (@sec-theory-to-glm) of case status on exposure. If the matching did its job, this simple analysis answers the question. That "if" works hard: matching equates the groups only on the matched variables, and on nothing else. The design is genuinely useful and visibly less convincing, a trade epidemiology accepts with open eyes.
 
-::: {.callout-tip icon="false" title="Exercise 1.4"}
-For each scenario, name the threat to internal validity that worries you most, and propose one design feature that would address it. (a) A hospital evaluates a new triage protocol by comparing mortality in the six months after its introduction with the six months before; a new hospital director started the same week. (b) A tutoring program admits the students with the lowest test scores and celebrates their improvement at the next test. (c) An eight-week fitness app study loses 40% of its treatment group and 5% of its control group.
-:::
+The catalogue could continue, and does not need to. Real datasets increasingly arrive with no purposeful design at all, and no list can anticipate every clever identification argument. What transfers is the way of thinking: ask what assumptions the analysis needs, and which feature of the data collection, if any, makes them plausible. A missing design feature does not remove an assumption. It leaves the assumption standing there, unsupported, waiting for a referee to notice.
 
-::: {.callout-note collapse="true" icon="false" title="Answer 1.4"}
-(a) History: the director's other changes are a rival explanation. A comparison hospital, or an interrupted time series with many months on each side, would help separate the protocol from the moment. (b) Regression artifact: the lowest scorers would improve on retest anyway. A randomized waiting list among eligible students, or at least a comparison group selected the same way, is the repair. (c) Attrition: the survivors of the treatment group are a selected subsample (perhaps the fittest 60%). Analyze everyone as randomized, work to retain participants, and compare dropouts with completers on their baseline data.
-:::
-
-Before moving on, one demonstration. The central trade of the whole catalogue, randomization against selection, can be watched directly in simulation, where we know the truth. Suppose exercising does nothing whatsoever for depressive symptoms, but motivated people both exercise more and feel better.
+Before moving on, watch the central threat operate. In the simulation below, exercising has *no effect whatsoever* on depressive symptoms, but motivated people both exercise more and feel better. A thousand observational studies compare exercisers with non-exercisers; a thousand experiments randomize exercise.
 
 ```{r}
 #| label: fig-confounding
@@ -173,7 +157,6 @@ one_study <- function(randomized) {
 }
 obs <- replicate(1000, one_study(randomized = FALSE))
 rct <- replicate(1000, one_study(randomized = TRUE))
-
 par(mfrow = c(1, 2))
 hist(obs, main = "Observational", xlab = "Estimated effect",
      xlim = c(-2, 1), breaks = 30); abline(v = 0, lwd = 2)
@@ -181,91 +164,91 @@ hist(rct, main = "Randomized", xlab = "Estimated effect",
      xlim = c(-2, 1), breaks = 30); abline(v = 0, lwd = 2)
 ```
 
-The function simulates one study; the `replicate` lines run a thousand of each kind. In the left panel the observational studies conclude, again and again, that exercise "reduces" symptoms by more than a full point. This is not bad luck in one sample: the estimates pile up in the wrong place. That is *bias*, the signature of a violated assumption, and more data would only make us more precisely wrong. On the right, randomization has cut the link between motivation and exercise, and the estimates pile up around the truth.
+The left panel shows *bias*: the estimates pile up in the wrong place, study after study, and more data would only sharpen the pile. The right panel shows noise around the truth. Randomization converted a systematic error into an unbiased scatter, which is the entire moral of this section in one picture.
 
-## Random sampling and random assignment
-
-Selection and its cures concern comparisons within the data. A second family of assumptions concerns reaching beyond the data: for whom does the answer hold?
-
-When units enter the sample through a known chance mechanism, a probability sample, the sample statistics estimate population quantities, and we can even quantify the uncertainty. That is what random sampling is for. When units enter by convenience, as with students in a hallway or volunteers on a website, the assumption "these people behave like the population I care about" must stand on its own argument. Sometimes it can; basic visual perception probably works similarly in students and everyone else. Sometimes it cannot; the political attitudes of hallway volunteers speak for no one.
-
-The two chance mechanisms do different jobs and are often confused, since both contain the word "random". Random assignment supports causal comparison within the study. Random sampling supports generalization beyond it. The two rarely appear together; random sampling is hardly ever feasible in experiments [@shadish2002]. Most studies are therefore local achievements with general ambitions, and the argument that an effect travels rests on knowing why the effect occurs and what it needs to operate.
-
-::: {.callout-tip icon="false" title="Exercise 1.5"}
-An online panel of two million self-registered users is weighted so that its age, gender, and education distribution matches the country's. It is then used to estimate national vaccine hesitancy. What assumption replaces random sampling, and how could it fail?
+::: {.callout-tip icon="false" title="Exercise 1.4"}
+Name the most worrying threat, and one design feature that addresses it. (a) A hospital compares mortality in the six months after a new triage protocol with the six months before; a new director started the same week. (b) A tutoring program admits the students with the lowest test scores and celebrates their gains at the next test. (c) An eight-week fitness-app trial loses 40% of its treatment group and 5% of its control group. (d) A study of a new pension policy compares savings in the adopting country with a neighbor, using one measurement after adoption.
 :::
 
-::: {.callout-note collapse="true" icon="false" title="Answer 1.5"}
-The assumption: within each age-gender-education cell, panel volunteers have the same hesitancy as their demographic twins outside the panel. It fails when the kind of person who joins internet panels differs in outcome-relevant ways; trust in institutions, say, travels with vaccination attitudes. Weighting fixes only the composition you can see. The panel's size is no defense: two million biased respondents estimate the wrong number very precisely.
+::: {.callout-note collapse="true" icon="false" title="Answer 1.4"}
+(a) History; a comparison hospital or a long interrupted series of monthly measurements would separate the protocol from the moment. (b) Regression artifact; the lowest scorers rebound on retest regardless, so randomize among eligible students or at least select a comparison group the same way. (c) Attrition; the surviving 60% are a self-selected subsample, so analyze everyone as assigned and compare dropouts with completers at baseline. (d) Selection; with no pre-measurement, level differences between countries are fatal, so add pre-period data and compare changes (difference-in-differences), then inspect the pre-trends.
 :::
+
+## From designs to models
+
+The regressions above are the smallest members of a large family. Every method in this book, and in the research literature beyond it, is a model in the same sense: a set of assumptions about how the data arose, within which the results answer the question.
+
+| Model | Typical question it serves |
+|---|---|
+| Linear regression | How does a numeric outcome relate to its causes or predictors? |
+| Logistic regression | The same, for a yes/no outcome |
+| ANOVA and multilevel models | How much variation lies between groups, and where? |
+| Factor analysis, item response theory | What do many related measurements have in common? |
+| Hidden Markov models | How does an unobserved state evolve over time? |
+| Gaussian processes | What smooth function could have produced these points? |
+| Random forests, neural networks, transformers | What best predicts the outcome, functional form unknown? |
+
+: Models are sets of assumptions; each row serves characteristic questions. {#tbl-models}
+
+Two remarks about @tbl-models. No row is exempt from the chain: a transformer embodies assumptions (that deployment data resemble training data, above all) just as surely as a *t*-test does. And no row is intrinsically causal or non-causal; whether a model's output answers a causal question is settled by design-backed assumptions, never by the arithmetic. The same regression can describe, explain, or predict [@hofman2021].
 
 ## Exploratory and confirmatory research
 
-So far the chain has run forwards: question, then design, then model. Often research runs backwards. You have data, perhaps collected for something else entirely; you notice a pattern; and only then do you formulate the question to which the pattern is the answer. This is **exploratory** research, and it is how many good ideas are born. Unexpected findings, tangential to the original aim, have repeatedly been the source of major scientific advances [@shadish2002].
+The chain has so far run forward: question, then design, then model. Real research often runs backward. You have data, collected for another purpose; a pattern catches your eye; and only then do you formulate the question the pattern seems to answer. This is **exploratory** research, and it is how many good ideas are born.
 
-Exploratory research is not bad. Pretending it was confirmatory can be, because the pretense invalidates the assumptions behind the reported statistics. A $p$-value of .05 means that results this extreme occur by chance one time in twenty, *when this single test was fixed in advance*. Run twenty tests and report the best, and the chance of finding something this extreme somewhere is .64; at fifty tests it is .92 [@shadish2002]. The design that justified the error rates, "I will test this one hypothesis", never happened. Statisticians call the practice "fishing". Prediction is not immune either: given free choice of task, metric, and data cleaning, the same model on the same data can be made to look impressively accurate or barely better than guessing [@hofman2017]. An analysis flexible enough to find anything will find something.
+Exploration is not the sin. The sin is dressing exploration up as confirmation, because the disguise invalidates the statistics. A $p$-value of .05 promises that results this extreme arise by chance one time in twenty *when this single test was fixed in advance*. Run twenty tests and report the prettiest, and the chance that something somewhere clears the bar is .64; at fifty tests, .92 [@shadish2002]. The promised design ("I will test this one hypothesis") never happened. The practice has many names: fishing, $p$-hacking, and, for hypothesizing after the results are known, HARKing. Prediction offers no refuge, since free choice of task, metric, and preprocessing can dress the same model up as impressive or as useless [@hofman2017].
 
-The remedies are easy to state. Label exploration as exploration; it is legitimate the moment it is clearly described as such. Better still, let the exploratory data generate the question and let fresh data answer it: a new sample, a preregistered replication, or a held-out portion of the data never touched during exploration. Then the chain of @fig-chain is restored, with the question in place before the design that answers it.
+The remedies are plain. Label exploration as what it is; an exploratory finding labeled as such is a legitimate contribution. Better, let old data pose the question and new data answer it: a fresh sample, a preregistered replication, or a held-out portion never touched during the search. Then the chain runs forward again, with the question in place before the design that answers it.
 
-::: {.callout-tip icon="false" title="Exercise 1.6"}
-A team studying diet measures 120 food items and 40 health outcomes, and reports: "Yogurt consumption was significantly associated with lower blood pressure ($p = 0.01$)." In what way might this be exploratory research pretending to be confirmatory, and what happens to the meaning of the $p$-value?
+::: {.callout-tip icon="false" title="Exercise 1.5"}
+A team measures 120 food items and 40 health outcomes and reports: "Yogurt consumption was significantly associated with lower blood pressure ($p = 0.01$)." What might make this exploratory research in disguise, and what happens to the meaning of the $p$-value?
 :::
 
-::: {.callout-note collapse="true" icon="false" title="Answer 1.6"}
-There are $120 \times 40 = 4{,}800$ item-outcome pairs, so about 48 will show $p \le .01$ by chance even if nothing is going on. If the yogurt pair was noticed *because* it stood out, then "results this extreme occur by chance only 1% of the time" no longer describes what happened; the chance of finding some pair this extreme was near certainty. The search was a fine way to generate the yogurt hypothesis. Answering it takes new data, or an analysis that accounts for the search.
+::: {.callout-note collapse="true" icon="false" title="Answer 1.5"}
+There are $120 \times 40 = 4{,}800$ pairs, so about 48 clear $p \le .01$ by chance even if nothing is real. If the yogurt pair was reported *because* it stood out, the $p$-value's promise no longer describes what happened: the chance of finding some pair this extreme was near certainty. The search legitimately generates the yogurt hypothesis; answering it takes new data or an analysis that accounts for the search.
 :::
 
-## The methodologist's job
+## Five questions
 
-The chain from question to interpretation also describes a job, and it is the job this book trains you for. Given a research problem, the methodologist:
-
-1. helps formulate research questions worth asking;
-2. evaluates the designs available, which usually means the data available, in terms of the assumptions they can support;
-3. proposes new data collection or new designs when the needed assumptions are not supported;
-4. analyzes the resulting measurements on the basis of assumptions, which is what "modeling" means, reporting both estimates and their uncertainty;
-5. and evaluates how the inevitable violations of the assumptions might change the conclusions.
-
-Notice what is absent from the list: no step says "run the standard method for this kind of data". Methods appear in step 4 only, and only as consequences of assumptions.
-
-For reading any study, your own included, the job compresses into five questions. What is the research question? What is the design? What is the model, meaning which assumptions does interpreting the results require? How do design and model combine into an answer? And does the design warrant the assumptions? The rest of this book is practice in asking these five questions with increasing precision. The next chapter takes the step this one glossed over: how exactly to get from a theory about the world to a specific model, with coefficients you can estimate, interpret, and be proven wrong about.
+Everything in this chapter compresses into a checklist you can carry into any seminar. What is the research question, and is it descriptive, explanatory, or predictive? What is the design: who was measured, and who became exposed to what, decided how? What is the model, meaning which assumptions does interpreting the results require? How do design and model combine into an answer? And does the design warrant the assumptions, or are some standing unsupported? The rest of this book practices these five questions with increasing precision, and the next chapter takes the step this one skipped: how a verbal theory becomes a specific model, with coefficients to estimate, interpret, and be proven wrong about.
 
 ## Test yourself {.unnumbered}
 
-These exercises are harder than the inline ones and resemble exam questions.
+These closing exercises are harder than the inline ones.
 
 ::: {.callout-tip icon="false" title="Exercise 1.A"}
-The general aggression model [@allen2018] holds, in brief: person factors (such as trait hostility) and situation factors (such as provocation or heat) influence a person's present internal state, which consists of cognition, affect, and arousal; these three influence one another reciprocally. The internal state leads, through appraisal and decision processes, to an aggressive or nonaggressive outcome of the social encounter. Person and situation factors can work additively or interactively: being provoked matters more for people who believe aggression is normal. The outcome of each encounter feeds back into the person's future characteristics.
+The general aggression model [@allen2018] holds, in brief: person factors (such as trait hostility) and situation factors (such as provocation or heat) influence a person's present internal state, consisting of cognition, affect, and arousal, which influence one another reciprocally. The internal state leads, through appraisal and decision processes, to an aggressive or nonaggressive outcome of the encounter. Person and situation factors can work additively or interactively: provocation matters more for people who consider aggression normal. Each encounter's outcome feeds back into the person's future characteristics.
 
 (a) Specify the units of analysis.
 (b) Specify the variables.
-(c) Name the causal relationships. Are all relationships linear and additive? Why (not)?
-(d) Draw a path diagram of the causal relationships, including correlations among any exogenous variables.
+(c) Name the relationships and their types. Are all relationships linear and additive? Why (not)?
+(d) Draw the path diagram, including any associations among exogenous variables.
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 1.A"}
-(a) Persons in social encounters; strictly, person-episodes, since the theory describes a cycle repeating over encounters. (b) Person factors, situation factors, cognition, affect, arousal, appraisal/decision, and the encounter's outcome. (c) Person factors and situation factors each affect the internal state variables; cognition, affect, and arousal affect one another reciprocally; the internal state affects appraisal, which affects the outcome; the outcome feeds back into person factors. Not all relationships are additive: "additively or interactively" states a conditional relationship (provocation's effect depends on beliefs about aggression), and the reciprocal and feedback claims are not a simple one-way chain. (d) The diagram needs: person and situation factors as exogenous variables joined by a curved arrow; arrows from each to cognition, affect, and arousal; double-headed or paired arrows among those three; a chain onward through appraisal to outcome; and a feedback arrow from outcome to person factors. Full marks require the curved arrow among the exogenous variables.
+(a) Persons in social encounters; strictly person-episodes, since the theory describes a repeating cycle. (b) Person factors, situation factors, cognition, affect, arousal, appraisal/decision, and the outcome. (c) Effects from person and situation factors to the three internal-state variables; reciprocal effects among cognition, affect, and arousal; a chain from internal state through appraisal to outcome; a feedback effect from outcome to person factors. Not all additive: "additively or interactively" plants a conditional relationship, and the reciprocal and feedback claims break any simple one-way chain. (d) Person and situation factors joined by a curved arc; arrows to the internal-state triangle with double-headed connections inside it; the chain to the outcome; the feedback arrow. The curved arc among the exogenous variables belongs in a complete answer.
 :::
 
 ::: {.callout-tip icon="false" title="Exercise 1.B"}
-An abstract reads: "Whether the well-known association between poverty and mental health in developing countries is causal remains an open question. We estimate the causal effect of poverty on mental health by exploiting a natural experiment induced by weather variability across 440 districts in Indonesia ($N = 577{,}548$). Precipitation anomaly serves as an instrument for poverty, measured by per-capita household consumption. We find that halving consumption raises the probability of mental illness by 0.06 points; the effect is about five times stronger than the naive association." [@hanandita2014]
+An abstract reads: "Whether the association between poverty and mental health in developing countries is causal remains open. We estimate the causal effect of poverty on mental health by exploiting a natural experiment: weather variability across 440 Indonesian districts ($N = 577{,}548$). Precipitation anomaly serves as an instrument for poverty, measured by household consumption. Halving consumption raises the probability of mental illness by 0.06 points, an effect about five times stronger than the naive association." [@hanandita2014]
 
 (a) Identify the units of analysis and the variables.
-(b) What is the research design, in the vocabulary of this chapter? What makes the authors call it a natural experiment?
-(c) The naive association was five times weaker than the estimated causal effect. Name one threat to internal validity that could produce such a discrepancy, and explain the direction.
+(b) Which design from this chapter is this, and what argument must the authors make for it?
+(c) The naive association was five times weaker than the design-based estimate. Name one threat that could produce this discrepancy, with its direction.
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 1.B"}
-(a) Units: individual persons (nested in 440 districts). Variables: precipitation anomaly (district level), poverty measured as per-capita household consumption, and mental health / mental illness. (b) An observational design exploiting a natural experiment: nature assigns rainfall shocks, which the authors argue are unrelated to everything else that affects mental health, so that comparing districts with different weather mimics an experiment nobody could run. The rainfall variable is used as an "instrument", an idea @sec-identification develops in detail. (c) Several answers work. Measurement error in consumption attenuates the naive association toward zero. Reverse causation (temporal precedence): poor mental health may reduce earning capacity, which distorts the naive comparison. Or selection/confounding: unmeasured district factors could mask the true effect. The exercise's point is that the naive and the design-based numbers answer different questions.
+(a) Units: persons, nested in districts. Variables: rainfall anomaly (district), household consumption, mental illness. (b) A natural experiment: nature assigns rainfall shocks, and the authors must argue the shocks are unrelated to everything else affecting mental health and touch mental health only through economic hardship, the lever logic of @sec-identification. (c) Measurement error in consumption attenuates the naive association toward zero; reverse causation (illness lowers earning capacity) and confounding are also defensible answers, with the discrepancy's direction explained.
 :::
 
 ::: {.callout-tip icon="false" title="Exercise 1.C"}
 A study finds that patients treated in high-volume hospitals have better surgical outcomes than patients in low-volume hospitals, adjusting for age and comorbidity. The authors conclude that concentrating surgery in high-volume centers would improve outcomes.
 
-(a) State the question the analysis answers and the question the conclusion answers; explain the difference.
-(b) Identify the design and name the most worrying threat, in this chapter's vocabulary.
-(c) Propose one design change that would address the threat, and state what new assumption or limitation it introduces.
+(a) State the question the analysis answers and the question the conclusion answers.
+(b) Identify the design and the most worrying threat.
+(c) Propose one design improvement and name the new assumption or limitation it buys.
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 1.C"}
-(a) The analysis answers a descriptive question: do outcomes differ between hospital types among patients of similar age and comorbidity? The conclusion answers a causal one: would redirecting patients improve their outcomes? (b) An observational cohort comparison with statistical adjustment. The main threat is selection: given age and comorbidity, patients at the two hospital types may still differ in outcome-relevant ways, as when sicker or poorer patients end up at low-volume hospitals, or high-volume hospitals decline high-risk cases. (c) Randomizing referral among consenting patients removes selection by design, at the price of generalizability (consenting patients and participating regions only) and the assumption that randomized referral does not itself change care. A cheaper alternative exploits quasi-random variation such as distance to a high-volume center, which purchases the instrumental-variable assumptions of @sec-identification.
+(a) The analysis answers a descriptive question (do outcomes differ between hospital types among comparable-looking patients?); the conclusion answers a causal one (would redirecting patients improve their outcomes?). (b) An observational cohort comparison with adjustment; the threat is selection, since patients reach hospitals through referral, geography, and severity in ways two adjusters cannot capture, and high-volume hospitals may decline high-risk cases. (c) Randomizing referral among consenting patients removes selection at the price of external validity (consenters and participating regions only). Exploiting quasi-random variation in distance to a high-volume center is cheaper and buys the instrumental-variable assumptions of @sec-identification instead.
 :::
