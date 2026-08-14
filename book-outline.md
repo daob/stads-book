@@ -22,7 +22,7 @@ The setup of the book should be as follows: the different topics are discussed i
 
 Note that old-exams will contain some relevant questions, but is not 1-1 mappable to the new course, as these are materials for an older version of the course. Where relevant you can try to work some of these questions into the main text (or harder versions at the end of the chapter). The exercises and exam questions, where relevant, should also be used to determine the content of the chapter. For example, if there is an exam question that asks people to derive an implied correlation from a model then the chapter should explain how to do this; or, if there is a question applying fixed and random effects models to a meta-analysis then the chapter should explain these models in sufficient detail.
 
-The style of the book should be relatively informal. Avoid too-familiar colloquialisms as well as highly technical jargon. Most of the book should be understandable by a smart person with little to no background knowledge.  It should explain the key points in clear language. Apply the concepts laid out in Steven Pinker's book _Sense of Style_: After each paragraph, you should consider the cognitive load on the reader. Minimize it by improving sentence structure to follow Pinker's guidelines. Then consider the internal consistency of the paragraph and whether the move from one sentence to the next puts an unnecessary cognitive burden on the reader, for example by having sentences that use reference words to refer to concepts in earlier sentences or by burying the main point in later sentences. Employ "classic style" (the window onto the world). You can find a copy of this book under literature/.
+Most of the book should be understandable by a smart person with little to no background knowledge. It should explain the key points in clear language. Apply the concepts laid out in Steven Pinker's book _Sense of Style_: After each paragraph, you should consider the cognitive load on the reader. Minimize it by improving sentence structure to follow Pinker's guidelines. Then consider the internal consistency of the paragraph and whether the move from one sentence to the next puts an unnecessary cognitive burden on the reader, for example by having sentences that use reference words to refer to concepts in earlier sentences or by burying the main point in later sentences. Employ "classic style" (the window onto the world). You can find a copy of this book under literature/.
 
 I would like it to be very clear from the git commit logs what I have written myself and what has been gnerated by LLM. 
 
@@ -54,6 +54,118 @@ Readers should, for a given study:
     - "old-exams/Midterm exam ReMa Multivariate-example.docx": Question 1
     - "old-exams/Midterm exam ReMa Multivariate-resit-2025 2.docx": Question 1a-c
 
+--- BEGIN LLM-PROPOSED CHAPTER OUTLINE ---
+
+# Chapter 1: From Research Question to Interpretation
+
+## 1.1 Introduction: The Triad of Question, Design, and Model
+
+* **The Conceptual Framework**: How scientific inquiry bridges substantive questions and empirical conclusions through research design and statistical modeling.
+* **Role of Design**: Establishing conditions under which statistical assumptions become plausible.
+* **Role of Models**: Formalizing assumptions to allow quantitative estimation and inference.
+* **The Methodologist’s Duty**: Formulating precise RQs, Evaluating available designs and data structures against required model assumptions,Collecting new data or proposing designs when assumptions are unmet, Executing modeling and uncertainty estimation and Evaluating how assumption violations affect substantive conclusions.
+
+## 1.2 Defining the Research Blueprint
+
+* **Identifying Elements of a Verbal Theory**:
+* *Unit of Analysis*: Defining individual, organizational, temporal, or spatial entities.
+* *Variables*: Operationalizing concepts into exogenous and endogenous variables
+* *Relationships*: Disentangling associations from directed causal mechanisms.
+* *Structural Assumptions*: Assessing whether hypotheses assume linearity and additivity.
+
+* **Unstated Research Questions**: Distinguishing latent research objectives from reported hypotheses.
+
+## 1.3 Threat Abatement: Research Designs and Validity Frameworks
+
+* **Validity Framework (Shadish, Cook, & Campbell)**: Internal, external, construct, and statistical conclusion validity.
+* **Design Notations and Regression Equivalents**:
+* *Randomized Controlled Trial (RCT)*: Notation ($R \quad O \quad X \quad O$), logic of eliminating confounders, and the standard regression formulation.
+* *Pretest-Posttest Control Group (Difference-in-Differences / DiD)*: Notation ($O \quad X \quad O$ vs. $O \quad \quad O$), controlling for time-invariant unobservables, and interaction term regression models.
+* *Regression Discontinuity (RD)*: Assignment variables, cutoff mechanisms, local average treatment effect (LATE) estimation, and continuous functional form equations.
+* *Crossover Experiments and Matched Case-Control Studies*: Addressing specific threats in health and epidemiological contexts.
+
+
+
+## 1.4 Core Exemplars: Connecting Designs to Models
+
+To ground these design concepts, the chapter walks through four primary real-world exemplars:
+
+### Exemplar 1.1 (Health & Natural Experiments): The Vietnam Draft Lottery
+
+* **Study**: Hearst, Newman, & Hulley (1986), *"Delayed effects of the military draft on mortality: A randomized natural experiment"*.
+* **Design & Concept**: Uses a randomized birth-date lottery as a natural experiment to study long-term veteran mortality. Illustrates **Intention-to-Treat (ITT)** vs. **Treatment-on-Treated (TOT)** / Instrumental Variables.
+* **Threat Analysis**: Selection bias controlled via draft randomization; history and attrition managed through administrative death registries.
+
+### Exemplar 1.2 (Computational Social Science): Facebook Social Contagion & Voting
+
+* **Study**: Bond et al. (2012), *"A 61-million-person experiment in social influence and political mobilization"* (*Nature*).
+* **Design & Concept**: Large-scale randomized controlled field experiment ($N = 61\text{ million}$) examining direct vs. indirect (network spillover) treatment effects using explicit $OXO$ structures.
+* **Threat Analysis**: High internal validity guaranteed by system design; evaluates construct and external validity across different digital platforms.
+
+### Exemplar 1.3A (Environmental Policy & Synthetic Control): The Swedish Carbon Tax
+
+* **Study**: Andersson (2019), *"Carbon Taxes and $CO_2$ Emissions: Sweden as a Case Study"* (*AEJ: Economic Policy*).
+* **Design & Concept**: Evaluates nationwide policy where no explicit control group exists using the **Synthetic Control Method (SCM)** / matching. Constructs a "Synthetic Sweden" from OECD donor countries.
+* **Threat Analysis**: Unobserved macroeconomic shocks, carbon leakage, and placebo test validation.
+
+### Exemplar 1.3B (Health Policy & DiD): Dutch Student-Bound Funding (*Rugzakje*)
+
+* **Study**: Freriks (2019), *"Heterogeneous Effects of Conditional School Resources on Special Needs Students' Mental Health"*.
+* **Design & Concept**: Evaluates Dutch special needs education funding using a **Difference-in-Differences (DiD)** design with matched population registry data.
+* **Threat Analysis**: Verifying the parallel trends assumption prior to policy intervention and controlling for selection on observables.
+
+### Exemplar 1.3C (Sociology & Demography): UK Compulsory Schooling Reform (ROSLA)
+
+* **Study**: Geruso & Royer (2018), *"The Impact of Education on Family Formation: Quasi-Experimental Evidence from the UK"* (*NBER*).
+* **Design & Concept**: Evaluates the 1972 UK school leaving age shift using a **Regression Discontinuity Design (RDD)**.
+* **Threat Analysis**: Birth-month seasonality dynamics vs. true policy cutoffs, and checking continuity across the threshold forcing variable.
+
+## 1.5 Taxonomy of Broader Statistical Frameworks
+
+* **Connecting Designs to Analytical Frameworks**:
+* *Linear & Logistic Regression / ANOVA*: Standard parametric baseline.
+* *Structural Equation Modeling & Factor Analysis*: Unobserved constructs and path relationships.
+* *Multilevel & Mixed Models*: Nested data and repeated measures.
+* *Machine Learning & Nonparametric Approaches*: Random forests, Gaussian processes, and transformers for complex prediction.
+* *Psychometrics*: Item Response Theory (IRT) and classical test theory.
+
+
+
+## 1.6 Confirmatory vs. Exploratory Research
+
+* **Data-Driven vs. Theory-Driven Inquiry**: The hazards of post-hoc hypothesis generation ($p$-hacking, HARKing).
+* **Assumption Invalidation**: How exploratory mining invalidates classical standard errors and statistical tests.
+
+## 1.7 Inline & End-of-Chapter Exercises
+
+* **Inline Exercises**:
+* *Exercise 1.1*: Exercise 1.1: Identifying units of analysis, exogenous/endogenous variables, and linearity assumptions in published abstracts.
+* *Exercise 1.2*: Mapping old-style design notation ($OXO$) to modern econometric models.
+
+
+* **End-of-Chapter Exam-Style Problems**:
+* *Problem 1.1*: Deconstructing a published high-impact paper to identify implicit assumptions, validity threats, and design limitations.
+* *Problem 1.2*: Drawing causal path diagrams, identifying exogenous/endogenous variables, writing structural regression models, and detailing threats to internal validity for a given public health or social intervention.
+
+
+
+## Example Selection Matrix
+
+| Chapter | Methodological Focus | Primary Exemplar Paper | Subject / Domain | Key Data Source |
+| --- | --- | --- | --- | --- |
+| **1.3** | Natural Experiment / ITT vs. TOT | Hearst et al. (1986) | Health / Draft Lottery | US Death Registries |
+| **1.3** | Field Experiment / Networks | Bond et al. (2012) | CSS / Social Contagion | Facebook ($N=61\text{M}$) |
+| **1.3 (Alt A)** | Synthetic Control Method (SCM) | Andersson (2019) | Environmental Economics | OECD Emission Statistics |
+| **1.3 (Alt B)** | Difference-in-Differences (DiD) | Freriks (2019) | Health Economics / Policy | Dutch Registry Data |
+| **1.3 (Alt C)** | Regression Discontinuity (RDD) | Geruso & Royer (2018) | Sociology / Demography | UK Birth Cohort Registries |
+| **2.2** | Linear Regression & Path Modeling | Yang et al. (2016) | Clinical Epidemiology | Health Cohort Surveys |
+| **2.3** | Logistic Regression & Interactions | Forster et al. (2016) | Educational Sociology | PIAAC Cross-National Survey |
+| **2.4** | GLM Rates & Cohort Dynamics | Case & Deaton (2017) | Public Health / Demography | CDC Mortality Records |
+
+
+---END LLM-PROPOSED CHAPTER OUTLINE---
+
+
 ## 2. From research question to interpretation: (generalized) linear models for observational studies
 
 The idea behind this chapter is very strongly based on the old book by Saris & Stronkhorst. The idea is that, step by step, we go from a verbal theory to a specific model that is supposed to encode that theory, and which can be estimated and tested. Just as in Saris & Stronkhorst, we choose linear models for all equations, but in addition we allow GLM models, specifically adding in logistic regression. So the chapter should achieve two things: 
@@ -80,6 +192,95 @@ Readers should (see Saris & Stronkhorst):
     - "old-exams/Midterm exam ReMa Multivariate-example.docx": Question 3
     - "old-exams/Midterm exam ReMa Multivariate-resit-2025 2.docx": Question 1d-g
     - "old-exams/Midterm exam ReMa Multivariate.docx": Question 3. Note: student performance on this type of question was always low. Ensure the explanation in the chapter is sufficient to answer such questions. Perhaps include some easier inline exercises that take the reader through the calculations step by step.
+
+--- BEGIN LLM-PROPOSED CHAPTER OUTLINE
+
+# Chapter 2: From Research Question to Interpretation: (Generalized) Linear Models for Observational Studies
+
+## 2.1 From Verbal Theories to Structural Equations
+
+* **Step-by-Step Formalization (Saris & Stronkhorst Approach)**: Translating qualitative narrative propositions into precise mathematical relationships.
+	The Flow of Causal Inquiry:  $$\text{Verbal Propositions} \longrightarrow \text{Testable Theory} \longrightarrow \text{Model Specification} \longrightarrow \text{Identification Check} \longrightarrow \text{Implied Covariances} \longrightarrow \text{Estimation} \longrightarrow \text{Model Testing/Modification} \longrightarrow \text{Interpretation}$$ 
+
+* **The Error Term ($\epsilon$)**: Conceptualizing omitted variables, measurement noise, and intrinsic stochasticity.
+* **Path Diagrams & Tracing Rules**:
+* Distinguishing direct effects, indirect effects, total effects, and spurious associations.
+* Deriving implied correlations step by step
+
+
+
+## 2.2 Linear Regression in Observational Contexts
+
+* **Model Specification**:
+
+$$Y_i = \beta_0 + \beta_1 X_{1i} + \beta_2 X_{2i} + \dots + \epsilon_i$$
+
+
+* **Interpretation of Coefficients**: The $\beta$ coefficient as a partial derivative (unit change in $Y$ per unit change in $X$, holding other variables constant).
+* **Substantive Empirical Exemplar**:
+* **Study**: Yang et al. (2016), *"Social relationships and physiological determinants of longevity across the human life span"* (*PNAS*).
+* **Application**: Translating verbal theories of social isolation and biological inflammation (C-reactive protein, blood pressure) into linear path models. Demonstrates direct/indirect pathways and standardized vs. unstandardized regression coefficient interpretations.
+
+
+
+## 2.3 Generalized Linear Models: Logistic Regression
+
+* **Transitioning to Binary Outcomes**: Limitations of linear models for bounded/categorical outcomes.
+* **Log-Odds and Odds Ratios**:
+* The logit link function: $\ln\left(\frac{p}{1-p}\right) = \beta_0 + \beta_1 X_1$.
+* *Rule of Thumb*: Exponentiating coefficients ($\exp(\beta_1)$) to calculate percentage changes in odds.
+
+
+* **Calculating Probabilities**: Converting log-odds back to predicted probability space:
+
+$$P(Y = 1 \mid X) = \frac{1}{1 + \exp(-(\beta_0 + \beta_1 X_1))}$$
+
+
+* **Substantive Empirical Exemplar**:
+* **Study**: Forster, Bol, & van de Werfhorst (2016), *"Vocational Education and Employment over the Life Cycle"* (*Sociological Science*).
+* **Application**: Modeling employment probability as a function of education type, age, and interaction terms ($\text{Vocational}_i \times \text{Age}_i$). Step-by-step calculation of log-odds, odds ratios, and predicted probability inflection points over the life course.
+
+
+
+## 2.4 Supplementary Macro-Level GLM Exemplar
+
+* **Study**: Case & Deaton (2017), *"Mortality and morbidity in the 21st century"* (*Brookings*).
+* **Application**: GLMs for population rates (e.g., deaths of despair across birth cohorts and education levels). Illustrates main effects vs. multiplicative interaction specifications in demographic and epidemiological data.
+
+## 2.5 High-Dimensional Data & Nonparametric Alternatives
+
+* **When Linear Models Break**: Large sample sizes allowing us to reliability estimate nonlinearities and interactions, and agent-based models.
+* **Consistency of Principles**: Reaffirming that algorithmic and machine learning models share the same fundamental logic (design + assumptions $\rightarrow$ inference).
+
+## 2.6 Inline & End-of-Chapter Exercises
+
+* **Inline Step-by-Step Guided Exercises**:
+* *Exercise 2.1*: Deriving implied correlations step-by-step from a 4-variable path diagram using Wright's tracing rules.
+* *Exercise 2.2*: Guided manual calculation of log-odds, odds ratios, and predicted probabilities from a logistic regression table.
+
+
+* **End-of-Chapter Exam-Style Problems**:
+* *Problem 2.1*: Given a structural path model from a published journal article, write out the system of linear equations, compute specified indirect effects, and derive implied correlations.
+* *Problem 2.2*: Evaluating logistic regression output from an epidemiological or political science dataset. Interpret continuous and categorical coefficients, calculate difference in predicted probabilities for two specific profile instances, and discuss fixed vs. random effects specifications.
+
+
+
+---
+
+## Example Selection Matrix for empirical examples
+
+| Chapter | Methodological Focus | Primary Exemplar Paper | Subject / Domain | Key Data Source |
+| --- | --- | --- | --- | --- |
+| **1.3** | Natural Experiment / ITT vs. TOT | Hearst et al. (1986) | Health / Draft Lottery | US Death Registries |
+| **1.3** | Field Experiment / Networks | Bond et al. (2012) | CSS / Social Contagion | Facebook ($N=61\text{M}$) |
+| **1.3 (Alt A)** | Synthetic Control Method (SCM) | Andersson (2019) | Environmental Economics | OECD Emission Statistics |
+| **1.3 (Alt B)** | Difference-in-Differences (DiD) | Freriks (2019) | Health Economics / Policy | Dutch Registry Data |
+| **1.3 (Alt C)** | Regression Discontinuity (RDD) | Geruso & Royer (2018) | Sociology / Demography | UK Birth Cohort Registries |
+| **2.2** | Linear Regression & Path Modeling | Yang et al. (2016) | Clinical Epidemiology | Health Cohort Surveys |
+| **2.3** | Logistic Regression & Interactions | Forster et al. (2016) | Educational Sociology | PIAAC Cross-National Survey |
+| **2.4** | GLM Rates & Cohort Dynamics | Case & Deaton (2017) | Public Health / Demography | CDC Mortality Records |
+
+--- END LLM-PROPOSED CHAPTER OUTLINE ---
 
 ## 3. The design limits the research questions (a.k.a. "identification") - using mediation as a case study
 
@@ -120,7 +321,9 @@ They should be able to:
 
 Relevant literature for this chapter is in literature/explanation-prediction. When I refer to literature below, look for it there.
 
-This chapter is intended to form a slight alleviation from the technical work as well as a "caesuur" between the previous chapters which were about explanatory models in which the parameters, or functions of them (such as the product or NIE in mediation or sums of squares/Bayesian sd density plots) were of direct scientific interest, and the next few chapters, which are about prediction models. Prediction models used to have a very bad rap in much of social and health sciences but are now accepted to be useful in their own right. First the chapter should discuss what we mean by prediction (a statement about future data). It has relevance to social and health science in two ways. First, biological or social models give "predictions" about aggregate phenomena which can be comared against measures of those phenomena to "test" the model (this is the King, Keohane & Verba eplxnation of social research). FOr example, This can be fund many times in Coleman, SOcial Theory. Or you can take an example from Smaldino Modeling Social Behavior: for example the SIR model predicts a certain trend in contagion which doesn't exactly bear out for some epidemics so we need to make the model more sophisticated; the DeGroot model of opiion dynamics predicts that everybody converges to a consensus. Since this is not true, the model is false. In this sense everything we've seen before about SEM is also a form of predictions about correlations (or conditional dependencies). There is a second meaning of prediction, though: predicting specific outcomes of interest, just because having a (uncertain) prediction is better than not having one. The difference between these is disucssed in Breiman, the two cultures, and in Schmueli, ExplainPredict. And the interplay between this and more thoeyr based research is discussed in Tukey- data analysis, as well as in the three papers by Watts and his colleagues (TECSS Group 1.pdf, science.aal3856 (1).pdf, s41586-021-03659-0 (1).pdf). These papers are important and their arguments should be (briefly) explained. The arguments for looking at prediction in those papers and the ones by Mark Verhagen (verhagen-2022-a-pragmatist-s-guide-to-using-prediction-in-the-social-sciences.pdf) and Yarkoni & Westfall (yarkoni-westfall-2017-choosing-prediction-over-explanation-in-psychology-lessons-from-machine-learning.pdf) should also be discussed in some detail. 
+This chapter is intended to form a slight alleviation from the technical work as well as a "caesuur" between the previous chapters which were about explanatory models in which the parameters, or functions of them (such as the product or NIE in mediation or sums of squares/Bayesian sd density plots) were of direct scientific interest, and the next few chapters, which are about prediction models. Prediction models used to have a very bad rap in much of social and health sciences but are now accepted to be useful in their own right. First the chapter should discuss what we mean by prediction (a statement about future data). It has relevance to social and health science in two ways. First, biological or social models give "predictions" about aggregate phenomena which can be comared against measures of those phenomena to "test" the model (this is the King, Keohane & Verba eplxnation of social research). FOr example, This can be fund many times in Coleman, SOcial Theory. Or you can take an example from Smaldino Modeling Social Behavior: for example the SIR model predicts a certain trend in contagion which doesn't exactly bear out for some epidemics so we need to make the model more sophisticated; the DeGroot model of opiion dynamics predicts that everybody converges to a consensus. Since this is not true, the model is false. In this sense everything we've seen before about SEM is also a form of predictions about correlations (or conditional dependencies). There is a second meaning of prediction, though: predicting specific outcomes of interest, just because having a (uncertain) prediction is better than not having one. The difference between these is disucssed in Breiman, the two cultures, and in Schmueli, ExplainPredict. And the interplay between this and more thoeyr based research is discussed in Tukey- data analysis, as well as in the three papers by Watts and his colleagues (TECSS Group 1.pdf, science.aal3856 (1).pdf, s41586-021-03659-0 (1).pdf). These papers are important and their arguments should be (briefly) explained. The arguments for looking at prediction in those papers and the ones by Mark Verhagen (verhagen-2022-a-pragmatist-s-guide-to-using-prediction-in-the-social-sciences.pdf) and Yarkoni & Westfall (yarkoni-westfall-2017-choosing-prediction-over-explanation-in-psychology-lessons-from-machine-learning.pdf)and Kleinberg et al (Kleinberg-aer15-prediction.pdf) should also be discussed in some detail. 
+
+A particularly interesting approach is that of Kleinberg et al (2015). The payoff \pi from an action X_0 depends on a target variable Y. Kleinberg decompose the payoff into a part that depends on a prediction and a part that is a causal question (show equation and explain it with brackets since readers may be a little taken aback by the partial and total derivatives). For example if I predict who will fail to turn up toh their hospital appointment, I know how much I stand to gain in terms of lost time and resources by reminding them of it (prediction part). But encouraging patients sometimes and not others could create an expectation that they will be reminded leading them to attend less on a subsequent occasion when they weren't (causal effect of the policy). There is a suggestion for an exercise in exercise-explanation-prediction.md.
 
 A case in point this is not specifically social & health but affects it all the same is large language models. In the before-fore, people were trying to make very precise formal models of natural language and this got us some of the way. Just as in social an health sciences, the idea to just do statistics and an predictions on natural language was already there for a long time (Chicago school; work of Jean-Paul Benzécri in the 70s). But many dismissed this because such work was thought to not be useful for practical applications: people thought you would need the know the why in order to make good use of language models. Then came text mining, embeddings, transformers, and LLMs: the bitter lesson. We now have purely predictive models because LLMs "only" predict the next word. But with these predictive models we can do a lot of very useful things. (Then Summarize the literature found in llm-social-science/ to illustrate what LLMs could do in social and health science).
 
