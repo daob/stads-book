@@ -1,10 +1,10 @@
 # ANOVA is still cool! {#sec-anova}
 
-In a famous sleep laboratory study, eighteen volunteers slept three hours a night for ten days while researchers clocked their reaction times daily.^[The data ship with the R package lme4 as `sleepstudy` [@gelmanhill2007 discuss closely related designs]. The original study is by Belenky and colleagues; the dataset has become the fruit fly of multilevel modeling.] Two things obviously drive those reaction times: how sleep-deprived you are, and who you are. The analysis of this utterly ordinary design, persons crossed with conditions, goes by the name **analysis of variance**, ANOVA, and ANOVA has an image problem. The name evokes agricultural experiments and tables full of capital letters. Econometricians see a dull special case of regression; Bayesians see an inflexible classical ritual [@gelman2005]. Both camps miss the point. ANOVA is one idea, and the idea is load-bearing for half of modern statistics: group the coefficients of a (generalized) linear model into batches, and study the variation within each batch. Follow it and you climb, in four small steps, from a century-old F table to Bayesian multilevel models, and from there to meta-analysis.
+In a famous sleep laboratory study, eighteen volunteers slept three hours a night for ten days while researchers clocked their reaction times daily.^[The data ship with the R package lme4 as `sleepstudy` [@gelmanhill2007 discuss closely related designs]. The original study is by Belenky and colleagues; the dataset has become the fruit fly of multilevel modelling.] Two things obviously drive those reaction times: how sleep-deprived you are, and who you are. The analysis of this utterly ordinary design, persons crossed with conditions, goes by the name **analysis of variance**, ANOVA, and ANOVA has an image problem. The name evokes agricultural experiments and tables full of capital letters. Econometricians see a dull special case of regression; Bayesians see an inflexible classical ritual [@gelman2005]. Both camps miss the point. ANOVA is one idea, and the idea is load-bearing for half of modern statistics: group the coefficients of a (generalized) linear model into batches, and study the variation within each batch. Follow it and you climb, in four small steps, from a century-old F table to Bayesian multilevel models, and from there to meta-analysis.
 
 ## The coefficient wall
 
-Start where @sec-theory-to-glm left off and regress reaction time on day and person. Both predictors are categorical, so each becomes a set of 0/1 variables:
+Take the regression machinery of @sec-theory-to-glm and regress reaction time on day and person. Both predictors are categorical, so each becomes a set of 0/1 variables:
 
 ```{r}
 #| label: sleep-lm
@@ -156,7 +156,7 @@ The person effects above are called "random effects", the day coefficients "fixe
 
 > Model a batch with dummies ("fixed") when the levels in the data are the whole story and you want to control for or estimate *these particular* levels. Model a batch with a distribution ("random") when the levels stand in for a larger population you care about, so the target is the population's variation, or a prediction for a level you have not seen.
 
-Four versions of the same decision come up constantly in real research. Repeated measurements of the same panel respondents, where the goal is to control for all stable person characteristics with no wish to generalize to other people: person dummies, fixed, because these persons stand in for nobody but themselves. Each respondent rated by three interviewers drawn from a large interviewer pool: random, because the interviewers stand in for interviewers in general and their variation is itself of interest (in Exercise 2.B the same three-interviewer design got dummies, because there the goal was only to control for those particular interviewers, not to generalize). Survey respondents nested in 24 countries, where the goal is to generalize to all countries: random, because the question is about the population of countries. And thirteen historical studies of a vaccine, where the goal is to predict what a new study would find: random, and so useful that the case carries a name of its own.
+Four versions of the same decision come up constantly in real research. Repeated measurements of the same panel respondents, where the goal is to control for all stable person characteristics with no wish to generalize to other people: person dummies, fixed, because these persons stand in for nobody but themselves. Each respondent rated by three interviewers drawn from a large interviewer pool: random, because the interviewers stand in for interviewers in general and their variation is itself of interest. Had the goal been only to net out these three interviewers, dummies would have done: the same data, a different question. Survey respondents nested in 24 countries, where the goal is to generalize to all countries: random, because the question is about the population of countries. And thirteen historical studies of a vaccine, where the goal is to predict what a new study would find: random, and so useful that the case carries a name of its own.
 
 ::: {.callout-tip icon="false" title="Exercise 4.3"}
 Choose fixed or random, and justify from the goal, for each: (a) hospital effects, in a study auditing which of the country's 8 academic hospitals have excess mortality; (b) school effects, in a study of how much schools in general differ in value-added; (c) year effects for 2015 to 2024, controlling for macroeconomic shocks in a wage analysis; (d) word effects, in a psycholinguistic experiment where 60 words were sampled from the dictionary to represent "concrete nouns".
@@ -174,12 +174,22 @@ $$
 y_i \sim N(\theta_i, \sigma_i^2),
 $$
 
-where $\theta_i$ is the true effect *in study $i$'s setting*. This is a meta-analysis: the data are estimates. The modeling question should feel familiar by now. Thirteen $\theta_i$ form a batch of coefficients. Do we force them to be identical, $\theta_i = \theta$ for all $i$, the **fixed-effects** (equal-effects) model? Or do we batch them, $\theta_i \sim N(\mu, \tau^2)$, the **random-effects** model, in which studies have genuinely different true effects that vary with standard deviation $\tau$? The metafor package fits both:
+where $\theta_i$ is the true effect *in study $i$'s setting*. This is a meta-analysis: the data are estimates. The modelling question should feel familiar by now. Thirteen $\theta_i$ form a batch of coefficients. Do we force them to be identical, $\theta_i = \theta$ for all $i$, the **fixed-effects** (equal-effects) model? Or do we batch them, $\theta_i \sim N(\mu, \tau^2)$, the **random-effects** model, in which studies have genuinely different true effects that vary with standard deviation $\tau$? The metafor package fits both:
 
 ```{r}
 #| label: bcg
 library(metafor)
 bcg <- data.frame(
+  author = c("Aronson", "Ferguson & Simes", "Stein & Aronson",
+             "Rosenthal et al", "Rosenthal et al", "Coetzee & Berjak",
+             "Comstock & Webster", "Frimodt-Moller et al", "Vandiviere et al",
+             "Comstock et al", "Comstock et al", "Hart & Sutherland",
+             "TPT Madras"),
+  year  = c(1948, 1949, 1953, 1960, 1961, 1968, 1969,
+            1973, 1973, 1974, 1976, 1977, 1980),
+  alloc = c("random", "random", "alternate", "random", "systematic",
+            "random", "systematic", "alternate", "random", "systematic",
+            "systematic", "random", "random"),
   yi  = c(-0.94, -1.67, -0.96, -1.39, -1.40, -0.47, 0.45,
           -0.22, -1.63, -0.34, -0.02, -1.46, 0.01),
   sei = c(0.598, 0.456, 0.100, 0.658, 0.275, 0.239, 0.731,
@@ -206,12 +216,30 @@ Two extensions round out the toolkit. First, heterogeneity invites explanation: 
 
 ## Where this leads
 
-The staircase you just climbed, from dummies to batches to batch distributions to distributions of study effects, is the entrance to multilevel modeling, one of the workhorses of modern social and health research. Everything scales: batches of slopes rather than intercepts, batches in logistic regressions, crossed batches (persons and stimuli), batches of batches. The idea never changes: group the coefficients and make each batch's variation the target, choosing dummies or distributions by what you want to generalize to. Next the register changes: after four chapters of models whose parameters we interpret, we ask what it means for a model to predict, and why anyone would want a model whose parameters they never interpret at all.
+The staircase you just climbed, from dummies to batches to batch distributions to distributions of study effects, is the entrance to multilevel modelling, one of the workhorses of modern social and health research. Everything scales: batches of slopes rather than intercepts, batches in logistic regressions, crossed batches (persons and stimuli), batches of batches. The idea never changes: group the coefficients and make each batch's variation the target, choosing dummies or distributions by what you want to generalize to. Next the register changes: after four chapters of models whose parameters we interpret, we ask what it means for a model to predict, and why anyone would want a model whose parameters they never interpret at all.
 
 ## Test yourself {.unnumbered}
 
 ::: {.callout-tip icon="false" title="Exercise 4.A"}
-The table below summarizes the 13 BCG studies (log odds ratios $y_i$, standard errors $\sigma_i$, and each study's allocation method: randomized, alternated, or selected by physicians). Output for the fixed-effects model: estimate $-0.434$ (SE 0.042). For the random-effects model: estimate $-0.746$ (SE 0.186), $\hat\tau^2 = 0.34$.
+@tbl-bcg lists the 13 BCG studies: log odds ratios $y_i$, standard errors $\sigma_i$, the year, and how patients were allocated (at random, by alternating as they arrived, or systematically, for example by a clinician's judgement). Output for the fixed-effects model: estimate $-0.434$ (SE 0.042). For the random-effects model: estimate $-0.746$ (SE 0.186), $\hat\tau^2 = 0.34$.
+
+| Study | Author | Year | $y_i$ | $\sigma_i$ | Allocation |
+|---|---|---|---|---|---|
+| 1 | Aronson | 1948 | −0.94 | 0.598 | random |
+| 2 | Ferguson & Simes | 1949 | −1.67 | 0.456 | random |
+| 3 | Stein & Aronson | 1953 | −0.96 | 0.100 | alternate |
+| 4 | Rosenthal et al. | 1960 | −1.39 | 0.658 | random |
+| 5 | Rosenthal et al. | 1961 | −1.40 | 0.275 | systematic |
+| 6 | Coetzee & Berjak | 1968 | −0.47 | 0.239 | random |
+| 7 | Comstock & Webster | 1969 | 0.45 | 0.731 | systematic |
+| 8 | Frimodt-Moller et al. | 1973 | −0.22 | 0.228 | alternate |
+| 9 | Vandiviere et al. | 1973 | −1.63 | 0.476 | random |
+| 10 | Comstock et al. | 1974 | −0.34 | 0.112 | systematic |
+| 11 | Comstock et al. | 1976 | −0.02 | 0.268 | systematic |
+| 12 | Hart & Sutherland | 1977 | −1.46 | 0.143 | random |
+| 13 | TPT Madras | 1980 | 0.01 | 0.063 | random |
+
+: The thirteen BCG vaccine trials [@colditz1994]. {#tbl-bcg}
 
 (a) Interpret both estimates on the odds scale.
 (b) Which model do you find more appropriate here? Give one substantive and one data-fit argument.
