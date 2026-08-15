@@ -9,7 +9,7 @@
 #     Fira Code fonts available to fontspec/fontconfig)
 #
 # Targets:
-#   make all       html + pdf (default)
+#   make all       html + pdf in one pass (default)
 #   make html      render the HTML book into _book/
 #   make pdf       render the print PDF into _book/stads-book.pdf
 #   make diagrams  re-render diagrams/*.png from diagrams/*.mmd
@@ -25,7 +25,11 @@ PNG := $(MMD:.mmd=.png)
 
 .PHONY: all html pdf diagrams clean
 
-all: html pdf
+# `quarto render` with no --to renders every format listed in _quarto.yml
+# into _book/ in one pass. Rendering one format at a time clears _book/ first,
+# so `make html` followed by `make pdf` leaves only the PDF.
+all: diagrams
+	$(QUARTO) render
 
 html: diagrams
 	$(QUARTO) render --to html
