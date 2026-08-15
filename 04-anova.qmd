@@ -34,7 +34,7 @@ $$
 \underbrace{\textstyle\sum_{ij} (y_{ij} - \bar y_i)^2}_{\text{within SS}} .
 $$
 
-"SS" stands for sum of squares, and this decomposition is the analysis of variance, literally: variance, analyzed into parts. With two batches the same logic splits the total into a days part, a persons part, and a residual. R's `aov()` prints the result as the classical table:
+"SS" stands for sum of squares, and this decomposition is the analysis of variance, literally: variance, analysed into parts. With two batches the same logic splits the total into a days part, a persons part, and a residual. R's `aov()` prints the result as the classical table:
 
 ```{r}
 #| label: sleep-aov
@@ -75,7 +75,7 @@ y_{ij} = \mu + \beta_{d(j)} + u_i + \varepsilon_{ij},
 \qquad \varepsilon_{ij} \sim N(0, \sigma^2) .
 $$
 
-The day effects $\beta$ stay ordinary coefficients; the person effects $u_i$ now come from a normal distribution whose standard deviation is *estimated from the data*. The parameter of interest is no longer any single $u_i$ (nobody asked) but $\sigma_{\text{Subject}}$: how much do people vary? Gelman and Hill compress the shift into one sentence: instead of testing whether a variance component is zero, estimate the standard deviation of the corresponding batch of coefficients. In R the model is `lmer()`, with `(1 | Subject)` read as "an intercept per subject, batched":
+The day effects $\beta$ stay ordinary coefficients; the person effects $u_i$ now come from a normal distribution whose standard deviation is *estimated from the data*. The distribution earns its keep twice. The parameter of interest is no longer any single $u_i$ (nobody asked) but $\sigma_{\text{Subject}}$: how much do people vary? And each person's estimate is **shrunk** toward the overall mean, most strongly for the people measured least, since an extreme average from a few noisy measurements is more plausibly luck than character. Gelman and Hill compress the shift into one sentence: instead of testing whether a variance component is zero, estimate the standard deviation of the corresponding batch of coefficients. In R the model is `lmer()`, with `(1 | Subject)` read as "an intercept per subject, batched":
 
 ```{r}
 #| label: sleep-lmer
@@ -127,7 +127,7 @@ fit_brm2 <- brm(Reaction ~ (1 | Days) + (1 | Subject), data = sleep,
 round(summary(fit_brm)$random$Subject[, 1:4], 1)
 ```
 
-The posterior for $\sigma_{\text{Subject}}$ centers near 40 ms with a 95% interval running from roughly 28 to 57: people definitely differ, by an amount known only to within a factor of two. The second model, `fit_brm2`, goes all the way and batches *both* factors, days as well as subjects, so that every row of the old ANOVA table becomes an estimated standard deviation. Plot the posteriors of the batch SDs side by side and you get what @gelman2005 proposed as the modern replacement for the $F$ table:
+The posterior for $\sigma_{\text{Subject}}$ centres near 40 ms with a 95% interval running from roughly 28 to 57: people definitely differ, by an amount known only to within a factor of two. The second model, `fit_brm2`, goes all the way and batches *both* factors, days as well as subjects, so that every row of the old ANOVA table becomes an estimated standard deviation. Plot the posteriors of the batch SDs side by side and you get what @gelman2005 proposed as the modern replacement for the $F$ table:
 
 ```{r}
 #| label: fig-anova-display
@@ -249,11 +249,11 @@ The staircase you just climbed, from dummies to batches to batch distributions t
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 4.A"}
-(a) Fixed: one common effect, odds of tuberculosis multiplied by $e^{-0.434} \approx 0.65$, a 35% reduction. Random: the average of the study-specific effects multiplies the odds by $e^{-0.746} \approx 0.47$, about a halving, with true effects varying around this average ($\tau \approx 0.58$). (b) Substantive: studies span 1948-1980, several continents, and three allocation methods; one shared true effect is implausible, and BCG efficacy is known to vary by setting. Fit: AIC/BIC favor the random-effects model overwhelmingly (about 154 versus 29). (c) $\theta_i \sim N(\mu, \tau^2)$. (d) A new trial is a new draw from the batch: $\theta' \sim N(\hat\mu, \hat\tau^2)$; the prediction's width is driven by $\hat\tau$ (between-study variation) plus the uncertainty in $\hat\mu$ itself. (e) Plausibly: nonrandomized allocation may exaggerate effects, and efficacy may drift over time; incorporate them by meta-regression, regressing the study effects on allocation type and year, and see whether $\tau$ shrinks.
+(a) Fixed: one common effect, odds of tuberculosis multiplied by $e^{-0.434} \approx 0.65$, a 35% reduction. Random: the average of the study-specific effects multiplies the odds by $e^{-0.746} \approx 0.47$, about a halving, with true effects varying around this average ($\tau \approx 0.58$). (b) Substantive: studies span 1948-1980, several continents, and three allocation methods; one shared true effect is implausible, and BCG efficacy is known to vary by setting. Fit: AIC/BIC favour the random-effects model overwhelmingly (about 154 versus 29). (c) $\theta_i \sim N(\mu, \tau^2)$. (d) A new trial is a new draw from the batch: $\theta' \sim N(\hat\mu, \hat\tau^2)$; the prediction's width is driven by $\hat\tau$ (between-study variation) plus the uncertainty in $\hat\mu$ itself. (e) Plausibly: nonrandomized allocation may exaggerate effects, and efficacy may drift over time; incorporate them by meta-regression, regressing the study effects on allocation type and year, and see whether $\tau$ shrinks.
 :::
 
 ::: {.callout-tip icon="false" title="Exercise 4.B"}
-A colleague analyzes the sleep data with `lm(Reaction ~ Days + Subject)` and, separately, with `lmer(Reaction ~ Days + (1|Subject))`, and is puzzled: "the Days coefficients are the same in both, so what did the multilevel model buy me?"
+A colleague analyses the sleep data with `lm(Reaction ~ Days + Subject)` and, separately, with `lmer(Reaction ~ Days + (1|Subject))`, and is puzzled: "the Days coefficients are the same in both, so what did the multilevel model buy me?"
 
 (a) Explain why the Days coefficients (and their standard errors) agree here.
 (b) Name two things the multilevel output provides that the dummy regression does not.

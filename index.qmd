@@ -1,14 +1,14 @@
 # Preface {.unnumbered}
 
 ::: {.callout-warning}
-**Draft 0.5.** This is an early, LLM-generated draft of the first five chapters, produced from an outline by Daniel Oberski and from extraction notes on the source literature (see `sources/extracts/` and `plans/` in the repository). Everything in it is provisional, and the chapters on machine learning that @sec-explanation-prediction points forward to are not written yet. The git history records what was written by the author and what was generated.
+**Draft 0.6.** This is an early, LLM-generated draft of the first seven chapters, produced from an outline by Daniel Oberski and from extraction notes on the source literature (see `sources/extracts/` and `plans/` in the repository). Everything in it is provisional; further chapters (unsupervised learning; measurement) are not written yet. The git history records what was written by the author and what was generated.
 :::
 
 Most statistics courses teach methods one at a time: here is the *t*-test, here is regression, here is ANOVA. You leave with a well-stocked toolbox and no manual. Which tool answers which question, and when should anyone believe the answer? This book starts from the other end. Every empirical study, from a survey to a transformer, follows the same basic logic:
 
 > A **research question** motivates a **design** for collecting data; the design makes a set of **assumptions** plausible; those assumptions are the **model**; and the results of fitting the model answer the question, to the extent that the assumptions hold.
 
-The chapters work through this logic. First the logic itself (@sec-rq-to-interpretation). Then, concretely, how to build a statistical model out of a theory stated in words (@sec-theory-to-glm), and what happens when the design cannot answer the question at all (@sec-identification). Then a supposedly old-fashioned idea, the analysis of variance, is rehabilitated as the gateway to multilevel models and to meta-analysis (@sec-anova). The last chapter here steps back to ask what prediction is for, and opens the road to the machine learning chapters (@sec-explanation-prediction).
+The chapters work through this logic. First the logic itself (@sec-rq-to-interpretation). Then, concretely, how to build a statistical model out of a theory stated in words (@sec-theory-to-glm), and what happens when the design cannot answer the question at all (@sec-identification). Then a supposedly old-fashioned idea, the analysis of variance, is rehabilitated as the gateway to multilevel models and to meta-analysis (@sec-anova). A hinge chapter steps back to ask what prediction is for (@sec-explanation-prediction). The last two chapters cross into machine learning: what overfitting is and why the bias-variance tradeoff governs every model (@sec-overfitting), and how to evaluate predictions honestly, from cross-validation and the bootstrap to what happens when a well-scored model meets the world (@sec-evaluation).
 
 Each chapter contains two kinds of exercises. Inline exercises appear throughout; do them immediately, and click to reveal the answer below each one. The "Test yourself" exercises at the end of each chapter are harder. They test whether you can use the ideas, not whether you can nod along to them.
 
