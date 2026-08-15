@@ -1,213 +1,448 @@
 # From theory to model: (generalized) linear models {#sec-theory-to-glm}
 
-Lonely people die younger. Epidemiologists have measured the mortality risk of social isolation and found it rivals smoking and obesity, a comparison that made headlines and changed public-health agendas. But *how* does a social fact reach into the body? One prominent answer: isolation gets under the skin. Social connection regulates stress physiology, so the isolated carry more chronic inflammation and higher blood pressure, and those, over the years, kill. @yang2016 traced exactly this account in four large cohorts spanning adolescence to old age, linking survey measures of social integration to blood-based markers such as C-reactive protein.
+Here is a theory, stated the way a researcher would state it at a seminar.
 
-That account is a theory told in words. This chapter turns such words into a statistical model, step by step, following a method worked out by @saris1984: treat the verbal theory as the object of interest, and build the model as its translation, precise enough to estimate and precise enough to be wrong. Along the way the two workhorses of applied statistics, linear regression and logistic regression, enter exactly where they are needed. The payoff at the end is a research cycle you can run yourself: verbal propositions, a testable model, estimates that say something about the world *if the model is true*, and tests that say something about the theory.
+> People who are well connected to others live longer. The connection is not merely a matter of mood. Being embedded in a social network changes the body: it changes how much low-grade inflammation a person carries, what their blood pressure does, how much weight they put on around the middle. Those physiological states are the proximate causes of chronic disease and death. So social integration should show up in the blood, and what shows up in the blood should show up in the mortality tables.
 
-## From words to a diagram
+That paragraph is the theory behind a study by Yang and colleagues, who tested it in four American surveys spanning adolescence to old age [@yang2016]. Among adolescents, social isolation raised the odds of high inflammation about as much as physical inactivity did. Among the elderly, isolation raised the odds of hypertension more than diabetes did.
 
-Begin by dissecting the theory with the tools of @sec-rq-to-interpretation. The units are persons. The variables: social integration (how embedded someone is in relationships), physiological dysregulation (which we will shorten to *inflammation*, its most prominent marker), and mortality risk. The claims: integration lowers inflammation; inflammation raises mortality risk; and integration may also protect life through other routes, safer behavior and quicker help in emergencies, which we bundle into a direct effect.
+What would it take to get from that paragraph to those numbers? State the theory as a set of claims about specific variables, draw the claims, turn the drawing into equations, work out what the equations imply about data you have not yet seen, and compare.^[The procedure is Saris and Stronkhorst's [@saris1984], and this chapter follows their sequence closely. It is forty years old and has not been improved on.] Two things come out at the end. Estimating the model tells you something about the world *if the model is true*. Testing the model tells you something about the theory.
 
-Draw the claims before writing any algebra. Each variable becomes a box; each claimed effect becomes an arrow; and each endogenous variable receives an extra arrow from a circle, its **disturbance**, of which more in a moment.
+## From words to claims
 
-![A theory of social integration and longevity, after @yang2016, as a path diagram. Straight arrows claim effects; the circles are disturbances collecting everything else that moves each endogenous variable.](diagrams/yang.png){#fig-yang width="75%" fig-align="center"}
+A theory in prose contains two kinds of statement, and the first job is to sort them.
 
-The diagram is not an illustration of the model. The diagram *is* the model, and reading it carefully reveals every commitment the theory makes. Two boxes receive arrows, so the theory explains two variables: inflammation and mortality risk are endogenous. One box receives none: social integration is exogenous, taken as given. And some arrows are missing. Nothing points from inflammation back to integration, for instance, though the sick may well withdraw from social life. A missing arrow is a claim too, the claim that this effect is zero, and by convention every effect not drawn is asserted absent [@saris1984]. Such claims of absence are the most valuable ones a theory makes, because they are the easiest to prove wrong. A theory in which everything affects everything can never be embarrassed by data.
+A **covariation statement** says that two variables go together: the more social integration, the less inflammation. Turn the sentence around and it says the same thing: the less inflammation, the more social integration. That symmetry is the diagnostic. If you can swap the halves and lose nothing, you have a covariation statement.
 
-Which variables must the diagram include? The rules follow from what omission does. A **common cause** of two variables under study can never be left out: omit it, and its work reappears disguised as an effect between them. That is the confounding of @sec-rq-to-interpretation, now in diagram form, and @sec-identification makes it sting. An intervening variable may be dropped harmlessly, its indirect effect then presenting itself as direct. A variable affecting only one box costs nothing but unexplained variance.
+A **causal hypothesis** says that one variable produces a change in another. Saris and Stronkhorst put the difference in terms of force: "a change in one variable (the cause) actually produces a change in another variable (the effect)" [@saris1984]. English marks these claims with verbs like *affect*, *influence*, *raise*, and *determine*, and the sentence does not survive being turned around. "Integration lowers inflammation" and "inflammation lowers integration" are different claims about different worlds, and only one of them justifies telling a health authority to fund community centres.
 
-## From the diagram to equations
+::: {.callout-tip icon="false" title="Exercise 2.1"}
+For each statement, say whether it is a covariation statement or a causal hypothesis, and apply the swap test.
 
-Now the algebra, and the rule could not be shorter: **every box with an arrow pointing into it becomes the left-hand side of one equation, with its incoming arrows on the right.** Two endogenous boxes, two equations. Write $S$ for social integration, $I$ for inflammation, $R$ for mortality risk, and keep every variable standardized (mean 0, standard deviation 1) so that coefficients are comparable.^[Standardization is a convenience, not a commitment. Unstandardized coefficients answer questions in natural units ("one more close relationship corresponds to this many mg/L of C-reactive protein") and travel better across populations; standardized ones compare effects within one analysis. Each converts to the other.]
+(a) The higher a country's income per head, the longer its people live.
+(b) Losing a job raises the risk of a depressive episode.
+(c) Smokers have lower birth weight babies.
+(d) Air pollution damages children's lungs.
+:::
+
+::: {.callout-note collapse="true" icon="false" title="Answer 2.1"}
+(a) Covariation. "The longer a country's people live, the higher its income per head" says the same thing, and both directions are substantively arguable.
+(b) Causal. Swapping gives "a depressive episode raises the risk of losing a job", which is a different claim, and also probably true, which is why studying this needs care about timing.
+(c) Covariation, as written. It reports a difference between groups. Most readers will supply the causal version silently.
+(d) Causal. "Children's lungs damage air pollution" is not a sentence anyone means.
+:::
+
+Once the claims are sorted, three steps produce the theory in a form you can draw [@saris1984]:
+
+1. List every variable that might matter.
+2. Put the variables in causal order.
+3. Say which variables directly affect which.
+
+Causal order usually comes from time, or from the way things move through a system. Social integration in adolescence precedes inflammation measured a decade later, which precedes death. Where the order is not obvious, you are looking at an assumption rather than an observation, and @sec-identification is about what happens then.
+
+Step 3 does more than it appears to. When you say which variables affect which, you are also saying, of every pair you did not connect, that the effect between them is exactly zero. Saris and Stronkhorst state the convention plainly: "It is a convention that effects which are not specified are supposed to be zero" [@saris1984]. This is what makes a theory testable. A picture with an arrow between every pair of variables says nothing, forbids nothing, and cannot be wrong.
+
+Which variables have to be in the model, then? Three rules cover most cases.
+
+- A **common cause** of two variables you have connected can never be left out. Leave it out and its work is attributed to the arrow between them. Socioeconomic position causes both social integration and inflammation; drop it and integration gets the credit.
+- An **intervening variable** may be left out freely. The theory loses detail, and the effect that ran through it becomes part of the direct effect. Nothing is biased.
+- A variable that causes only one of the two, and not the other, may be left out. You lose some explained variance and nothing else.
+
+Every common cause you add has common causes of its own, so the search never ends and you end it. The variables where you stop are the **exogenous** variables: the model explains nothing about them, and their mutual covariation stays in the model as a curved two-headed arrow, unexplained on purpose. Everything the model does explain is **endogenous**.
+
+## Drawing the theory
+
+Now draw it. The conventions are worth using consistently: observed variables in boxes, unobserved ones in circles, a single-headed straight arrow from cause to effect, a curved two-headed arrow for covariation you are not explaining, a bare arrow into each endogenous variable for its **disturbance** (written $\zeta$, "zeta", the same object that appeared as $\varepsilon$ in the regression equations of @sec-rq-to-interpretation), and coefficients written on the arrows. The absence of an arrow is itself a claim.
+
+![The theory of @yang2016 reduced to three variables. Social integration affects inflammation, inflammation affects mortality risk, and integration also acts on risk by routes the model does not name. The coefficients $a$, $b$, $c$ are the quantities the study is trying to learn.](diagrams/yang.png){#fig-yang width="80%" fig-align="center"}
+
+@fig-yang is a stripped-down version of the theory: three variables, three arrows. It says that integration works on mortality risk partly through inflammation ($a$ then $b$) and partly by other means ($c$). It also says several things by omission. Nothing causes social integration inside this model, so integration is exogenous. Nothing causes inflammation except integration and whatever is in the disturbance. And no common cause of any pair has been drawn, which is a strong claim and a false one; I return to it in @sec-identification.
+
+## Writing the equations
+
+Turning the picture into equations takes one rule. **Every variable with an arrow pointing into it is a dependent variable and gets its own equation.** Its predictors are the variables at the tails of those arrows, and its disturbance goes on the end.
+
+In @fig-yang two variables have arrows pointing into them, so there are two equations. Writing $S$ for social integration, $I$ for inflammation, and $R$ for mortality risk:
 
 $$
 \begin{aligned}
 I &= a\,S + \zeta_I \\
-R &= b\,I + c\,S + \zeta_R
+R &= b\,I + c\,S + \zeta_R .
 \end{aligned}
 $$ {#eq-yang}
 
-The letters on the arrows became coefficients, and each carries the theory's claims: the theory expects $a < 0$, $b > 0$, $c < 0$. The $\zeta$ ("zeta") terms are the disturbances, and @saris1984 list exactly what lives inside one: the effects of unknown variables, the effects of known but omitted variables, the intrinsic randomness of human lives, and measurement error. The model claims that integration matters, never that integration is everything. One assumption rides on the disturbances and carries the entire causal reading: **each disturbance must be unrelated to the predictors in its equation.** If some omitted variable, childhood adversity, say, drives both isolation and inflammation, then $\zeta_I$ travels together with $S$ and the assumption fails. No dataset can check this assumption. Its plausibility equals the thoroughness of the hunt for common causes, and the design behind the data.
+Social integration has no equation, because nothing in the model explains it.^[I have dropped the intercepts, which is what happens automatically if you measure every variable as a deviation from its mean. The tracing arithmetic below does not need them. They return when we start predicting individual values.]
 
-Two quieter assumptions also slipped in with the equations, and they are different assumptions, worth prying apart. **Linearity**: each unit of $S$ shifts $I$ by the same amount $a$, at every level of $S$. **Additivity**: the contribution of one cause does not depend on the level of another; nothing in @eq-yang lets integration's effect on risk grow when inflammation is high. A relationship can be linear but non-additive, as in the theory of planned behavior's claim that intention works only given actual control, and additive but nonlinear, as when each additional confidant helps, but less than the one before. The verbal theory said nothing either way; translation forced the choice, and the simplest workable form won. Remember that it was a choice.
+The disturbance does real work. It stands for everything that affects the outcome and is not in the model, and Saris and Stronkhorst list its contents: the effects of unknown variables, the effects of variables known but omitted, the randomness of human behaviour, and measurement error [@saris1984]. That list is worth rereading whenever someone calls $\zeta$ "the error".
 
-::: {.callout-tip icon="false" title="Exercise 2.1"}
-The collective-efficacy theory of Exercise 1.2 has four neighborhood variables: residential turnover, trust, informal social control, and crime, in a causal chain. (a) Which variables are endogenous? (b) Write the equations, one per endogenous variable, with disturbances. (c) The theory as drawn claims turnover affects trust but not, directly, crime. Say in one sentence what data pattern could embarrass this claim of absence.
-:::
+One assumption carries the entire chapter: each disturbance is uncorrelated with the predictors in its own equation, and the disturbances are uncorrelated with each other. Read that as a claim about omitted variables. If something affects inflammation and also affects mortality risk, it sits inside both $\zeta_I$ and $\zeta_R$, the two are correlated, and the assumption is false. Here the chain of @sec-rq-to-interpretation reappears: writing an assumption down does not make it true, and only the design can make it plausible.
 
-::: {.callout-note collapse="true" icon="false" title="Answer 2.1"}
-(a) Trust, informal social control, and crime; turnover is exogenous. (b) With standardized variables: $\text{Trust} = a\,\text{Turnover} + \zeta_1$; $\text{Control} = b\,\text{Trust} + \zeta_2$; $\text{Crime} = c\,\text{Control} + \zeta_3$. (c) A correlation between turnover and crime stronger than the chain can transmit (the product $a \times b \times c$, as the next section shows) would demand a direct path or a common cause that the diagram denies.
-:::
+Two further choices are hidden in the notation, and conflating them is the most common mistake in this material.
 
-## What the theory predicts: the tracing rules
+**Linearity** says that a one-unit change in a cause produces the same change in the outcome wherever you start. It fails when returns saturate: an extra thousand euros a year transforms life at the bottom of the income distribution and is invisible at the top.
 
-Here the translation starts paying rent. Once a theory is a set of linear equations, it makes quantitative predictions about something observable: the correlations among the variables. The recipe for reading those predictions off the diagram is a pair of rules that @saris1984 call the decomposition rules; the trace-following version goes back to Sewall Wright's path analysis [@wright1934].
+**Additivity** says that the effect of one cause does not depend on the value of another. It fails whenever a theory contains the words "only if", "particularly for", or "unless". The theory of planned behaviour in @sec-rq-to-interpretation fails additivity by design, because intention converts to behaviour only when the person has the control to act. Failures of additivity are written as product terms.
 
-> **First decomposition rule.** The model-implied correlation between two variables is the sum, over all valid traces connecting them, of the products of the coefficients along each trace. Traces are classified by their shape: a *direct* effect, an *indirect* effect (forward through intervening variables), a *spurious* component (backward then forward through a common cause), and a *joint* component (through a curved arc).
-
-A valid trace never visits the same variable twice, never goes forward along arrows and then backward, and crosses at most one curved arc. You may walk backward first, against the arrowheads, and then forward; once moving forward, there is no turning back.
-
-> **Second decomposition rule.** The variance of an endogenous variable equals the variance its causes explain plus the disturbance variance; with standardized variables, $1 = R^2 + \operatorname{var}(\zeta)$.
-
-Apply the first rule to @fig-yang with some concrete numbers. Suppose, for teaching purposes rather than as estimates from the paper, that $a = -0.20$, $b = 0.25$, and $c = -0.15$. What correlation between integration and mortality risk does the model imply? Two traces connect $S$ and $R$: the direct path, contributing $c = -0.15$, and the indirect path through inflammation, contributing $a \times b = -0.20 \times 0.25 = -0.05$. The model therefore predicts
-$$
-\rho(S, R) = c + ab = -0.15 - 0.05 = -0.20 .
-$$
-And between inflammation and risk? The direct path contributes $b = 0.25$; the trace backward to integration and forward to risk, $I \leftarrow S \rightarrow R$, has a common cause at its turn and contributes the spurious component $a \times c = (-0.20)(-0.15) = 0.03$; together, $\rho(I, R) = 0.28$. The decomposition tells you what a raw correlation is made of. Anyone who reads the observed inflammation-mortality correlation as "the effect of inflammation" is overstating that effect by the spurious share, and anyone who intervenes on inflammation should expect the smaller number, 0.25, if the model is true.
-
-The same rules run on real numbers. A recent study of 1.2 billion online reviews asked why women rate products more favorably than men, and proposed a mechanism: writing a negative review is a small public confrontation, and women anticipate harsher social consequences for it, a "fear of negative evaluation" [@bayerl2024]. In one of their experiments ($n = 1{,}172$), the standardized estimates were, in our notation with $G$ for gender (1 = woman), $F$ for fear, and $V$ for review submission: $G \rightarrow F$: $a = 0.40$; $F \rightarrow V$: $b = -0.19$; and a direct path $G \rightarrow V$: $c = -0.42$.
+You can have either without the other. A model can be curved in $x$ and still additive; a model can be perfectly straight in both causes and still contain an interaction between them.
 
 ::: {.callout-tip icon="false" title="Exercise 2.2"}
-Practice the mechanics one trace at a time, on the review model. (a) How many valid traces connect $G$ and $F$, and what is the implied $\rho(G,F)$? (b) Why is $F \rightarrow V \leftarrow G$ not a valid trace from $F$ to $G$? (c) Compute the implied $\rho(F,V)$. (d) Recompute it if the direct gender effect had the opposite sign, $c = +0.42$. What happens, and what is the lesson?
+Which assumption does each scenario violate, linearity or additivity? Write the term you would add to the equation.
+
+(a) A drug lowers blood pressure, but only in patients who also take a diuretic.
+(b) Each extra year of schooling raises earnings, and the increment is larger for the years that finish a degree than for the years in between.
+(c) Loneliness raises mortality risk, and the increase is steeper for men than for women.
+(d) The effect of income on life satisfaction is large among the poor and negligible among the rich.
+(e) Finally, work backwards: draw the diagram implied by the equations $M = g\,X + \zeta_M$ and $Y = h\,M + \zeta_Y$, and say what the diagram claims by omission.
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 2.2"}
-(a) One trace, $G \rightarrow F$, so $\rho(G,F) = a = 0.40$. (b) The walk enters $V$ going forward and would have to leave going backward; forward-then-backward is forbidden, because variables are correlated through common causes, not through common effects. (c) Direct $b = -0.19$ plus the spurious trace $F \leftarrow G \rightarrow V$ contributing $a \times c = 0.40 \times -0.42 = -0.168$; together $-0.358$. (d) With $c = +0.42$: $-0.19 + 0.168 = -0.022$. The correlation nearly vanishes while the causal effect stays $-0.19$; components can cancel, so a near-zero correlation does not mean no effect.
+(a) Additivity. Add $\beta\,(\text{drug} \times \text{diuretic})$.
+(b) Linearity. The effect of schooling on earnings is not a constant per year, so add a nonlinear term, for example dummies for completed qualifications or a spline in years.
+(c) Additivity. Add $\beta\,(\text{loneliness} \times \text{male})$.
+(d) Linearity. Add a term such as $\log(\text{income})$ or a quadratic. Note that (b) and (d) say nothing about how the effect of one variable depends on another, and (a) and (c) say nothing about curvature. The two assumptions are independent.
+(e) A chain: $X \rightarrow M \rightarrow Y$, with a disturbance arrow into $M$ and another into $Y$, and no equation for $X$. By omission it claims that $X$ has no direct effect on $Y$, that nothing causes $X$ within the model, and that $\zeta_M$ and $\zeta_Y$ are uncorrelated, which is to say that $M$ and $Y$ share no unmeasured cause.
 :::
 
-Estimation reverses the tracing rules: given observed correlations, find the coefficients that reproduce them. In R, the lavaan package does this for entire equation systems, and feeding it the correlations our review model implies returns the coefficients we started from:
+## Reading the coefficients
+
+Before working out what the model implies, settle what its numbers mean, because published papers assume you know.
+
+An **unstandardized** coefficient is a statement in the original units: a one-unit increase in the predictor goes with a $b$-unit change in the outcome, holding constant the other variables in that equation. Take a real regression, on 189 births recorded at a hospital in Springfield, Massachusetts in 1986 [@venables2002; @hosmer2013]. The data are old and small, and they ship with every installation of R, so you can run everything below as you read:
 
 ```{r}
-#| label: bayerl-lavaan
-library(lavaan)
-R <- matrix(c(
-    1.000,  0.400, -0.496,
-    0.400,  1.000, -0.358,
-   -0.496, -0.358,  1.000),
-  nrow = 3, byrow = TRUE,
-  dimnames = list(c("G", "F", "S"), c("G", "F", "S")))
-model <- "
-  F ~ G
-  S ~ F + G
-"
-fit <- sem(model, sample.cov = R, sample.nobs = 1172)
-round(coef(fit), 2)
+#| label: bwt-lm
+library(MASS)
+fit <- lm(bwt ~ smoke + lwt + ht, data = birthwt)
+round(coef(summary(fit)), 2)
 ```
 
-The matrix holds the three correlations; the model string holds one line per equation, `~` read as "is regressed on"; and the output returns 0.40, $-0.19$, $-0.42$ along with the two disturbance variances.^[The same trick reanalyzes any published correlation or covariance matrix, no raw data required, which makes half the literature your dataset.] With three coefficients facing three correlations, this model reproduces any data perfectly; the fit is a bookkeeping identity. The theory starts risking something the moment an arrow is forbidden. Someone claiming that fear is the whole story, no direct path, would fix $c = 0$, leaving two coefficients to face three correlations, and their model would predict $\rho(G,V) = a \times b$. The data can refuse, and here they do:
+The outcome is birth weight in grams. `smoke` is 1 if the mother smoked during pregnancy, `lwt` is her weight in pounds at her last menstrual period, and `ht` is 1 if she has a history of hypertension. So: babies of smokers weigh 265 grams less on average than babies of non-smokers of the same weight and hypertension status; each additional pound of the mother goes with 5.35 more grams of baby; a history of hypertension goes with 586 grams less.
+
+Say the units out loud, including the "holding constant" clause, which is a statement about this equation and no other. And judge the size over a realistic range rather than per unit. Five grams per pound sounds like nothing; mothers in this sample range from 80 to 250 pounds, so the variable spans about 900 grams of birth weight, which is a great deal.
+
+A **standardized** coefficient does a version of that scaling for you, using the standard deviation rather than the range: it reports the change in standard deviations of the outcome per standard deviation of the predictor.
 
 ```{r}
-#| label: bayerl-test
-fit0 <- sem("F ~ G \n S ~ F", sample.cov = R, sample.nobs = 1172)
-round(fitMeasures(fit0, c("chisq", "df", "pvalue")), 2)
+#| label: bwt-std
+coef(fit)[["lwt"]] * sd(birthwt$lwt) / sd(birthwt$bwt)
 ```
 
-The chi-square statistic measures the gap between the correlations the restricted model can produce and those observed; a true restriction lands the statistic near its degrees of freedom, here 1, and 218 is a resounding refusal. The "fear only" theory dies.^[Conditionally, as always: a test confronts one claim given every other claim in the model, and the surviving model is not thereby true. Other stories reproduce these same three correlations exactly as well, and that unsettling fact is the subject of @sec-identification.]
+A standard deviation means something different in every population, so unstandardized coefficients travel between studies and standardized ones do not. Within one sample, standardized coefficients let you compare predictors measured in different units.
 
-## Interpreting linear coefficients
+Prediction is arithmetic. For a smoker weighing 130 pounds without hypertension,
 
-The fitted equations mean what the model says they mean:
+$$\widehat{\text{bwt}} = 2391.11 - 265.08 \times 1 + 5.35 \times 130 - 586.44 \times 0 = 2822 \text{ grams},$$
 
-> A one-unit increase in $x$ goes with a $\hat\beta$-unit change in $y$, holding the other predictors in that equation constant. Under the model's assumptions, and only under them, "goes with" strengthens to "produces".
+against 3087 grams for an otherwise identical non-smoker.
 
-The strengthening happens outside the arithmetic, in the design and the defense of the disturbance assumption; no software option performs it. Judging a coefficient's *size* takes one more habit: scale by the variable's realistic range. In an analysis of who votes, a coefficient of 0.017 per year of age looks negligible until you notice that fifty years separate the youngest and oldest voters, so age spans $50 \times 0.017 = 0.85$ units of effect, a large difference. Small coefficient, big variable, big effect.
-
-## When the outcome is yes or no: logistic regression
-
-Mortality, employment, voting: many outcomes are binary, and a straight line fitted to a probability eventually predicts nonsense, probabilities below zero or above one. The repair keeps the linear machinery and changes what the line predicts: not the probability but its **log-odds**, also called the logit. Odds are the bookmaker's currency, probability $p$ against its complement, $p/(1-p)$: probability .75 is odds of 3, probability .5 is odds of 1. The logarithm of the odds stretches over the whole number line, so a linear equation can roam freely,
-$$
-\log \frac{P(y = 1)}{1 - P(y = 1)} = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \dots,
-$$
-and any value translates back to a legal probability. This is **logistic regression**, and with linear regression it forms the family of "generalized linear models": one recipe, different links between the linear part and the outcome.
-
-Interpretation costs a little more than before, and two conversions pay most of the bill. First, exponentiate: $e^{\beta}$ is the **odds ratio**, the factor by which one unit of $x$ multiplies the odds. For small coefficients a rule of thumb applies, $e^{\beta} \approx 1 + \beta$, so a coefficient of 0.10 means roughly 10% higher odds per unit; the approximation is decent up to about $|\beta| = 0.3$. Second, for any concrete person, build the linear predictor, then invert the logit, $P = 1/(1 + e^{-\text{logit}})$, which R computes as `plogis()`.
-
-A worked example, from a logistic regression of voting in the last Dutch parliamentary election on data from the LISS panel, a probability-based online panel. All continuous predictors are centered, so zero stands for the sample average; a selection of the output:
-
-| Variable | Coefficient (logit) | Std. error |
-|---|---|---|
-| Constant | 0.359 | 0.196 |
-| Age (centered) | 0.017 | 0.003 |
-| Political interest (1–3) | 0.915 | 0.088 |
-| Education level (1–6) | 0.229 | 0.038 |
-| Female | 0.054 | 0.103 |
-
-: Logistic regression of voting (1 = voted) on selected predictors. {#tbl-voting}
-
-What is the probability that a woman votes? Centering means the average person has zeros everywhere except the dummy variables, so an otherwise average woman has logit $0.359 + 0.054 = 0.413$:
+Sometimes the question is not about one coefficient but about a block of them. To ask whether a *set* of predictors earns its place, fit the model with and without the set and compare the two fits with an $F$ test. This is the **block test**:
 
 ```{r}
-#| label: voting-probs
-p_women <- plogis(0.359 + 0.054)
-p_men   <- plogis(0.359)
-round(c(women = p_women, men = p_men, difference = p_women - p_men), 3)
+#| label: bwt-anova
+anova(lm(bwt ~ smoke + lwt, data = birthwt), fit)
 ```
 
-A 60.2% chance against 58.9%, a difference of 1.3 percentage points. Keep both scales in view: the same odds ratio moves probabilities most near 50% and barely at all near the extremes, so always translate coefficients into probabilities for realistic cases before judging them.
+Adding hypertension improves the fit more than chance would explain ($F = 7.53$, $p = 0.007$). @sec-anova makes this comparison the organizing idea of a whole chapter.
 
-Interactions are where logistic tables bite hardest, and they reward slowing down. @forster2016 asked whether vocational education, compared with general education, helps employment early in working life but hurts later, when specific skills age badly. Their model for men includes, among other terms:
+## What the theory implies about the data
 
-| Term | Coefficient |
-|---|---|
-| Age (age 16 = value 0) | 0.208 |
-| Vocational (Ref. = general) | 0.487 |
-| Age $\times$ vocational | $-0.017$ |
+Now the payoff. The model in @fig-yang has three unknown numbers. The data contain three correlations. What connects them?
 
-: Selected coefficients from a pooled logistic regression of employment among men in 24 countries [@forster2016]. {#tbl-forster}
+To find the correlation the model implies between two variables, written $\rho$ ("rho"):
 
-Resist reading "the vocational effect is 0.487". In a model with an interaction, the vocational effect is a *line*, $0.487 - 0.017 \times \text{Age}$, and the parenthetical "(age 16 = value 0)" tells you where the line starts: at age sixteen the effect is $+0.487$, an early advantage, exactly as hypothesized. Each year of age eats $0.017$ of it. The advantage runs out where $0.487 - 0.017 \times \text{Age} = 0$, at $0.487/0.017 \approx 28.6$ years *after age sixteen*, so around age 45 the advantage turns into a penalty, the paper's second hypothesis. Every step is small; the art is only in respecting the coding and keeping track of which terms belong to the effect at hand. The next two exercises walk the two standard computations slowly.
+1. Find every **trace** between them. A trace is a route through the diagram.
+2. Multiply the coefficients along each trace.
+3. Add the traces up.
+
+A trace is valid when it obeys three restrictions. It may go backwards along arrows and then forwards, but never forwards and then backwards. It may pass through any variable only once. It may include at most one curved two-headed arrow, and a curved arrow may join two disturbances as well as two exogenous variables, which is how a model says that two endogenous variables share an unmeasured cause. Sewall Wright set all of this out in 1934, and his gloss on the first restriction is worth memorizing: "That two factors affect the same dependent variable does not contribute to the correlation between them" [@wright1934].^[Wright's own statement covers the first and third restrictions; the once-per-variable rule is the modern working version. The rules as given here apply to **recursive** models, meaning models without reciprocal effects or feedback loops. With arrows running both ways between two variables the intuitive rules fail and the implied correlations have to be derived algebraically [@saris1984].]
+
+Apply this to @fig-yang. Suppose, for the sake of arithmetic, that the true values are $a = -0.20$, $b = 0.30$, and $c = -0.15$, with all three variables standardized.
+
+Between $S$ and $I$ there is one trace, the arrow $a$, so $\rho_{SI} = -0.20$. You might be tempted by the route $S \rightarrow R \leftarrow I$, but that goes forwards along $c$ and then backwards along $b$, which the first restriction forbids. It is forbidden for a reason: $S$ and $I$ both cause $R$, and two causes of the same thing need not be correlated at all.
+
+Between $S$ and $R$ there are two traces: the direct arrow $c$, and the route through inflammation, $a \times b$.
+
+$$\rho_{SR} = c + ab = -0.15 + (-0.20)(0.30) = -0.21.$$
+
+Between $I$ and $R$ there are also two: the direct arrow $b$, and the route backwards to $S$ and then forwards to $R$, which is $a \times c$.
+
+$$\rho_{IR} = b + ac = 0.30 + (-0.20)(-0.15) = 0.33.$$
+
+Every implied correlation is a sum of contributions of exactly four kinds, and naming them is the point of the exercise [@saris1984]. A **direct effect** is a single arrow. An **indirect effect** is a chain of arrows running the same way, like $a \times b$ above. A **spurious** contribution runs backwards to a common cause and then forwards again, like $a \times c$ in $\rho_{IR}$. And a **joint** contribution passes through a curved arrow between exogenous variables, which this model does not have. Direct plus indirect is the **total effect**, the thing you would change by intervening. Spurious and joint contributions are not effects of anything on anything, and they are sitting inside the correlation regardless.
+
+Look at what happened to $\rho_{IR}$. The causal effect of inflammation on mortality risk is 0.30, and the correlation between them is 0.33. The gap is confounding, manufactured by a variable that is in the model and that we know about. If it were not in the model we would read 0.33 as the effect and never know.
+
+Finding every trace is easier with a procedure. Start at one variable. Walk backwards along arrows as far as you can, taking at most one curved arrow and never revisiting a variable; from every point you reach, including the starting point, walk forwards to the other variable. Every route built that way is a trace, and there are no others. Two examples of routes that fail: in @fig-yang, $S \rightarrow R \leftarrow I$ turns around at $R$, which is forwards then backwards; and a route that left $I$, went back to $S$, forwards to $R$, and then back to $I$ again would visit $I$ twice and is not a trace, which is what stops the rules from generating infinitely many routes in a model with a loop of arrows.
 
 ::: {.callout-tip icon="false" title="Exercise 2.3"}
-Using the women's version of the model (constant $-0.880$; Vocational $0.229$; Age $\times$ vocational $-0.013$; parental tertiary education $0.072$; reference categories: general education, lower secondary schooling, parents with primary education), compute step by step the employment probability of a 16-year-old woman in vocational education whose parents completed tertiary education. (a) Which terms enter her linear predictor, and which are zero, and why? (b) Sum the logit. (c) Convert to a probability.
+Practice the mechanics one trace at a time, on @fig-yang with the same values.
+
+(a) How many valid traces connect $S$ and $I$, and what is the implied $\rho_{SI}$?
+(b) Why is $S \rightarrow R \leftarrow I$ not a valid trace from $S$ to $I$?
+(c) Recompute $\rho_{IR}$ if the direct effect had the opposite sign, $c = +0.15$. What happens, and what is the lesson?
+(d) What would $\rho_{IR}$ be if $S$ had no direct effect on $R$ at all?
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 2.3"}
-(a) At age 16 the age variable equals 0, so the age term and the interaction vanish; "lower secondary" is her own-education reference and contributes nothing; entering are the constant, Vocational (0.229), and parental tertiary (0.072). (b) $-0.880 + 0.229 + 0.072 = -0.579$. (c) `plogis(-0.579)` $\approx 0.36$. The classic mistakes: adding coefficients for reference categories, keeping the interaction alive at age 16, and stopping at the logit as if it were the answer.
+(a) One, the arrow itself, so $\rho_{SI} = a = -0.20$.
+(b) It runs forwards from $S$ to $R$ and then backwards from $R$ to $I$. $R$ is a common effect of the two, and common effects do not induce correlation between their causes. (They do induce one *among units selected on $R$*, a separate trap with its own name, collider bias.)
+(c) $\rho_{IR} = 0.30 + (-0.20)(0.15) = 0.27$. Flipping the sign of a path that is not on the direct route still changes the correlation, and here it moves the other way, so the observed correlation now understates the effect. A correlation is a sum of contributions from the whole model, and no part of it can be read off in isolation.
+(d) With $c = 0$ the spurious trace vanishes and $\rho_{IR} = b = 0.30$. The correlation would then be the effect. That is what "no confounding" buys, and it is bought with an assumption rather than with data.
 :::
 
+The rules earn their keep on models with more structure. The classical twin design puts them to work on a question no experiment could touch. Identical twins share essentially all their genes; fraternal twins share half on average. So model each twin's trait as the sum of an additive genetic factor $A$, an environment $C$ shared by both twins, and an environment $E$ unique to each [@rijsdijk2002]. All three are unobserved, which is why @fig-ace draws them in circles.
+
+![The ACE model for a pair of fraternal twins. The correlation between the two genetic factors is fixed at 0.5 for fraternal twins and at 1 for identical twins. The shared environment is one variable acting on both; the unique environments are unconnected.](diagrams/ace.png){#fig-ace width="80%" fig-align="center"}
+
+$$
+\begin{aligned}
+y_1 &= 0.7\,A_1 + 0.5\,C + 0.5\,E_1 \\
+y_2 &= 0.7\,A_2 + 0.5\,C + 0.5\,E_2 .
+\end{aligned}
+$$
+
+The 0.5 on the curved arrow was not estimated from these twins; genetics fixes it. Trace between $y_1$ and $y_2$. One route runs back through $C$ and forward again: $0.5 \times 0.5 = 0.25$. Another runs back to $A_1$, across the curved arrow, and forward from $A_2$: $0.7 \times 0.5 \times 0.7 = 0.245$. No route uses $E$, since the unique environments are unconnected, and no route may use two curved arrows, which is the third restriction doing its work. The sum is $0.495$.^[Strictly this is the implied covariance. The implied variance of each twin's score is $0.49 + 0.25 + 0.25 = 0.99$, so the implied correlation is $0.495/0.99 = 0.50$. Tracing rules give correlations when the variables are standardized; here they very nearly are, and the gap is 1 percent. With larger loadings it would be larger.]
+
+Now change one number. For identical twins the genetic correlation is 1 instead of 0.5, and nothing else about the model changes. The genetic trace becomes $0.7 \times 1 \times 0.7 = 0.49$, and the implied covariance is $0.25 + 0.49 = 0.74$, a correlation of $0.747$. The model therefore predicts that identical twins will resemble each other considerably more than fraternal twins do, and by a specific amount. Comparing the two observed correlations is how heritability gets estimated; across 17,804 traits and fifty years of twin studies, the average reported heritability is 49 percent [@polderman2015].
+
 ::: {.callout-tip icon="false" title="Exercise 2.4"}
-From @tbl-forster: (a) verify the age at which the vocational effect reverses for men; (b) compute the vocational effect at age 60; (c) state the odds-ratio reading of the age-16 vocational effect, exactly and by the rule of thumb; (d) explain in one sentence why the rule of thumb misbehaves here.
+Using the ACE diagram, suppose a trait has a genetic loading of 0.6, a shared-environment loading of 0.4, and a unique-environment loading of 0.69.
+
+(a) Write the two equations.
+(b) Derive the implied covariance between the twins' scores for fraternal twins, showing each trace.
+(c) Do the same for identical twins.
+(d) Suppose children of more educated parents are better able to benefit from favourable genetics. Which assumption of the model does that violate?
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 2.4"}
-(a) $0.487/0.017 \approx 28.6$ years past sixteen, roughly age 44.6. (b) The age variable equals 44, so $0.487 - 0.017 \times 44 \approx -0.26$, a penalty of about a quarter logit. (c) Exactly $e^{0.487} \approx 1.63$, 63% higher odds; the rule of thumb says 49%. (d) At $\beta \approx 0.5$ the coefficient sits far outside the small-coefficient range where $e^{\beta} \approx 1 + \beta$ holds.
+(a) $y_1 = 0.6A_1 + 0.4C + 0.69E_1$ and $y_2 = 0.6A_2 + 0.4C + 0.69E_2$.
+(b) Two traces. Through the shared environment: $0.4 \times 0.4 = 0.16$. Through the genetic factors, across the curved arrow: $0.6 \times 0.5 \times 0.6 = 0.18$. Total $0.34$. (The implied variance is $0.36 + 0.16 + 0.476 = 1.00$, so the correlation is $0.34$ as well.)
+(c) The genetic trace becomes $0.6 \times 1 \times 0.6 = 0.36$, so the total is $0.52$.
+(d) Additivity. The claim is that the effect of $A$ on the trait depends on the value of another variable, parental education, which is a product term. Answering "linearity" would be a different claim: that the effect of $A$ changes as $A$ itself changes.
 :::
 
-Generalized linear models extend past the binary case. When @casedeaton2017 documented the rise of "deaths of despair" among middle-aged white Americans, the outcomes were mortality *rates* by cohort, education, and year, modeled with the same recipe under a different link, and the analysis turned on interactions: mortality rising for those without a university degree while falling for graduates. The one lesson to carry over is unchanged: with any nonlinear link, coefficients speak an odds- or rate-language, and conclusions should be translated back to probabilities or rates for concrete cases before anyone acts on them.
+## Estimating and testing
 
-## What this chapter left out, on purpose
+The tracing rules run in both directions. Given parameters they produce correlations; given correlations they can sometimes be solved for parameters. That is what fitting a structural model does, and `lavaan` does it in a few lines. To keep the truth in view I generate the data from the model of @fig-yang, with the same values as before.
 
-The models here are linear and additive, with a link function when the outcome demands one. The world is not, and you may wonder why a book written now spends a chapter this way when random forests fit curves automatically and agent-based models skip equations altogether, simulating individuals following rules. Three reasons. The chain of @sec-rq-to-interpretation is fully general: flexible methods and simulations answer questions through designs and assumptions in exactly the same way, only with the logic buried under more machinery, so we learn it where it is visible. At the sample sizes common in social and health research, the data cannot pay for much flexibility anyway; a linear approximation estimated precisely beats a true curve estimated as noise. And when data are plentiful and prediction is the goal, the later chapters supply the flexible tools, which will lean on everything learned here.
+```{r}
+#| label: sim-yang
+library(lavaan)
+set.seed(11)
+n <- 2000
+integration  <- rnorm(n)
+inflammation <- -0.20 * integration + rnorm(n, sd = sqrt(1 - 0.04))
+risk         <-  0.30 * inflammation - 0.15 * integration +
+                 rnorm(n, sd = sqrt(1 - 0.1305))
+d <- data.frame(integration, inflammation, risk)
 
-The deeper omission is a warning. Estimates say something about the world if the model is true, and tests say something about the theory, but a model that survives its tests is not thereby true: other models, saying different things about the world, can fit the same data exactly as well. How bad can that get? The next chapter answers: arbitrarily bad, and the design is the only way out.
+theory <- "inflammation ~ a * integration
+           risk         ~ b * inflammation + c * integration"
+fit_theory <- sem(theory, data = d)
+standardizedSolution(fit_theory)[1:3, c("lhs", "rhs", "est.std", "se")]
+```
+
+The three lines that build the data are @eq-yang with numbers in place of letters. The model string is the same equations again, in the notation `lavaan` reads, with names attached to the three coefficients. The estimates are $-0.170$, $0.287$, and $-0.155$, against true values of $-0.20$, $0.30$, and $-0.15$, which is as close as 2,000 observations allow.
+
+Now check the tracing rules against the machine. Taking the estimates as given, the implied correlations are $\hat a = -0.170$, $\hat b + \hat a \hat c = 0.313$, and $\hat c + \hat a \hat b = -0.204$:
+
+```{r}
+#| label: implied-cor
+round(cor(d), 3)
+```
+
+Of course they match. This model has three parameters and three correlations to fit, so it can always reproduce them exactly, whatever they are. A recursive model in this state is called **saturated** or **just identified**: it has no degrees of freedom, it cannot fail, and its perfect fit means nothing at all.
+
+Counting is how you tell in advance. With $k$ observed variables there are $k(k+1)/2$ variances and covariances to fit, or $k(k-1)/2$ correlations if everything is standardized; count the free parameters and subtract. A model with more parameters than moments cannot possibly be identified, and a model with the same number can fit anything. Saris and Stronkhorst are careful to add that passing the count is necessary and not sufficient, a point @sec-identification collects on.
+
+To learn something from fit, the theory must forbid something. Suppose the theory had been bolder and claimed that integration works on mortality *only* through inflammation, so that $c = 0$. Now there are two parameters for three correlations, one degree of freedom is left over, and the leftover equation is a prediction the data can refuse.
+
+```{r}
+#| label: test-claim
+claim <- "inflammation ~ a * integration
+          risk         ~ b * inflammation"
+fitMeasures(sem(claim, data = d), c("chisq", "df", "pvalue"))
+```
+
+The data refuse. A chi-square of 52.5 on one degree of freedom says that no values of $a$ and $b$ can reproduce these three correlations, and the reason is that this world does have a direct effect. Generate a world in which $c$ really is zero, fit the same claim, and the chi-square drops to 0.29 with a p-value of 0.59.
+
+```{r}
+#| label: test-claim-true
+set.seed(12)
+inflammation0 <- -0.20 * integration + rnorm(n, sd = sqrt(1 - 0.04))
+risk0         <-  0.30 * inflammation0 + rnorm(n, sd = sqrt(1 - 0.09))
+d0 <- data.frame(integration, inflammation = inflammation0, risk = risk0)
+fitMeasures(sem(claim, data = d0), c("chisq", "df", "pvalue"))
+```
+
+Three lessons come out of this, and they matter more than the arithmetic.
+
+The test tests the *model*, not a coefficient. Rejection says that the set of restrictions is wrong somewhere, and says nothing about where. Saris and Stronkhorst make the corresponding point about individual estimates: "the results of the tests are always conditional on the model that has been fitted to the data" [@saris1984]. A coefficient that is significant in one specification can vanish in another, and neither result is the truth about the world.
+
+Failure to reject is not proof. A test with low power fails to reject nearly everything, which is why Saris and Stronkhorst spend a whole chapter arguing that a model test without a power calculation cannot be interpreted [@saris1984].
+
+And fit is not truth. Many different models imply exactly the same correlations, so passing a fit test puts a model into a large club rather than crowning it. With seven variables there are $7! = 5{,}040$ different causal orderings, and every one of them fits any dataset equally perfectly. @sec-identification takes this apart and shows what to do about it.
+
+## When the outcome is not a quantity
+
+Everything so far assumed outcomes you can add up. Plenty of outcomes cannot be: whether a baby is born underweight, whether a person votes, whether a patient survives the year. Code such an outcome 0 and 1, fit a straight line, and two things go wrong. The fitted values run below 0 and above 1, where no probability lives. And the model claims that a unit of the predictor changes the probability by the same amount everywhere, which cannot hold near the ends, since a probability of 0.98 has almost no room left to rise.
+
+The fix is to model a transformation of the probability instead. Start with the **odds**, the probability of the event divided by the probability of its absence. A probability of 0.5 is odds of 1; a probability of 0.8 is odds of 4, or "four to one on". Odds run from 0 to infinity, which removes the ceiling but not the floor. Take the logarithm and you get the **log-odds**, or **logit**, which runs from minus infinity to plus infinity and is symmetric about zero. Now a straight line is safe:
+
+$$\log \frac{P(y_i = 1)}{1 - P(y_i = 1)} = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \dots$$
+
+This is **logistic regression**, and it is the most used member of the family of **generalized linear models**: a linear predictor, plus a function that connects it to the scale the outcome actually lives on.
+
+The birth-weight data provide the same question in binary dress. `low` marks a birth weight under 2.5 kilograms, which happened to 59 of the 189 babies.
+
+```{r}
+#| label: bwt-glm
+fit_low <- glm(low ~ smoke + ht + lwt, family = binomial, data = birthwt)
+round(cbind(coef = coef(fit_low), odds_ratio = exp(coef(fit_low))), 3)
+```
+
+Read the coefficient on smoking three ways, from most literal to most useful.
+
+*On the log-odds scale.* Smoking during pregnancy goes with 0.684 higher log-odds of low birth weight, holding the mother's weight and hypertension constant. True, and almost meaningless to a human being.
+
+*As an odds ratio.* Exponentiate: $\exp(0.684) = 1.98$. The odds of a low birth weight are about twice as high for smokers. This is the number papers report, and it is why regression tables in epidemiology so often carry a column headed OR. A rule of thumb helps for small coefficients: when $b$ is under about 0.2, $\exp(b) - 1 \approx b$, so a coefficient of 0.05 means roughly a 5 percent increase in the odds. It breaks down quickly as $b$ grows, and 0.684 is well past the point where it breaks, since $\exp(0.684)$ is 98 percent higher odds rather than 68 percent.
+
+*As a probability.* An odds ratio of 2 does not mean twice the probability. Do the conversion properly: add up the linear predictor for a specific person, call it $\eta$ ("eta"), then apply the inverse of the logit, $p = 1/(1 + e^{-\eta})$, which R calls `plogis`. For a smoker weighing 130 pounds with no history of hypertension,
+
+$$\eta = 1.084 + 0.684 \times 1 + 1.822 \times 0 - 0.018 \times 130 = -0.57,$$
+
+so $p = 1/(1 + e^{0.57}) = 0.36$. Software will do the same job with the unrounded coefficients:
+
+```{r}
+#| label: bwt-predict
+mothers <- data.frame(smoke = c(1, 0), ht = 0, lwt = 130)
+round(predict(fit_low, newdata = mothers, type = "response"), 3)
+```
+
+The non-smoker's probability is 0.22. So the odds ratio of 1.98 amounts to a difference of 14 percentage points, for this profile. Move to a different profile and the percentage-point difference changes while the odds ratio does not, which is the whole reason logistic coefficients feel slippery.
+
+The rest of the family works the same way with a different link. Counts and rates take a logarithm, so a coefficient becomes a multiplier on the rate: 0.10 means a rate 10 percent higher. Case and Deaton used models of this kind to show that mortality in middle age rose through the 2000s for Americans without a four-year degree while it fell for those with one, driven by drug overdose, suicide, and alcoholic liver disease [@casedeaton2017].
+
+::: {.callout-tip icon="false" title="Exercise 2.5"}
+Using the fitted model above (intercept 1.084, smoke 0.684, ht 1.822, lwt $-0.018$):
+
+(a) What is the predicted probability of low birth weight for a non-smoking mother of 150 pounds with a history of hypertension?
+(b) And for the same mother without hypertension?
+(c) Express the difference as an odds ratio and as a difference in probabilities.
+(d) Which of the two numbers in (c) would you put in an abstract, and why?
+:::
+
+::: {.callout-note collapse="true" icon="false" title="Answer 2.5"}
+(a) $\eta = 1.084 + 0 + 1.822 - 0.018 \times 150 = 0.21$, so $p = 1/(1 + e^{-0.21}) = 0.55$.
+(b) $\eta = 1.084 - 2.70 = -1.62$, so $p = 0.17$.
+(c) The odds ratio is $\exp(1.822) = 6.18$. The difference in probabilities is $0.55 - 0.17 = 0.38$, that is 38 percentage points.
+(d) Both, and if only one, the probability difference, since it is on the scale of the decision anyone is making. The odds ratio is stable across profiles and is the right number for comparing studies. It is also routinely misread as a risk ratio, which overstates the effect whenever the outcome is common, as it is here.
+:::
+
+Published tables are less tidy than this one. Forster, Bol and van de Werfhorst asked whether vocational education helps or harms employment over a career, using the international survey of adult skills known as PIAAC, in 22 countries, with 52,677 men and 57,955 women [@forster2016]. They proposed that vocational schooling gives a head start early on, when specific skills are worth something to an employer, and becomes a liability later, when those specific skills go obsolete while general education keeps paying. Here is the heart of their table.
+
+| Coefficient (log-odds) | Men (2) | Men (3) | Women (2) | Women (3) |
+|---|---|---|---|---|
+| Age (age 16 = value 0) | 0.209 | 0.208 | 0.164 | 0.191 |
+| Age squared (divided by 10) | −0.044 | −0.043 | −0.034 | −0.033 |
+| Vocational (ref. = general) | 0.432 | 0.487 | 0.229 | 0.277 |
+| Age × vocational | −0.018 | −0.017 | −0.013 | −0.013 |
+| Numeracy | | 0.741 | | 0.887 |
+| Age × numeracy | | −0.001 | | −0.011 |
+| Upper or post secondary (ref. = lower secondary) | 0.700 | 0.478 | 0.736 | 0.572 |
+| Tertiary | 1.229 | 0.839 | 1.292 | 1.004 |
+| Parental secondary (ref. = primary) | 0.095 | 0.018 | 0.112 | 0.063 |
+| Parental tertiary | 0.046 | −0.082 | 0.072 | −0.021 |
+| Constant | −0.796 | −2.555 | −0.880 | −3.052 |
+
+: Employment as a function of education type and age, from @forster2016, models (2) and (3), with country fixed effects. Standard errors omitted here. Model (3) adds numeracy and its interaction with age. {#tbl-forster}
+
+Three features of @tbl-forster change the arithmetic and are easy to miss. Age is coded so that 16 equals zero, so the constant describes a 16-year-old rather than a newborn. Age squared has been divided by 10 to keep the printed digits readable. And three separate education variables are in play: the *type* of education (vocational, with general as the reference), the *level* the person reached (with lower secondary as the reference), and the level their parents reached (with primary as the reference).
+
+Take model (3) for men. The effect of vocational education on the log-odds of employment, at age $16 + t$, is
+
+$$0.487 - 0.017\,t .$$
+
+At the start of a career the effect is positive. It shrinks by 0.017 each year, and it crosses zero when $0.487 = 0.017\,t$, that is at $t = 28.6$ years, or around age 45. The authors report the same figure. After that, vocational education goes with lower employment odds than general education. Both halves of their theory are visible in two numbers, and neither is visible in either number alone.
+
+::: {.callout-tip icon="false" title="Exercise 2.6"}
+Stay with @tbl-forster, and use the column for women, model (2), throughout.
+
+(a) Take it in three steps. What is the effect of vocational education on the log-odds at age 16? By how much does it change per year? At what age does it cross zero?
+(b) What are the odds ratio and its interpretation at age 16?
+(c) What is the probability of employment for a 16-year-old woman in vocational education, whose own education is lower secondary and whose parents completed tertiary education?
+(d) Why does the age-squared row play no part in (a)?
+:::
+
+::: {.callout-note collapse="true" icon="false" title="Answer 2.6"}
+(a) At age 16 the effect is $0.229$, since the interaction term is multiplied by zero. It falls by $0.013$ per year. It reaches zero at $0.229/0.013 = 17.6$ years after 16, so at about age 34.
+(b) $\exp(0.229) = 1.26$: at 16, a woman with vocational education has 26 percent higher odds of employment than an otherwise identical woman with general education.
+(c) Assemble the linear predictor from the terms that apply and no others. Constant $-0.880$; vocational $+0.229$; age and age squared are zero, so their coefficients contribute nothing, and so does the interaction; lower secondary is the reference category for the level variable and contributes nothing; parental tertiary $+0.072$. Total $-0.579$, so $p = 1/(1 + e^{0.579}) = 0.36$.
+(d) Age squared applies to everyone at a given age regardless of which school they went to, so it enters both sides of the comparison and cancels. Only terms involving the vocational variable belong in the calculation of the vocational effect.
+:::
+
+A last warning about generalized linear models and the tracing rules. The rules multiply coefficients along a trace, and that works because each coefficient means the same kind of thing. Once a link function enters, coefficients on different arrows live on different scales. A published mediation diagram may show an ordinary regression coefficient running into the mediator and log-odds coefficients running out of it [@bayerl2024]; multiplying those two numbers produces something with no clear interpretation. @sec-identification returns to what replaces the product in that case.
+
+## Beyond the straight line
+
+Straight lines are a small corner of the space of models. Agent-based models specify no equations at all; random forests, boosted trees, Gaussian processes and neural networks fit shapes that no one writes down. All of these exist and later chapters use some of them.
+
+The logic is unchanged: those methods also answer a question by combining data with assumptions, and their assumptions are warranted by a design or not warranted at all. The logic is simply harder to see through the machinery. Flexibility also has to be paid for in data, and the bill is steeper than most people expect: pinning down an interaction commonly takes about sixteen times the sample a main effect needs, because interactions tend to be about half the size and their standard errors about twice as large, and estimating an unknown curve takes more again. In the sample sizes normal in social and health research, a linear additive model is often all the data can support, whatever the truth may be, and over the range most predictors actually cover a straight line is frequently a good approximation anyway.
+
+What generalized linear models buy you is that every part is inspectable. You can read a coefficient, trace a path, work out what the model implies about a correlation you have not looked at yet, and discover that the implication is false. @sec-identification shows where that sequence stops working, and why no amount of data restarts it.
 
 ## Test yourself {.unnumbered}
 
 ::: {.callout-tip icon="false" title="Exercise 2.A"}
-A classic model in behavior genetics explains the IQ scores of twin pairs, $y_1$ and $y_2$, by a genetic factor for each twin ($A_1$, $A_2$), a shared environment ($C$, the same variable for both), and unique environments ($E_1$, $E_2$), all standardized and mutually independent except that $A_1$ and $A_2$ correlate 0.5 in fraternal twins. Loadings: 0.7 for $A$, 0.5 for $C$, 0.5 for $E$, identical for both twins.
+@fig-schooling shows a four-variable model with standardized coefficients. Parental education ($P$) and neighbourhood deprivation ($D$) are exogenous and correlated at $-0.30$. Both affect a child's reading score at age 7 ($V$). Reading score affects qualifications at 18 ($Q$), and parental education also affects qualifications directly.
 
-(a) Draw the diagram and write the equation for each observed variable.
-(b) Derive the implied correlation between $y_1$ and $y_2$, showing your traces.
-(c) In identical twins $A_1$ and $A_2$ correlate 1. Derive the implied twin correlation in that group.
-(d) Suppose people increasingly select environments matching their genes, so that $A_1$ and $E_1$ become correlated. What changes in the diagram, and which new component enters the implied correlation between $A_1$ and $y_1$?
+![A model for parental education, neighbourhood deprivation, reading at 7, and qualifications at 18.](diagrams/schooling.png){#fig-schooling width="85%" fig-align="center"}
+
+(a) Which variables are endogenous? Write the equations, including disturbances.
+(b) Derive the implied correlation between parental education and reading score, showing every trace and naming its kind.
+(c) Derive the implied correlation between parental education and qualifications.
+(d) Derive the implied correlation between neighbourhood deprivation and qualifications.
+(e) How many free parameters does the model have, and how many correlations are there to fit? What follows for testing it?
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 2.A"}
-(a) $y_1 = 0.7A_1 + 0.5C + 0.5E_1$; $y_2 = 0.7A_2 + 0.5C + 0.5E_2$. (b) Trace through the shared environment: $0.5 \times 0.5 = 0.25$; trace through the genetic arc: $0.7 \times 0.5 \times 0.7 = 0.245$; sum 0.495. (c) $0.25 + 0.7 \times 1 \times 0.7 = 0.74$. The gap between 0.74 and 0.495 is what lets researchers separate genes from environments. (d) A curved arc between $A_1$ and $E_1$; the implied $\rho(A_1, y_1)$ gains a joint component, $\rho(A_1,E_1) \times 0.5$, on top of the direct 0.7, so the loading no longer equals the gene-IQ correlation.
+(a) $V$ and $Q$ are endogenous: $V = 0.35P - 0.20D + \zeta_V$ and $Q = 0.50\,V + 0.25P + \zeta_Q$.
+(b) Two traces. The direct effect, $0.35$; and a joint contribution across the curved arrow to $D$ and then forward to $V$, $(-0.30)(-0.20) = 0.06$. Total $0.41$.
+(c) Three traces from $P$ to $Q$: the direct effect, $0.25$; the indirect effect through reading, $0.35 \times 0.50 = 0.175$; and a joint contribution across the curved arrow to $D$, then to reading, then to qualifications, $(-0.30)(-0.20)(0.50) = 0.03$. Total $0.455$.
+(d) Three traces from $D$ to $Q$: the indirect effect through reading, $(-0.20)(0.50) = -0.10$; a joint contribution across the curved arrow to $P$ and then directly to $Q$, $(-0.30)(0.25) = -0.075$; and a joint contribution across the curved arrow to $P$, then to reading, then to $Q$, $(-0.30)(0.35)(0.50) = -0.0525$. Total $-0.2275$.
+(e) Standardized, four variables give $4 \times 3/2 = 6$ correlations. The free parameters are the four path coefficients and the exogenous correlation, so five. One degree of freedom is left, and exactly one claim of absence is spending it: there is no direct arrow from $D$ to $Q$. The model predicts $\rho_{DQ}$ from the other five numbers, and the data can refuse.
 :::
 
 ::: {.callout-tip icon="false" title="Exercise 2.B"}
-Return to the social-integration model of @eq-yang with the illustrative values $a = -0.20$, $b = 0.25$, $c = -0.15$.
+A logistic regression predicts whether a patient attends a scheduled outpatient appointment. The coefficients are: constant $0.85$; age in years, centred at 50, $0.012$; distance to the hospital in kilometres $-0.031$; previous no-show (1 = yes) $-1.10$; and an interaction between previous no-show and distance of $-0.015$.
 
-(a) Compute the share of the integration-mortality correlation that runs through inflammation.
-(b) A colleague estimates the effect of inflammation on mortality by the raw correlation between the two. By how much do they err, and why?
-(c) Mortality is a yes/no outcome over any fixed window. Which two assumptions of the linear equations does this strain, and what is the standard repair?
-(d) Name one plausible common cause omitted from the diagram, and state which coefficient it would bias and in which direction.
+(a) Interpret the distance coefficient, and judge whether it is substantively large. State what you had to assume to judge it.
+(b) What is the predicted probability of attendance for a 50-year-old living 10 km away with no previous no-show?
+(c) And for an otherwise identical patient who has failed to attend before?
+(d) At what distance does the effect of a previous no-show reach $-2$ on the log-odds scale?
+(e) The clinic wants to know whether sending reminders would raise attendance. What, if anything, does this model tell them?
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 2.B"}
-(a) Indirect over total: $(-0.05)/(-0.20) = 0.25$, a quarter of the association, if the model is true. (b) They report $0.28$ where the causal coefficient is $0.25$; the excess is the spurious component through integration, $ac = 0.03$. (c) Linearity (a straight line escapes the 0-1 range) and the constant-effect reading that goes with it; the repair is a generalized linear model, logistic regression. (d) For example, socioeconomic status: wealth buys both social opportunities and healthier bodies, so omitting it inflates $|c|$ (and plausibly $|a|$); childhood adversity works similarly. Any defensible example earns the point if the biased path and direction are argued.
+(a) Each extra kilometre lowers the log-odds of attendance by 0.031, holding the other variables constant, so the odds fall by a factor $\exp(-0.031) = 0.97$, about 3 percent per kilometre. Per kilometre that is small; over a realistic range it is not. If patients live between 1 and 40 km away, the span is $39 \times 0.031 = 1.21$ log-odds, a factor of 3.3 in the odds. Judging size requires knowing the range the variable actually covers, which the coefficient alone does not tell you.
+(b) $\eta = 0.85 + 0.012 \times 0 - 0.031 \times 10 = 0.54$, so $p = 0.63$.
+(c) $\eta = 0.85 - 0.31 - 1.10 - 0.015 \times 10 = -0.71$, so $p = 0.33$. The interaction applies only to patients with a previous no-show, and at 10 km it contributes $-0.15$.
+(d) The effect of a previous no-show at distance $d$ is $-1.10 - 0.015d$. Setting this to $-2$ gives $d = 0.90/0.015 = 60$ km.
+(e) Nothing directly. Every coefficient here describes differences between patients who differ in these characteristics, and reminders are not among them. The model can point at whom to remind, which is a prediction question, and it cannot say what a reminder would do, which is a causal question about an intervention that was never varied. @sec-explanation-prediction is about exactly this distinction.
 :::
 
 ::: {.callout-tip icon="false" title="Exercise 2.C"}
-A study of hospital readmission reports a logistic regression: constant $-1.5$; frailty score (standardized) $0.4$; lives alone $0.3$; frailty $\times$ lives alone $0.25$.
+Return to the theory of planned behaviour from @sec-rq-to-interpretation. Write $P$ for perceived behavioral control, $N$ for intention, $B$ for behaviour, and $A$ for actual control. Perceived control affects intention; intention affects behaviour; perceived control also affects behaviour directly; and actual control governs how far intention converts into behaviour.
 
-(a) Interpret the frailty coefficient exactly, for patients who do not live alone.
-(b) Compute the readmission probability for a patient one standard deviation above average frailty who lives alone, step by step.
-(c) For which patients does frailty matter more, and by how much on the logit scale?
-(d) The authors write that "living alone raises readmission risk by 30%". Give two distinct reasons this sentence misleads.
+(a) Draw the diagram for the three-variable part of the theory ($P$, $N$, $B$) and write the equations.
+(b) With standardized coefficients $0.45$ from $P$ to $N$, $0.40$ from $N$ to $B$, and $0.20$ from $P$ to $B$, derive all three implied correlations.
+(c) A researcher observes $\rho_{NB} = 0.49$ and concludes that the effect of intention on behaviour is 0.49. By how much are they wrong in this model, and what kind of contribution accounts for the gap?
+(d) Now add $A$. Write the equation for behaviour that expresses the theory's claim about it, and say why the tracing rules as stated cannot handle that equation.
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 2.C"}
-(a) Among patients not living alone (interaction term zero), each standard deviation of frailty adds 0.4 to the log-odds of readmission, other terms constant. (b) Logit $= -1.5 + 0.4(1) + 0.3(1) + 0.25(1 \times 1) = -0.55$; `plogis(-0.55)` $\approx 0.37$. (c) For those living alone: frailty's slope is $0.4 + 0.25 = 0.65$ per standard deviation, versus 0.4 otherwise. (d) First, 0.3 is a log-odds shift, about 35% higher *odds*, and the probability change depends on the baseline; second, with an interaction the living-alone effect also depends on frailty ($0.3 + 0.25 \times \text{frailty}$), so no single percentage describes it; third, acceptable as well: the design is observational, so "raises" overreaches.
+(a) $P$ is exogenous; $N$ and $B$ are endogenous. $N = 0.45P + \zeta_N$; $B = 0.40N + 0.20P + \zeta_B$.
+(b) $\rho_{PN} = 0.45$. $\rho_{PB} = 0.20 + 0.45 \times 0.40 = 0.38$. $\rho_{NB} = 0.40 + 0.45 \times 0.20 = 0.49$.
+(c) They are wrong by 0.09. The correlation contains the direct effect, 0.40, plus a spurious contribution, the trace back to perceived control and forward to behaviour, $0.45 \times 0.20 = 0.09$. Perceived control is a common cause of both.
+(d) $B = \beta_1 N + \beta_2 P + \beta_3 A + \beta_4 (N \times A) + \zeta_B$. The claim that intention converts into behaviour only when control is present is the term $\beta_4$. The tracing rules assume a linear, additive system in which the effect of each variable is a single number written on an arrow; here the effect of intention is $\beta_1 + \beta_4 A$, which is a function of another variable rather than a number, and there is no arrow to write it on. This is why @sec-rq-to-interpretation drew a conditional effect as an arrow pointing at an arrow.
 :::

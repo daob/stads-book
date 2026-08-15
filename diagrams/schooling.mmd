@@ -1,0 +1,8 @@
+flowchart LR
+  P["Parental education (P)"] -->|0.35| V["Reading at 7 (V)"]
+  D["Neighbourhood deprivation (D)"] -->|-0.20| V
+  V -->|0.50| Q["Qualifications at 18 (Q)"]
+  P -->|0.25| Q
+  P <-.->|-0.30| D
+  zV((zeta_V)) --> V
+  zQ((zeta_Q)) --> Q
