@@ -1,0 +1,7 @@
+# Profile for the print PDF with the exercise answers collected at the back.
+# Render with:  quarto render --profile answers --to pdf
+book:
+  output-file: "stads-book-answers-in-back"
+
+filters:
+  - answers-in-back.lua

@@ -9,7 +9,7 @@
 #     Fira Code fonts available to fontspec/fontconfig)
 #
 # Targets:
-#   make all       html + pdf in one pass (default)
+#   make all       html + pdf + answers-in-back pdf (default)
 #   make html      render the HTML book into _book/
 #   make pdf       render the print PDF into _book/stads-book.pdf
 #   make diagrams  re-render diagrams/*.png from diagrams/*.mmd
@@ -29,7 +29,14 @@ PNG := $(MMD:.mmd=.png)
 # into _book/ in one pass. Rendering one format at a time clears _book/ first,
 # so `make html` followed by `make pdf` leaves only the PDF.
 all: diagrams
+	$(QUARTO) render --profile answers --to pdf
+	cp _book/stads-book-answers-in-back.pdf /tmp/stads-answers.pdf
 	$(QUARTO) render
+	cp /tmp/stads-answers.pdf _book/stads-book-answers-in-back.pdf
+
+# PDF with the exercise answers gathered at the back (answers-in-back.lua)
+answers: diagrams
+	$(QUARTO) render --profile answers --to pdf
 
 html: diagrams
 	$(QUARTO) render --to html
