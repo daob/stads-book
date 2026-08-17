@@ -17,8 +17,12 @@
 
 QUARTO ?= quarto
 MMDC   ?= mmdc
-# Scale factor for diagram PNGs (4x for print-quality raster)
-MMDC_FLAGS ?= -s 4 -b white
+# Scale factor for diagram PNGs (4x for print-quality raster). The config and
+# stylesheet set the diagram font to Fira Sans, to match the rest of the book;
+# Fira Sans must therefore be installed where the headless browser can find it.
+MMDC_CFG   := diagrams/mermaid-config.json
+MMDC_CSS   := diagrams/mermaid.css
+MMDC_FLAGS ?= -s 4 -b white -c $(MMDC_CFG) -C $(MMDC_CSS)
 
 MMD := $(wildcard diagrams/*.mmd)
 PNG := $(MMD:.mmd=.png)
@@ -46,7 +50,7 @@ pdf: diagrams
 
 diagrams: $(PNG)
 
-diagrams/%.png: diagrams/%.mmd
+diagrams/%.png: diagrams/%.mmd $(MMDC_CFG) $(MMDC_CSS)
 	$(MMDC) -i $< -o $@ $(MMDC_FLAGS)
 
 clean:

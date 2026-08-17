@@ -1,0 +1,14 @@
+/* Force Fira Sans inside every rendered diagram, whether mermaid emits the
+   label as SVG <text> or as a foreignObject <div>. */
+svg,
+svg text,
+svg tspan,
+svg foreignObject div,
+svg foreignObject span,
+.node text,
+.nodeLabel,
+.edgeLabel,
+.cluster-label,
+.label {
+  font-family: "Fira Sans", sans-serif !important;
+}
