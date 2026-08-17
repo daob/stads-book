@@ -30,7 +30,7 @@ For most of the twentieth century, mainstream statistics in the social and healt
 
 Why would a model built without regard for truth predict better than a model built to be true? @shmueli2010 gives the clean answer: prediction error has two parts, error from bias (the model is wrong) and error from variance (the estimates are noisy), and a deliberately simplified, "wrong" model often wins by trading a little bias for a lot of variance. That tradeoff gets its full machinery in @sec-overfitting. The moral for now: explaining well and predicting well are different objectives, optimized by different models, and neither can be read off from the other.
 
-You can watch the two objectives part ways in a world whose truth we control. The simulation below revisits the exercise-and-symptoms world of @sec-rq-to-interpretation. Exercise 1.A already had you measure motivation and watch the bias disappear; what changes here is what happens next, since I fit on one half of the data and judge on the other. Exercising still does nothing to symptoms; motivated people still exercise more and feel better.
+You can watch the two objectives part ways in a world whose truth we control. The simulation below revisits the exercise-and-symptoms world of @sec-rq-to-interpretation. Exercise 1.D already had you measure motivation and watch the bias disappear; what changes here is what happens next, since I fit on one half of the data and judge on the other. Exercising still does nothing to symptoms; motivated people still exercise more and feel better.
 
 ```{r}
 #| label: predict-vs-explain

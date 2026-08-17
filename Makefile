@@ -13,6 +13,7 @@
 #   make html      render the HTML book into _book/
 #   make pdf       render the print PDF into _book/stads-book.pdf
 #   make diagrams  re-render diagrams/*.png from diagrams/*.mmd
+#   make figures   re-render the R-drawn figures into images/
 #   make clean     remove build artifacts (keeps diagram PNGs)
 
 QUARTO ?= quarto
@@ -27,7 +28,7 @@ MMDC_FLAGS ?= -s 4 -b white -c $(MMDC_CFG) -C $(MMDC_CSS)
 MMD := $(wildcard diagrams/*.mmd)
 PNG := $(MMD:.mmd=.png)
 
-.PHONY: all html pdf diagrams clean
+.PHONY: all html pdf diagrams figures clean
 
 # `quarto render` with no --to renders every format listed in _quarto.yml
 # into _book/ in one pass. Rendering one format at a time clears _book/ first,
@@ -49,6 +50,16 @@ pdf: diagrams
 	$(QUARTO) render --to pdf
 
 diagrams: $(PNG)
+
+# Figures drawn in R rather than mermaid: the Ross et al. time series and the
+# general aggression model path diagram. Both need ggplot2, ragg and Fira Sans.
+figures: images/ross-1970-breathalyser.png images/gam-path-diagram.png
+
+images/ross-1970-breathalyser.png: figures/ross-1970-figure.R figures/ross-1970-data.csv
+	Rscript $<
+
+images/gam-path-diagram.png: figures/gam-diagram.R
+	Rscript $<
 
 diagrams/%.png: diagrams/%.mmd $(MMDC_CFG) $(MMDC_CSS)
 	$(MMDC) -i $< -o $@ $(MMDC_FLAGS)
