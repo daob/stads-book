@@ -94,10 +94,7 @@ p <- ggplot(long, aes(date, value, colour = series)) +
     subtitle = paste("Casualties on weekend nights fell by about a third and stayed down.",
                      "During commuting hours,\nwhen the pubs have been shut all night,",
                      "they did not move."),
-    x = NULL, y = "Casualties per month",
-    caption = paste("Monthly values digitized from the figure in Ross, Campbell & Glass (1970),",
-                    "which draws both series on one\nscale. Dashed lines are period means.",
-                    "The weekend-night series stops at November 1968 in the original.")
+    x = NULL, y = "Casualties per month"
   ) +
   theme_minimal(base_family = FONT, base_size = 11) +
   theme(
@@ -105,10 +102,7 @@ p <- ggplot(long, aes(date, value, colour = series)) +
                                     margin = margin(b = 3)),
     plot.subtitle    = element_text(size = 9, colour = INK_SOFT, lineheight = 1.15,
                                     margin = margin(b = 11)),
-    plot.caption     = element_text(size = 7.3, colour = INK_SOFT, hjust = 0,
-                                    lineheight = 1.15, margin = margin(t = 9)),
     plot.title.position   = "plot",
-    plot.caption.position = "plot",
     axis.title.y     = element_text(size = 8.5, colour = INK_SOFT, hjust = 1,
                                     margin = margin(r = 5)),
     axis.text        = element_text(size = 8, colour = INK_SOFT),
