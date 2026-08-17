@@ -13,7 +13,7 @@
 #   make html      render the HTML book into _book/
 #   make pdf       render the print PDF into _book/stads-book.pdf
 #   make diagrams  re-render diagrams/*.png from diagrams/*.mmd
-#   make figures   re-render the R-drawn figures into images/
+#   make figures   re-render the R-drawn figures (images/ and diagrams/)
 #   make clean     remove build artifacts (keeps diagram PNGs)
 
 QUARTO ?= quarto
@@ -51,14 +51,21 @@ pdf: diagrams
 
 diagrams: $(PNG)
 
-# Figures drawn in R rather than mermaid: the Ross et al. time series and the
-# general aggression model path diagram. Both need ggplot2, ragg and Fira Sans.
-figures: images/ross-1970-breathalyser.png images/gam-path-diagram.png
+# Figures drawn in R rather than mermaid, because mermaid cannot route them:
+# the Ross et al. time series, the general aggression model, and the two
+# extended versions of the Yang et al. path diagram. All need ggplot2, ragg
+# and Fira Sans.
+figures: images/ross-1970-breathalyser.png images/gam-path-diagram.png \
+         diagrams/yang-full.png diagrams/yang-correlated.png
 
 images/ross-1970-breathalyser.png: figures/ross-1970-figure.R figures/ross-1970-data.csv
 	Rscript $<
 
 images/gam-path-diagram.png: figures/gam-diagram.R
+	Rscript $<
+
+# One script draws both extended versions of the Yang et al. path diagram.
+diagrams/yang-full.png diagrams/yang-correlated.png: diagrams/yang-models.R
 	Rscript $<
 
 diagrams/%.png: diagrams/%.mmd $(MMDC_CFG) $(MMDC_CSS)
