@@ -1,13 +1,23 @@
 # Path diagram of the general aggression model (Allen, Anderson & Bushman 2018),
 # drawn for Answer 1.A of chapter 1.
 #
-# Mermaid, which draws the rest of the book's diagrams, cannot route this one
-# legibly: six reciprocal arrows among the three internal-state variables plus a
-# fan from the two inputs come out as a tangle. So the layout is set by hand
-# here, following the arrangement the theory's own authors use: the three
-# internal-state variables sit in one block, with the reciprocal effects drawn
-# inside it. Colours and font match the mermaid diagrams so the figure does not
-# look like a visitor.
+# Every arrow runs from one variable to another. Nothing terminates on a group
+# or a container, because a group is not a variable and an arrow into a group
+# says nothing about which member it reaches. So the six input effects, the six
+# reciprocal effects among the internal-state variables, and the three effects
+# on appraisal are all drawn individually.
+#
+# The layout puts affect at the left of the internal-state trio and cognition
+# and arousal above and below to its right. That way the fan from the two input
+# variables arrives from the left without passing through anything, the three
+# arrows on to appraisal leave to the right, and the one long reciprocal pair
+# (cognition with arousal) runs vertically, so the arrow from affect to
+# appraisal crosses it close to square, which is the one crossing the layout
+# cannot avoid.
+#
+# Mermaid, which draws the rest of the book's diagrams, cannot route this; the
+# geometry is therefore set by hand. Colours and font match the mermaid
+# diagrams so the figure does not look like a visitor.
 #
 # Requires: ggplot2, ragg, and the Fira Sans font.
 # Usage:  Rscript gam-diagram.R  ->  writes ../images/gam-path-diagram.png
@@ -22,82 +32,88 @@ dir.create(img_dir, showWarnings = FALSE)
 FONT   <- "Fira Sans"
 FILL   <- "#ECECFF"     # mermaid's default node fill
 STROKE <- "#9370DB"     # mermaid's default node stroke
-BLOCK  <- "#f7f7fc"     # the container behind the internal-state variables
 INK    <- "#1f1f1f"
 SOFT   <- "#6b6b6b"
 
-node <- function(id, x, y, label, w, h = 0.26)
+node <- function(id, x, y, label, w, h)
   data.frame(id = id, x = x, y = y, label = label, w = w, h = h)
 
 N <- rbind(
-  node("P",  0.82, 2.92, "Person\nfactors",     w = 0.62, h = 0.36),
-  node("S",  0.82, 1.28, "Situation\nfactors",  w = 0.62, h = 0.36),
-  node("C",  3.38, 2.95, "Cognition",           w = 0.55),
-  node("A",  2.62, 1.32, "Affect",              w = 0.50),
-  node("R",  4.14, 1.32, "Arousal",             w = 0.55),
-  node("AP", 6.35, 2.10, "Appraisal and\ndecision processes", w = 1.15, h = 0.42),
-  node("O",  9.10, 2.10, "Aggressive or\nnon-aggressive action", w = 1.30, h = 0.42)
+  node("P",  0.85, 3.05, "Person\nfactors",                  w = 0.64, h = 0.36),
+  node("S",  0.85, 1.05, "Situation\nfactors",               w = 0.64, h = 0.36),
+  node("A",  3.45, 2.05, "Affect",                           w = 0.52, h = 0.28),
+  node("C",  5.05, 3.15, "Cognition",                        w = 0.60, h = 0.28),
+  node("R",  5.05, 0.95, "Arousal",                          w = 0.60, h = 0.28),
+  node("AP", 7.40, 2.05, "Appraisal and\ndecision processes", w = 1.25, h = 0.44),
+  node("O", 10.40, 2.05, "Aggressive or\nnon-aggressive action", w = 1.45, h = 0.44)
 )
 rownames(N) <- N$id
 
-# The block holding the present internal state.
-BX <- c(2.02, 4.80); BY <- c(0.78, 3.42)
-
 ARROW <- arrow(length = unit(0.075, "in"), type = "closed", angle = 20)
 
-# One reciprocal pair: two arcs between the same two boxes, bowing opposite ways,
-# each clipped short of the boxes so the arrowheads stand clear.
-pair <- function(x1, y1, x2, y2, k = 0.30) {
-  list(
-    geom_curve(aes(x = x1, y = y1, xend = x2, yend = y2), curvature =  k,
-               linewidth = 0.42, colour = INK, arrow = ARROW),
-    geom_curve(aes(x = x2, y = y2, xend = x1, yend = y1), curvature =  k,
+# Where a straight line from (ax, ay) to the centre of `id` meets that box's
+# border, so arrowheads stop on the box rather than inside it.
+edge_point <- function(id, ax, ay, pad = 0.035) {
+  cx <- N[id, "x"]; cy <- N[id, "y"]
+  w <- N[id, "w"] + pad; h <- N[id, "h"] + pad
+  dx <- ax - cx; dy <- ay - cy
+  t <- min(if (dx != 0) w / abs(dx) else Inf, if (dy != 0) h / abs(dy) else Inf)
+  c(cx + dx * t, cy + dy * t)
+}
+
+# A single-headed straight effect arrow between two variables.
+eff <- function(from, to) {
+  p1 <- edge_point(from, N[to, "x"], N[to, "y"])
+  p2 <- edge_point(to,   N[from, "x"], N[from, "y"])
+  geom_segment(aes(x = p1[1], y = p1[2], xend = p2[1], yend = p2[2]),
                linewidth = 0.42, colour = INK, arrow = ARROW)
+}
+
+# A reciprocal pair: the same two border points joined by two arcs bowing
+# opposite ways, one arrowhead at each end. Two effects, not one association.
+recip <- function(from, to, k = 0.28) {
+  p1 <- edge_point(from, N[to, "x"], N[to, "y"])
+  p2 <- edge_point(to,   N[from, "x"], N[from, "y"])
+  list(
+    geom_curve(aes(x = p1[1], y = p1[2], xend = p2[1], yend = p2[2]),
+               curvature = k, linewidth = 0.42, colour = INK, arrow = ARROW),
+    geom_curve(aes(x = p2[1], y = p2[2], xend = p1[1], yend = p1[2]),
+               curvature = k, linewidth = 0.42, colour = INK, arrow = ARROW)
   )
 }
 
 p <- ggplot() +
-  # grouping bands
-  annotate("rect", xmin = 0.10, xmax = 1.54, ymin = 0.78, ymax = 3.42,
-           fill = NA, colour = "#cccccc", linetype = "22", linewidth = 0.3) +
-  annotate("rect", xmin = BX[1], xmax = BX[2], ymin = BY[1], ymax = BY[2],
-           fill = BLOCK, colour = "#c3c3d8", linewidth = 0.35) +
-  annotate("text", x = 0.82, y = 3.58, label = "inputs",
-           family = FONT, size = 3.3, colour = SOFT) +
-  annotate("text", x = 3.41, y = 3.58, label = "present internal state",
-           family = FONT, size = 3.3, colour = SOFT) +
+  # the six effects of the input variables on the internal state
+  eff("P", "A") + eff("P", "C") + eff("P", "R") +
+  eff("S", "A") + eff("S", "C") + eff("S", "R") +
 
-  # association between the two exogenous variables
-  geom_curve(aes(x = 0.82, y = 2.58, xend = 0.82, yend = 1.62), curvature = 0.9,
+  # the six reciprocal effects among the internal-state variables
+  recip("A", "C") + recip("A", "R") + recip("C", "R", k = 0.30) +
+
+  # the internal state on appraisal, appraisal on the action
+  eff("A", "AP") + eff("C", "AP") + eff("R", "AP") +
+  eff("AP", "O") +
+
+  # covariation between the two exogenous variables, left unexplained
+  geom_curve(aes(x = 0.85, y = 2.69, xend = 0.85, yend = 1.41), curvature = -0.85,
              linetype = "22", linewidth = 0.42, colour = INK,
              arrow = arrow(length = unit(0.07, "in"), ends = "both",
                            type = "closed", angle = 20)) +
 
-  # inputs into the internal state
-  geom_segment(aes(x = 1.44, y = 2.86, xend = BX[1] - 0.03, yend = 2.50),
-               linewidth = 0.42, colour = INK, arrow = ARROW) +
-  geom_segment(aes(x = 1.44, y = 1.34, xend = BX[1] - 0.03, yend = 1.66),
-               linewidth = 0.42, colour = INK, arrow = ARROW) +
-
-  # reciprocal effects inside the block: one lens of two arcs per pair
-  pair(3.06, 2.71, 2.68, 1.62, k = 0.22) +
-  pair(3.70, 2.71, 4.08, 1.62, k = 0.22) +
-  pair(3.16, 1.32, 3.57, 1.32, k = 0.42) +
-
-  # internal state into appraisal, appraisal into action
-  geom_segment(aes(x = BX[2] + 0.03, y = 2.10, xend = 5.14, yend = 2.10),
-               linewidth = 0.42, colour = INK, arrow = ARROW) +
-  geom_segment(aes(x = 7.53, y = 2.10, xend = 7.74, yend = 2.10),
-               linewidth = 0.42, colour = INK, arrow = ARROW) +
-
-  # feedback across episodes, routed around the outside
-  annotate("segment", x = 9.10, y = 1.68, xend = 9.10, yend = 0.34,
+  # the action feeds back on both inputs in the next episode
+  annotate("segment", x = 10.40, y = 2.53, xend = 10.40, yend = 4.05,
            linewidth = 0.42, colour = INK) +
-  annotate("segment", x = 9.10, y = 0.34, xend = 0.82, yend = 0.34,
+  annotate("segment", x = 10.40, y = 4.05, xend = 0.85, yend = 4.05,
            linewidth = 0.42, colour = INK) +
-  annotate("segment", x = 0.82, y = 0.34, xend = 0.82, yend = 0.74,
+  annotate("segment", x = 0.85, y = 4.05, xend = 0.85, yend = 3.45,
            linewidth = 0.42, colour = INK, arrow = ARROW) +
-  annotate("text", x = 5.00, y = 0.52, label = "the action changes the next episode",
+  annotate("segment", x = 10.40, y = 1.57, xend = 10.40, yend = 0.10,
+           linewidth = 0.42, colour = INK) +
+  annotate("segment", x = 10.40, y = 0.10, xend = 0.85, yend = 0.10,
+           linewidth = 0.42, colour = INK) +
+  annotate("segment", x = 0.85, y = 0.10, xend = 0.85, yend = 0.65,
+           linewidth = 0.42, colour = INK, arrow = ARROW) +
+  annotate("text", x = 5.55, y = 0.29, label = "next episode",
            family = FONT, size = 3.0, colour = SOFT) +
 
   geom_rect(data = N, aes(xmin = x - w, xmax = x + w, ymin = y - h, ymax = y + h),
@@ -105,10 +121,10 @@ p <- ggplot() +
   geom_text(data = N, aes(x, y, label = label),
             family = FONT, size = 3.7, colour = INK, lineheight = 1.05) +
 
-  coord_fixed(clip = "off", xlim = c(0.05, 10.45), ylim = c(0.22, 3.72)) +
+  coord_fixed(clip = "off", xlim = c(0.05, 11.95), ylim = c(0.02, 4.15)) +
   theme_void()
 
 ragg::agg_png(file.path(img_dir, "gam-path-diagram.png"),
-              width = 6.4, height = 2.35, units = "in", res = 300, background = "white")
+              width = 6.6, height = 2.32, units = "in", res = 300, background = "white")
 print(p); invisible(dev.off())
 cat("wrote images/gam-path-diagram.png\n")
