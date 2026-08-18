@@ -107,7 +107,7 @@ which matches, to the decimal, the variance `lmer` just reported ($37.09^2 \appr
 
 One more step up the staircase. Every batch SD is a parameter we are uncertain about, the classical table never shows that uncertainty, and so the multilevel model is begging for a Bayesian treatment.^[There is also a practical reason: when a batch has few levels or its SD sits near zero, the likelihood-based point estimate often collapses to exactly zero, hiding real but modest variation. A posterior distribution reports how uncertain the SD is instead of feigning a certainty nobody has [@gelman2005].] The brms package fits the same model by Markov chain Monte Carlo with one changed function name:
 
-```{r}
+```{r, cache=TRUE}
 #| label: sleep-brm
 #| cache: true
 #| message: false

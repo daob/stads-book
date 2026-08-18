@@ -206,6 +206,7 @@ Saris and Stronkhorst start from the idea that there is a "verbal theory". They 
 **Variables.** A variable is a property of a unit that varies across units. "Poverty" can be a variable; "poor" cannot, because it is a value of one. A constant explains nothing. Nor can a whole social process be shoved into a single variable and called a cause: "discrimination" is a phenomenon with many measurable components, not a column in a spreadsheet.
 
 **Relationships.** An **association** says that units high on one variable tend to be high on the other, or low, for a negative association. It is symmetric: reading it backwards changes nothing. An **effect** says that changing one variable would change the other. It is asymmetric, and it is a claim about a world we do not observe.
+**Spurious relationships** are relationships due to common causes, like drownings and ice cream sales.
 
 Effects come in a few shapes, drawn in @fig-relationships, and the vocabulary is worth learning now because the rest of the book uses it constantly. A **direct** effect runs straight from cause to outcome. An **indirect** effect runs through an intervening variable. **Reciprocal** effects run both ways. A **conditional** effect is an effect whose size depends on a third variable.
 
@@ -306,7 +307,7 @@ Through the 1980s and 1990s, large observational cohorts reported that women tak
 (e) That the cohorts were right about many other things, that a trial is impossible for most exposures anyone cares about, and that this failure was diagnosable in advance: the exposure was chosen by people, was strongly related to social position, and the outcome was strongly related to social position too. The lesson is to ask what a design does about selection, and to treat "we adjusted for covariates" as a claim requiring an argument.
 :::
 ::: {.callout-tip icon="false" title="Exercise 1.D"}
-Confounding is easier to believe once you have watched it happen in a world whose truth you set yourself. In this world, motivated people exercise more, and motivated people have fewer symptoms for reasons of their own. Exercise itself does nothing at all. Work in R.
+Confounding is easier to believe once you have watched it happen in a world whose truth you set yourself. In this world, motivated people exercise more, and motivated people have fewer symptoms for reasons of their own. Exercise itself does nothing at all. Work in `R`.
 
 (a) Write a function `sim_study(randomize, n = 200)` that draws `motivation` from a standard normal distribution; sets `exercise` to `rbinom(n, 1, 0.5)` when `randomize` is `TRUE` and to `rbinom(n, 1, plogis(motivation))` otherwise; sets `symptoms` to `10 - 1.5 * motivation + 0 * exercise` plus standard normal noise; and returns the coefficient of `exercise` from `lm(symptoms ~ exercise)`. Which piece of that function states that exercise does nothing, and which states that people who exercise are different to begin with?
 (b) Run the function 1,000 times with `randomize = FALSE` and 1,000 times with `randomize = TRUE`. Draw the two sets of estimates as histograms on a common horizontal axis, and mark the truth. What is the average estimate in each set?
