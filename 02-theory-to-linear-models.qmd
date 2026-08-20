@@ -194,52 +194,52 @@ Which assumption does each scenario violate, linearity or additivity? Write the 
 ### Interpreting the coefficients of linear equations
 
 
-An **unstandardized** coefficient is a statement in the original units: a one-unit increase in the predictor goes with a $b$-unit change in the outcome, holding constant the other variables in that equation. Take a real regression, on 189 births recorded at a hospital in Springfield, Massachusetts in 1986 [@venables2002; @hosmer2013]. The data are included with `R`, so you can run everything below as you read:
+An **unstandardized** coefficient is a statement in the original units: a one-unit increase in the predictor goes with a $b$-unit change in the outcome, holding constant the other variables in that equation. Take the disease equation of the final model, estimated on real data. The LISS panel is a probability sample of Dutch households whose members answer questionnaires online every month; in the autumn of 2025, 4,158 adult panel members answered both the health module and the social integration module.^[LISS data are freely available to researchers but may not be redistributed, so the file does not ship with the book. The script `analysis/liss/01-prepare-liss.R` in the book's repository builds it from the source files.] Blood pressure enters as ever having received a hypertension diagnosis (0 or 1), central adiposity as body mass index (BMI, in kilograms per square metre of height, from self-reported height and weight), and disease burden as the number of chronic conditions a physician has ever diagnosed, counted over a list of thirteen that excludes hypertension itself (0 to 13).
 
 ```{r}
-#| label: bwt-lm
-library(MASS)
-fit <- lm(bwt ~ smoke + lwt + ht, data = birthwt)
-round(coef(summary(fit)), 2)
+#| label: liss-lm
+d <- readRDS("../data/liss-health-social-integration/liss_ch2_combined.rds")
+fit <- lm(disease_count ~ hypertension + bmi, data = d)
+round(coef(summary(fit)), 3)
 ```
 
-The outcome is birth weight in grams. `smoke` is 1 if the mother smoked during pregnancy, `lwt` is her weight in pounds at her last menstrual period, and `ht` is 1 if she has a history of hypertension. So: babies of smokers weigh 265 grams less on average than babies of non-smokers of the same weight and hypertension status; each additional pound of the mother goes with 5.35 more grams of baby; a history of hypertension goes with 586 grams less.
+So: people with a hypertension diagnosis have 0.82 more diagnosed conditions on average than people of the same BMI without one; each additional BMI point goes with 0.020 more conditions, at the same hypertension status.
 
-These statements are the left-hand panels of @fig-linearity and @fig-additivity in numbers. One slope per predictor: the pound that takes a mother from 81 to 82 adds the same 5.35 grams as the pound from 249 to 250. And no product terms: the model puts the smoking gap at 265 grams whatever the mother weighs, which is the parallel-lines claim.
+These statements are the left-hand panels of @fig-linearity and @fig-additivity in numbers. One slope per predictor: the BMI point from 20 to 21 adds the same 0.020 conditions as the point from 39 to 40. And no product terms: the model puts the hypertension gap at 0.82 conditions whatever the BMI, which is the parallel-lines claim.
 
-It can be helpful to judge the size over a typical range rather than per unit. Five grams per pound may sound like very little. But mothers in this sample range from 80 to 250 pounds, so the variable spans about 900 grams of birth weight, which is a great deal.
+It can be helpful to judge the size over a typical range rather than per unit. Two hundredths of a condition per BMI point sounds like nothing. But BMI in this sample runs from 15 to 58, so the variable spans about 0.9 conditions, roughly the size of the hypertension gap itself.
 
 A **standardized** coefficient does a version of that scaling for you, using the standard deviation rather than the range: it reports the change in standard deviations of the outcome per standard deviation of the predictor.
 
 ```{r}
-#| label: bwt-std
-coef(fit)[["lwt"]] * sd(birthwt$lwt) / sd(birthwt$bwt)
+#| label: liss-std
+coef(fit)[["bmi"]] * sd(d$bmi, na.rm = TRUE) / sd(d$disease_count, na.rm = TRUE)
 ```
 
-A standard deviation means something different in every population, so unstandardized coefficients travel between studies and standardized ones do not. Within one sample, standardized coefficients let you compare predictors measured in different units.
+A standard deviation means something different in every population, so unstandardized coefficients travel between studies and standardized ones do not. Within one sample, standardized coefficients let you compare predictors measured in different units. One caution for 0/1 variables like the hypertension diagnosis: nobody changes by "a standard deviation of hypertension", so standardizing a dummy rarely clarifies anything, and its unstandardized coefficient, the gap between the two groups, is already the interpretable number.
 
-Prediction is arithmetic. For a smoker weighing 130 pounds without hypertension,
+Prediction is arithmetic. For a person with a hypertension diagnosis and a BMI of 30,
 
-$$\widehat{\text{bwt}} = 2391.11 - 265.08 \times 1 + 5.35 \times 130 - 586.44 \times 0 = 2822 \text{ grams},$$
+$$\widehat{\text{count}} = 0.026 + 0.823 \times 1 + 0.020 \times 30 = 1.45 \text{ conditions},$$
 
-against 3087 grams for an otherwise identical non-smoker.
+against 0.63 for an otherwise identical person without the diagnosis.
 
-Standardized coefficients are hated by some. The reason is that `sd(birthwt$lwt)` is somewhat arbitrary, in that it will differ across populations and settings. The variance of a variable can be increased or decreased by measurement error, precision, and data collection methods. If `lwt` is a variable we want to manipulate in a future study, we might be able to take its values across a larger (or smaller) range than just the standard deviation it happens to have in this setting. For this reason, if you are interested in comparing coefficients across populations, or would like to predict an effect in a different setting than the one in which data were collected, you should probably avoid standardization. At the same time, in social and health research, scales are often very arbitrary and it is useful to be able to compare effects with each other in terms of "typical deviations".
+Standardized coefficients are hated by some. The reason is that `sd(d$bmi)` is somewhat arbitrary, in that it will differ across populations and settings. The variance of a variable can be increased or decreased by measurement error, precision, and data collection methods. If BMI is a variable we want to manipulate in a future study, we might be able to take its values across a larger (or smaller) range than just the standard deviation it happens to have in this setting. For this reason, if you are interested in comparing coefficients across populations, or would like to predict an effect in a different setting than the one in which data were collected, you should probably avoid standardization. At the same time, in social and health research, scales are often very arbitrary and it is useful to be able to compare effects with each other in terms of "typical deviations".
 
 ::: {.callout-tip icon="false" title="Exercise 2.3"}
-Use the birth-weight regression above (intercept 2391.11, `smoke` $-265.08$, `lwt` 5.35, `ht` $-586.44$).
+Use the disease regression above (intercept 0.026, `hypertension` 0.823, `bmi` 0.020).
 
-(a) Interpret the coefficient on `ht` in a full sentence, with units, and with the clause that makes it a statement about this equation rather than about hypertension in general.
-(b) A newspaper reports: "babies of smokers weigh 265 grams less than the average baby." Correct the sentence.
-(c) A colleague fits the same model in a specialised obstetric clinic, whose admission criteria leave little variation in the mothers' weights. The standardized coefficient of `lwt` is 0.19 in Springfield and 0.08 in the clinic; the unstandardized coefficients are 5.35 and 5.1 grams per pound. The colleague concludes that mother's weight matters far more in Springfield. What is the better conclusion?
-(d) Would you report the effect of `lwt` as "5.35 grams per pound" or as "about 900 grams across the observed range"? Say what each phrasing is good for.
+(a) Interpret the coefficient on `bmi` in a full sentence, with units, and with the clause that makes it a statement about this equation rather than about adiposity in general.
+(b) A newspaper reports: "people with hypertension have 0.82 chronic conditions." Correct the sentence.
+(c) A colleague fits the same model in a bariatric clinic, where nearly every patient's BMI lies between 35 and 45. The standardized coefficient of `bmi` is 0.10 in LISS and 0.04 in the clinic; the unstandardized coefficients are 0.020 and 0.019 conditions per BMI point. The colleague concludes that adiposity matters far more in the general population than among clinic patients. What is the better conclusion?
+(d) Would you report the effect of `bmi` as "0.020 conditions per BMI point" or as "about 0.9 conditions across the observed range"? Say what each phrasing is good for.
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 2.3"}
-(a) Among mothers with the same smoking status and the same weight, those with a history of hypertension have babies weighing 586 grams less on average. The "same smoking status and weight" clause is what ties the number to this equation: add or remove predictors and the comparison changes.
-(b) The comparison group is wrong twice over. The 265 grams compares smokers with non-smokers, not with the average baby, and it compares them at the same maternal weight and hypertension status. "Babies of smokers weigh 265 grams less than babies of otherwise similar non-smokers" is the sentence the coefficient supports.
-(c) The gram-per-pound effects are nearly identical, so the effect is nearly the same in both settings. Almost the whole difference between 0.19 and 0.08 comes from the standard deviation of mothers' weights, which the clinic's admission criteria have compressed. A standard deviation is a property of a population and a data collection, not of the effect, so standardized coefficients should not be compared across the two samples; the numbers to compare are 5.35 and 5.1.
-(d) Both, for different jobs. Grams per pound is the number another researcher can carry to their own population; grams across the range is the number that says whether the variable matters in this one. Reporting the per-unit slope alone invites judging importance by it, which panel left of @fig-linearity shows is only safe when you also know the range.
+(a) Among people with the same hypertension status, each additional point of BMI goes with 0.020 more diagnosed chronic conditions on average. The "same hypertension status" clause is what ties the number to this equation: add or remove predictors and the comparison changes.
+(b) The sentence is wrong twice over. The 0.82 is not a number of conditions but a difference in conditions, between people with a hypertension diagnosis and people without one; and the comparison holds BMI constant. "People with a hypertension diagnosis have 0.82 more chronic conditions than people of the same BMI without one" is the sentence the coefficient supports.
+(c) The per-point effects are nearly identical, so the effect is nearly the same in both settings. Almost the whole difference between 0.10 and 0.04 comes from the standard deviation of BMI, which the clinic's intake has compressed to a narrow band. A standard deviation is a property of a population and a data collection, not of the effect, so standardized coefficients should not be compared across the two samples; the numbers to compare are 0.020 and 0.019.
+(d) Both, for different jobs. Conditions per BMI point is the number another researcher can carry to their own population; conditions across the range is the number that says whether the variable matters in this one. Reporting the per-unit slope alone invites judging importance by it, which is only safe when you also know the range.
 :::
 
 ## What the theory implies about the data
@@ -414,10 +414,11 @@ $$\log \frac{P(y_i = 1)}{1 - P(y_i = 1)} = \beta_0 + \beta_1 x_{1i} + \beta_2 x_
 
 This is **logistic regression**, and it is the most used member of the family of **generalized linear models**: a linear predictor, plus a function that connects it to the scale the outcome actually lives on.
 
-The birth-weight data provide the same question in binary dress. `low` marks a birth weight under 2.5 kilograms, which happened to 59 of the 189 babies.
+For a real example, take 189 births recorded at a hospital in Springfield, Massachusetts in 1986; the data are included with `R`, so you can run everything below as you read [@venables2002; @hosmer2013]. `low` marks a birth weight under 2.5 kilograms, which happened to 59 of the 189 babies; `smoke` is 1 if the mother smoked during pregnancy, `ht` is 1 if she has a history of hypertension, and `lwt` is her weight in pounds at her last menstrual period.
 
 ```{r}
 #| label: bwt-glm
+library(MASS)
 fit_low <- glm(low ~ smoke + ht + lwt, family = binomial, data = birthwt)
 round(cbind(coef = coef(fit_low), odds_ratio = exp(coef(fit_low))), 3)
 ```
