@@ -268,42 +268,44 @@ Now,
 
  * A spurious relationship is equal to the product of the two paths running from the common cause to each of the two variables: $X \begin{array}{c} \overset{a}{\nearrow} Y_1 \\ \underset{b}{\searrow} Y_2 \end{array}$ means the spurious effect is $ab$
 
- * A joint effect passes through a curved two-headed arrow, and is equal to the product of the path coefficients with the value on the curved arrow in between
+ * A joint effect is a spurious relationship in which the common cause has been replaced by a curved two-headed arrow. Chains of arrows run from the curve's two ends to the two variables, and the curve's value multiplies in like a coefficient: $X_1 \overset{\phi}{\leftrightarrow} X_2 \overset{b}{\rightarrow} Y$ means the joint effect equals $\phi b$. Either chain may be empty, as it is here on the $X_1$ side: a variable can sit directly on the curve.
+
+Two remarks make these four rules a complete recipe.^[The recipe works for **recursive** models, meaning models without reciprocal effects or feedback loops; with arrows running both ways the implied correlations have to be derived algebraically. This way of computing implied correlations is classically known as the *tracing rules* [@wright1934; @saris1984].] First, the sum runs over *every* contribution of *every* kind: every arrow between the pair, every one-way chain, every common cause with every pair of chains running out of it, every curved arrow with every pair of chains running out of its ends; with longer chains, multiply every coefficient along the way. Second, nothing else counts. None of the four shapes contains two arrows colliding head-on, so a common *effect* of the pair never contributes: two causes of the same thing need not be correlated at all. As for the name of the fourth kind, it records an admission. The curved arrow is a common cause the model declined to name, or an effect it declined to orient, so its contribution can be filed neither under indirect nor under spurious, and it gets a heading of its own.
 
 Apply this to @fig-yang. Suppose, for the sake of arithmetic, that the true values are $a = -0.20$, $b = 0.30$, and $c = -0.15$, with all three variables standardized.
 
-Between $S$ and $I$ there is one trace, the arrow $a$, so $\rho_{SI} = -0.20$. You might be tempted by the route $S \rightarrow R \leftarrow I$, but that goes forwards along $c$ and then backwards along $b$, which the first restriction forbids. It is forbidden for a reason: $S$ and $I$ both cause $R$, and two causes of the same thing need not be correlated at all.
+Between $S$ and $I$ only one of the four shapes can be built: the direct arrow, so $\rho_{SI} = a = -0.20$. You might be tempted by the route $S \rightarrow R \leftarrow I$, but no rule produces it: $R$ is a common effect of the two, not a common cause.
 
-Between $S$ and $R$ there are two traces: the direct arrow $c$, and the route through inflammation, $a \times b$.
+Between $S$ and $R$ two shapes appear: the direct effect $c$, and an indirect effect through inflammation, the chain $S \rightarrow I \rightarrow R$ with product $ab$.
 
 $$\rho_{SR} = c + ab = -0.15 + (-0.20)(0.30) = -0.21.$$
 
-Between $I$ and $R$ there are also two: the direct arrow $b$, and the route backwards to $S$ and then forwards to $R$, which is $a \times c$.
+Between $I$ and $R$ there are also two: the direct effect $b$, and a spurious relationship, because $S$ is a common cause of both, with the chain $a$ running to $I$ and the chain $c$ running to $R$.
 
 $$\rho_{IR} = b + ac = 0.30 + (-0.20)(-0.15) = 0.33.$$
 
 
 Look at what happened to $\rho_{IR}$. The causal effect of inflammation on mortality risk is 0.30, and the correlation between them is 0.33. The gap is confounding, manufactured by a variable that is in the model and that we know about. If it were not in the model we would read 0.33 as the effect and never know.
 
-Finding every trace is easier with a procedure. Start at one variable. Walk backwards along arrows as far as you can, taking at most one curved arrow and never revisiting a variable; from every point you reach, including the starting point, walk forwards to the other variable. Every route built that way is a trace, and there are no others. Two examples of routes that fail: in @fig-yang, $S \rightarrow R \leftarrow I$ turns around at $R$, which is forwards then backwards; and a route that left $I$, went back to $S$, forwards to $R$, and then back to $I$ again would visit $I$ twice and is not a trace, which is what stops the rules from generating infinitely many routes in a model with a loop of arrows.
+Decomposing a correlation is bookkeeping. Take the pair of variables and walk the four rules in order: the direct arrow, if there is one; every one-way chain from one to the other; every common cause, with each pair of chains running out of it; every curved arrow, likewise. Add up what you find. In any model you can draw, the lists are short, and together they are the whole correlation.
 
 ::: {.callout-tip icon="false" title="Exercise 2.4"}
-Practice the mechanics one trace at a time, on @fig-yang with the same values.
+Practice the mechanics one contribution at a time, on @fig-yang with the same values.
 
-(a) How many valid traces connect $S$ and $I$, and what is the implied $\rho_{SI}$?
-(b) Why is $S \rightarrow R \leftarrow I$ not a valid trace from $S$ to $I$?
+(a) Which contributions make up $\rho_{SI}$, and what is its implied value?
+(b) Why does the route $S \rightarrow R \leftarrow I$ contribute nothing to $\rho_{SI}$?
 (c) Recompute $\rho_{IR}$ if the direct effect had the opposite sign, $c = +0.15$. What happens, and what is the lesson?
 (d) What would $\rho_{IR}$ be if $S$ had no direct effect on $R$ at all?
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 2.4"}
-(a) One, the arrow itself, so $\rho_{SI} = a = -0.20$.
-(b) It runs forwards from $S$ to $R$ and then backwards from $R$ to $I$. $R$ is a common effect of the two, and common effects do not induce correlation between their causes. (They do induce one *among units selected on $R$*, a separate trap with its own name, collider bias.)
+(a) A single direct effect, the arrow itself, so $\rho_{SI} = a = -0.20$.
+(b) $R$ is a common effect of the two, and none of the four shapes contains a common effect: it is not an arrow between them, not a one-way chain, not a common cause, not a curved arrow. Common effects do not induce correlation between their causes. (They do induce one *among units selected on $R$*, a separate trap with its own name, collider bias.)
 (c) $\rho_{IR} = 0.30 + (-0.20)(0.15) = 0.27$. Flipping the sign of a path that is not on the direct route still changes the correlation, and here it moves the other way, so the observed correlation now understates the effect. A correlation is a sum of contributions from the whole model, and no part of it can be read off in isolation.
-(d) With $c = 0$ the spurious trace vanishes and $\rho_{IR} = b = 0.30$. The correlation would then be the effect. That is what "no confounding" buys, and it is bought with an assumption rather than with data.
+(d) With $c = 0$ the spurious relationship vanishes and $\rho_{IR} = b = 0.30$. The correlation would then be the effect. That is what "no confounding" buys, and it is bought with an assumption rather than with data.
 :::
 
-Now return to @fig-yang-final, where the new element is the curved arrows between disturbances. A trace may pass through one of them just as it may pass through a curved arrow between exogenous variables. Between inflammation and blood pressure there are two traces: backwards to their common cause and forwards again, which is spurious and contributes $a_1 a_2$, and the route through the curved arrow, which contributes $\psi_{IB}$. So $\rho_{IB} = a_1 a_2 + \psi_{IB}$: one part the model explains, one part it declines to. Between inflammation and death, three of the four kinds appear at once: the direct effect $c_1'$; two spurious traces through social integration, $a_1 a_2 c_2' + a_1 a_3 c_3'$; and two traces through the curved arrows, $\psi_{IB}\, c_2' + \psi_{IA}\, c_3'$.
+Now return to @fig-yang-final, where the new element is the curved arrows between disturbances. Read a curved arrow between two disturbances as if it joined the variables the disturbances point into. Between inflammation and blood pressure, two shapes can then be built. Social integration is a common cause, with the chains $a_1$ and $a_2$ running out of it: a spurious relationship of $a_1 a_2$. And the curved arrow joins the two variables directly, with both of its chains empty: a joint effect of $\psi_{IB}$. So $\rho_{IB} = a_1 a_2 + \psi_{IB}$: one part the model explains, one part it declines to. Between inflammation and death, three of the four kinds appear at once: the direct effect $c_1'$; two spurious relationships through social integration, $a_1 a_2 c_2' + a_1 a_3 c_3'$; and two joint effects through the curved arrows, $\psi_{IB}\, c_2' + \psi_{IA}\, c_3'$, each with an empty chain on the inflammation side and the chain into death on the other.
 
 Counting shows what all this buys. Five standardized variables give $5 \times 4/2 = 10$ correlations. The parameters are three $a$'s, three $c'$'s, and three $\psi$'s, which is nine. One degree of freedom is left over, and exactly one claim of absence is spending it: there is no direct arrow from social integration to death. Everything else the diagram might seem to forbid, the freed disturbance covariances quietly allow. The entire testable content of the final model is the claim that integration reaches death only through the body, which is the theory's own last sentence.
 
@@ -318,29 +320,29 @@ y_2 &= 0.7\,A_2 + 0.5\,C + 0.5\,E_2 .
 \end{aligned}
 $$
 
-The 0.5 on the curved arrow was not estimated from these twins; genetics fixes it. Trace between $y_1$ and $y_2$. One route runs back through $C$ and forward again: $0.5 \times 0.5 = 0.25$. Another runs back to $A_1$, across the curved arrow, and forward from $A_2$: $0.7 \times 0.5 \times 0.7 = 0.245$. No route uses $E$, since the unique environments are unconnected, and no route may use two curved arrows, which is the third restriction doing its work. The sum is $0.495$.^[Strictly this is the implied covariance. The implied variance of each twin's score is $0.49 + 0.25 + 0.25 = 0.99$, so the implied correlation is $0.495/0.99 = 0.50$. Tracing rules give correlations when the variables are standardized; here they very nearly are, and the gap is 1 percent. With larger loadings it would be larger.]
+The 0.5 on the curved arrow was not estimated from these twins; genetics fixes it. Decompose the covariance between $y_1$ and $y_2$. The shared environment $C$ is a common cause, with a chain of 0.5 to each twin: a spurious relationship of $0.5 \times 0.5 = 0.25$. The genetic factors are joined by the curved arrow, with the chain 0.7 out of each end: a joint effect of $0.7 \times 0.5 \times 0.7 = 0.245$. The unique environments contribute nothing, since each acts on one twin alone: they are not common causes, and no chain connects them to the other twin. The sum is $0.495$.^[Strictly this is the implied covariance. The implied variance of each twin's score is $0.49 + 0.25 + 0.25 = 0.99$, so the implied correlation is $0.495/0.99 = 0.50$. The decomposition gives correlations when the variables are standardized; here they very nearly are, and the gap is 1 percent. With larger loadings it would be larger.]
 
-Now change one number. For identical twins the genetic correlation is 1 instead of 0.5, and nothing else about the model changes. The genetic trace becomes $0.7 \times 1 \times 0.7 = 0.49$, and the implied covariance is $0.25 + 0.49 = 0.74$, a correlation of $0.747$. The model therefore predicts that identical twins will resemble each other considerably more than fraternal twins do, and by a specific amount. Comparing the two observed correlations is how heritability gets estimated; across 17,804 traits and fifty years of twin studies, the average reported heritability is 49 percent [@polderman2015].
+Now change one number. For identical twins the genetic correlation is 1 instead of 0.5, and nothing else about the model changes. The genetic joint effect becomes $0.7 \times 1 \times 0.7 = 0.49$, and the implied covariance is $0.25 + 0.49 = 0.74$, a correlation of $0.747$. The model therefore predicts that identical twins will resemble each other considerably more than fraternal twins do, and by a specific amount. Comparing the two observed correlations is how heritability gets estimated; across 17,804 traits and fifty years of twin studies, the average reported heritability is 49 percent [@polderman2015].
 
 ::: {.callout-tip icon="false" title="Exercise 2.5"}
 Using the ACE diagram, suppose a trait has a genetic loading of 0.6, a shared-environment loading of 0.4, and a unique-environment loading of 0.69.
 
 (a) Write the two equations.
-(b) Derive the implied covariance between the twins' scores for fraternal twins, showing each trace.
+(b) Derive the implied covariance between the twins' scores for fraternal twins, showing each contribution and naming its kind.
 (c) Do the same for identical twins.
 (d) Suppose children of more educated parents are better able to benefit from favourable genetics. Which assumption of the model does that violate?
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 2.5"}
 (a) $y_1 = 0.6A_1 + 0.4C + 0.69E_1$ and $y_2 = 0.6A_2 + 0.4C + 0.69E_2$.
-(b) Two traces. Through the shared environment: $0.4 \times 0.4 = 0.16$. Through the genetic factors, across the curved arrow: $0.6 \times 0.5 \times 0.6 = 0.18$. Total $0.34$. (The implied variance is $0.36 + 0.16 + 0.476 = 1.00$, so the correlation is $0.34$ as well.)
-(c) The genetic trace becomes $0.6 \times 1 \times 0.6 = 0.36$, so the total is $0.52$.
+(b) Two contributions. A spurious relationship through the shared environment, their common cause: $0.4 \times 0.4 = 0.16$. A joint effect through the genetic factors' curved arrow: $0.6 \times 0.5 \times 0.6 = 0.18$. Total $0.34$. (The implied variance is $0.36 + 0.16 + 0.476 = 1.00$, so the correlation is $0.34$ as well.)
+(c) The genetic joint effect becomes $0.6 \times 1 \times 0.6 = 0.36$, so the total is $0.52$.
 (d) Additivity. The claim is that the effect of $A$ on the trait depends on the value of another variable, parental education, which is a product term. Answering "linearity" would be a different claim: that the effect of $A$ changes as $A$ itself changes.
 :::
 
 ## Estimating and testing
 
-The tracing rules run in both directions. Given parameters they produce correlations; given correlations they can sometimes be solved for parameters. That is what fitting a structural model does, and `lavaan` does it in a few lines. To keep the truth in view I generate the data from the practice model of @fig-yang, with the same values as before.
+The decomposition rule runs in both directions. Given parameters it produces correlations; given correlations it can sometimes be solved for parameters. That is what fitting a structural model does, and `lavaan` does it in a few lines. To keep the truth in view I generate the data from the practice model of @fig-yang, with the same values as before.
 
 ```{r}
 #| label: sim-yang
@@ -361,7 +363,7 @@ standardizedSolution(fit_theory)[1:3, c("lhs", "rhs", "est.std", "se")]
 
 The three lines that build the data are the practice model's two equations with numbers in place of letters. The model string is the same equations again, in the notation `lavaan` reads, with names attached to the three coefficients. The estimates are $-0.170$, $0.287$, and $-0.155$, against true values of $-0.20$, $0.30$, and $-0.15$, which is as close as 2,000 observations allow.
 
-Now check the tracing rules against the machine. Taking the estimates as given, the implied correlations are $\hat a = -0.170$, $\hat b + \hat a \hat c = 0.313$, and $\hat c + \hat a \hat b = -0.204$:
+Now check the decomposition against the machine. Taking the estimates as given, the implied correlations are $\hat a = -0.170$, $\hat b + \hat a \hat c = 0.313$, and $\hat c + \hat a \hat b = -0.204$:
 
 ```{r}
 #| label: implied-cor
@@ -499,7 +501,7 @@ Stay with @tbl-forster, and use the column for women, model (2), throughout.
 (d) Age squared applies to everyone at a given age regardless of which school they went to, so it enters both sides of the comparison and cancels. Only terms involving the vocational variable belong in the calculation of the vocational effect.
 :::
 
-A last warning about generalized linear models and the tracing rules. The rules multiply coefficients along a trace, and that works because each coefficient means the same kind of thing. Once a link function enters, coefficients on different arrows live on different scales. A published mediation diagram may show an ordinary regression coefficient running into the mediator and log-odds coefficients running out of it [@bayerl2024]; multiplying those two numbers produces something with no clear interpretation. @sec-identification returns to what replaces the product in that case.
+A last warning about generalized linear models and the decomposition rule. The rule multiplies coefficients along chains of arrows, and that works because each coefficient means the same kind of thing. Once a link function enters, coefficients on different arrows live on different scales. A published mediation diagram may show an ordinary regression coefficient running into the mediator and log-odds coefficients running out of it [@bayerl2024]; multiplying those two numbers produces something with no clear interpretation. @sec-identification returns to what replaces the product in that case.
 
 ## Beyond the straight line
 
@@ -517,7 +519,7 @@ What generalized linear models buy you is that every part is inspectable. You ca
 ![A model for parental education, neighbourhood deprivation, reading at 7, and qualifications at 18.](diagrams/schooling.png){#fig-schooling width="85%" fig-align="center"}
 
 (a) Which variables are endogenous? Write the equations, including disturbances.
-(b) Derive the implied correlation between parental education and reading score, showing every trace and naming its kind.
+(b) Derive the implied correlation between parental education and reading score, showing every contribution and naming its kind.
 (c) Derive the implied correlation between parental education and qualifications.
 (d) Derive the implied correlation between neighbourhood deprivation and qualifications.
 (e) How many free parameters does the model have, and how many correlations are there to fit? What follows for testing it?
@@ -525,9 +527,9 @@ What generalized linear models buy you is that every part is inspectable. You ca
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 2.A"}
 (a) $V$ and $Q$ are endogenous: $V = 0.35P - 0.20D + \zeta_V$ and $Q = 0.50\,V + 0.25P + \zeta_Q$.
-(b) Two traces. The direct effect, $0.35$; and a joint contribution across the curved arrow to $D$ and then forward to $V$, $(-0.30)(-0.20) = 0.06$. Total $0.41$.
-(c) Three traces from $P$ to $Q$: the direct effect, $0.25$; the indirect effect through reading, $0.35 \times 0.50 = 0.175$; and a joint contribution across the curved arrow to $D$, then to reading, then to qualifications, $(-0.30)(-0.20)(0.50) = 0.03$. Total $0.455$.
-(d) Three traces from $D$ to $Q$: the indirect effect through reading, $(-0.20)(0.50) = -0.10$; a joint contribution across the curved arrow to $P$ and then directly to $Q$, $(-0.30)(0.25) = -0.075$; and a joint contribution across the curved arrow to $P$, then to reading, then to $Q$, $(-0.30)(0.35)(0.50) = -0.0525$. Total $-0.2275$.
+(b) Two contributions. The direct effect, $0.35$; and a joint effect across the curved arrow to $D$ and then forward to $V$, $(-0.30)(-0.20) = 0.06$. Total $0.41$.
+(c) Three contributions from $P$ to $Q$: the direct effect, $0.25$; the indirect effect through reading, $0.35 \times 0.50 = 0.175$; and a joint effect across the curved arrow to $D$, then to reading, then to qualifications, $(-0.30)(-0.20)(0.50) = 0.03$. Total $0.455$.
+(d) Three contributions from $D$ to $Q$: the indirect effect through reading, $(-0.20)(0.50) = -0.10$; a joint effect across the curved arrow to $P$ and then directly to $Q$, $(-0.30)(0.25) = -0.075$; and a joint effect across the curved arrow to $P$, then to reading, then to $Q$, $(-0.30)(0.35)(0.50) = -0.0525$. Total $-0.2275$.
 (e) Standardized, four variables give $4 \times 3/2 = 6$ correlations. The free parameters are the four path coefficients and the exogenous correlation, so five. One degree of freedom is left, and exactly one claim of absence is spending it: there is no direct arrow from $D$ to $Q$. The model predicts $\rho_{DQ}$ from the other five numbers, and the data can refuse.
 :::
 
@@ -555,12 +557,12 @@ Return to the theory of planned behaviour from @sec-rq-to-interpretation. Write 
 (a) Draw the diagram for the three-variable part of the theory ($P$, $N$, $B$) and write the equations.
 (b) With standardized coefficients $0.45$ from $P$ to $N$, $0.40$ from $N$ to $B$, and $0.20$ from $P$ to $B$, derive all three implied correlations.
 (c) A researcher observes $\rho_{NB} = 0.49$ and concludes that the effect of intention on behaviour is 0.49. By how much are they wrong in this model, and what kind of contribution accounts for the gap?
-(d) Now add $A$. Write the equation for behaviour that expresses the theory's claim about it, and say why the tracing rules as stated cannot handle that equation.
+(d) Now add $A$. Write the equation for behaviour that expresses the theory's claim about it, and say why the decomposition rule as stated cannot handle that equation.
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 2.C"}
 (a) $P$ is exogenous; $N$ and $B$ are endogenous. $N = 0.45P + \zeta_N$; $B = 0.40N + 0.20P + \zeta_B$.
 (b) $\rho_{PN} = 0.45$. $\rho_{PB} = 0.20 + 0.45 \times 0.40 = 0.38$. $\rho_{NB} = 0.40 + 0.45 \times 0.20 = 0.49$.
-(c) They are wrong by 0.09. The correlation contains the direct effect, 0.40, plus a spurious contribution, the trace back to perceived control and forward to behaviour, $0.45 \times 0.20 = 0.09$. Perceived control is a common cause of both.
-(d) $B = \beta_1 N + \beta_2 P + \beta_3 A + \beta_4 (N \times A) + \zeta_B$. The claim that intention converts into behaviour only when control is present is the term $\beta_4$. The tracing rules assume a linear, additive system in which the effect of each variable is a single number written on an arrow; here the effect of intention is $\beta_1 + \beta_4 A$, which is a function of another variable rather than a number, and there is no arrow to write it on. This is why @sec-rq-to-interpretation drew a conditional effect as an arrow pointing at an arrow.
+(c) They are wrong by 0.09. The correlation contains the direct effect, 0.40, plus a spurious relationship, since perceived control is a common cause of both, with the chain 0.45 to intention and 0.20 to behaviour: $0.45 \times 0.20 = 0.09$.
+(d) $B = \beta_1 N + \beta_2 P + \beta_3 A + \beta_4 (N \times A) + \zeta_B$. The claim that intention converts into behaviour only when control is present is the term $\beta_4$. The decomposition rule assumes a linear, additive system in which the effect of each variable is a single number written on an arrow; here the effect of intention is $\beta_1 + \beta_4 A$, which is a function of another variable rather than a number, and there is no arrow to write it on. This is why @sec-rq-to-interpretation drew a conditional effect as an arrow pointing at an arrow.
 :::
