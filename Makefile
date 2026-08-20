@@ -56,7 +56,8 @@ diagrams: $(PNG)
 # extended versions of the Yang et al. path diagram. All need ggplot2, ragg
 # and Fira Sans.
 figures: images/ross-1970-breathalyser.png images/gam-path-diagram.png \
-         diagrams/yang-full.png diagrams/yang-correlated.png
+         diagrams/yang-full.png diagrams/yang-correlated.png \
+         diagrams/joint-effect.png
 
 images/ross-1970-breathalyser.png: figures/ross-1970-figure.R figures/ross-1970-data.csv
 	Rscript $<
@@ -66,6 +67,9 @@ images/gam-path-diagram.png: figures/gam-diagram.R
 
 # One script draws both extended versions of the Yang et al. path diagram.
 diagrams/yang-full.png diagrams/yang-correlated.png: diagrams/yang-models.R
+	Rscript $<
+
+diagrams/joint-effect.png: diagrams/joint-effect.R
 	Rscript $<
 
 diagrams/%.png: diagrams/%.mmd $(MMDC_CFG) $(MMDC_CSS)
