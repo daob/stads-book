@@ -1,0 +1,311 @@
+LISS wave 18, chapter 2 model. N = 4158 adults
+Fitted 2026-08-20 
+
+Observed correlations (pairwise complete):
+              integration hypertension    bmi disease_count
+integration         1.000       -0.011 -0.059        -0.008
+hypertension       -0.011        1.000  0.155         0.316
+bmi                -0.059        0.155  1.000         0.142
+disease_count      -0.008        0.316  0.142         1.000
+
+================ Model 1: no direct path from integration ============
+lavaan 0.7-2 ended normally after 36 iterations
+
+  Estimator                                         ML
+  Optimization method                           NLMINB
+  Number of model parameters                        13
+
+                                                  Used       Total
+  Number of observations                          4157        4158
+  Number of missing patterns                         5            
+
+Model Test User Model:
+                                              Standard      Scaled
+  Test Statistic                                 0.004       0.004
+  Degrees of freedom                                 1           1
+  P-value (Chi-square)                           0.949       0.949
+  Scaling correction factor                                  0.995
+    Yuan-Bentler correction (Mplus variant)                       
+
+Model Test Baseline Model:
+
+  Test statistic                               591.330     532.046
+  Degrees of freedom                                 6           6
+  P-value                                        0.000       0.000
+  Scaling correction factor                                  1.111
+
+User Model versus Baseline Model:
+
+  Comparative Fit Index (CFI)                    1.000       1.000
+  Tucker-Lewis Index (TLI)                       1.010       1.011
+                                                                  
+  Robust Comparative Fit Index (CFI)                         1.000
+  Robust Tucker-Lewis Index (TLI)                            1.010
+
+Loglikelihood and Information Criteria:
+
+  Loglikelihood user model (H0)             -26964.105  -26964.105
+  Scaling correction factor                                  1.564
+      for the MLR correction                                      
+  Loglikelihood unrestricted model (H1)     -26964.103  -26964.103
+  Scaling correction factor                                  1.523
+      for the MLR correction                                      
+                                                                  
+  Akaike (AIC)                               53954.210   53954.210
+  Bayesian (BIC)                             54036.533   54036.533
+  Sample-size adjusted Bayesian (SABIC)      53995.225   53995.225
+
+Root Mean Square Error of Approximation:
+
+  RMSEA                                          0.000       0.000
+  90 Percent confidence interval - lower         0.000       0.000
+  90 Percent confidence interval - upper         0.003       0.000
+  P-value H_0: RMSEA <= 0.050                    1.000       1.000
+  P-value H_0: RMSEA >= 0.080                    0.000       0.000
+                                                                  
+  Robust RMSEA                                               0.000
+  90 Percent confidence interval - lower                     0.000
+  90 Percent confidence interval - upper                     0.004
+  P-value H_0: Robust RMSEA <= 0.050                         1.000
+  P-value H_0: Robust RMSEA >= 0.080                         0.000
+
+Standardized Root Mean Square Residual:
+
+  SRMR                                           0.000       0.000
+
+Goodness of Fit Index:
+
+  Goodness of Fit Index (GFI)                    1.000            
+  90 Percent confidence interval - lower         1.000            
+  90 Percent confidence interval - upper         1.000            
+                                                                  
+  Robust GFI                                                 1.000
+  90 Percent confidence interval - lower                     1.000
+  90 Percent confidence interval - upper                     1.000
+
+Parameter Estimates:
+
+  Standard errors                             Sandwich
+  Information bread                           Observed
+  Observed information based on                Hessian
+
+Regressions:
+                   Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
+  hypertension ~                                                        
+    integratn (a2)   -0.003    0.004   -0.697    0.486   -0.003   -0.011
+  bmi ~                                                                 
+    integratn (a3)   -0.201    0.051   -3.971    0.000   -0.201   -0.059
+  disease_count ~                                                       
+    hypertnsn (c2)    0.820    0.051   16.016    0.000    0.820    0.301
+    bmi       (c3)    0.020    0.003    6.386    0.000    0.020    0.095
+
+Covariances:
+                   Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
+ .hypertension ~~                                                       
+   .bmi      (psi)    0.270    0.029    9.183    0.000    0.270    0.154
+
+Intercepts:
+                   Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
+   .hypertension      0.168    0.008   21.979    0.000    0.168    0.453
+   .bmi              26.373    0.101  260.854    0.000   26.373    5.592
+   .disease_count     0.028    0.082    0.343    0.732    0.028    0.028
+    integration       1.216    0.022   56.282    0.000    1.216    0.874
+
+Variances:
+                   Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
+   .hypertension      0.137    0.004   35.599    0.000    0.137    1.000
+   .bmi              22.162    0.845   26.239    0.000   22.162    0.996
+   .disease_count     0.911    0.036   25.554    0.000    0.911    0.892
+    integration       1.939    0.072   26.893    0.000    1.939    1.000
+
+
+================ Model 2: direct path freed (saturated) ==============
+lavaan 0.7-2 ended normally after 37 iterations
+
+  Estimator                                         ML
+  Optimization method                           NLMINB
+  Number of model parameters                        14
+
+                                                  Used       Total
+  Number of observations                          4157        4158
+  Number of missing patterns                         5            
+
+Model Test User Model:
+                                              Standard      Scaled
+  Test Statistic                                 0.000       0.000
+  Degrees of freedom                                 0           0
+
+Parameter Estimates:
+
+  Standard errors                             Sandwich
+  Information bread                           Observed
+  Observed information based on                Hessian
+
+Regressions:
+                   Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
+  hypertension ~                                                        
+    integratn (a2)   -0.003    0.004   -0.697    0.486   -0.003   -0.011
+  bmi ~                                                                 
+    integratn (a3)   -0.201    0.051   -3.971    0.000   -0.201   -0.059
+  disease_count ~                                                       
+    hypertnsn (c2)    0.820    0.051   16.016    0.000    0.820    0.301
+    bmi       (c3)    0.020    0.003    6.380    0.000    0.020    0.095
+    integratn (c1)    0.001    0.011    0.064    0.949    0.001    0.001
+
+Covariances:
+                   Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
+ .hypertension ~~                                                       
+   .bmi      (psi)    0.270    0.029    9.183    0.000    0.270    0.154
+
+Intercepts:
+                   Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
+   .hypertension      0.168    0.008   21.979    0.000    0.168    0.453
+   .bmi              26.373    0.101  260.854    0.000   26.373    5.592
+   .disease_count     0.027    0.083    0.322    0.748    0.027    0.027
+    integration       1.216    0.022   56.284    0.000    1.216    0.874
+
+Variances:
+                   Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
+   .hypertension      0.137    0.004   35.599    0.000    0.137    1.000
+   .bmi              22.162    0.845   26.239    0.000   22.162    0.996
+   .disease_count     0.911    0.036   25.553    0.000    0.911    0.892
+    integration       1.939    0.072   26.893    0.000    1.939    1.000
+
+
+Likelihood-ratio test of the exclusion (Model 1 vs Model 2):
+
+Scaled Chi-Squared Difference Test (method = "satorra.bentler.2001")
+
+lavaan->lavTestLRT():  
+   lavaan NOTE: The "Chisq" column contains standard test statistics, not the 
+   robust test that should be reported per model. A robust difference test is 
+   a function of two standard (not robust) statistics.
+
+     Df   AIC   BIC  Chisq Chisq diff Df diff Pr(>Chisq)
+fit2  0 53956 54045 0.0000                              
+fit1  1 53954 54037 0.0041  0.0041442       1     0.9487
+
+================ Model 3: adjusted for age and gender ================
+lavaan 0.7-2 ended normally after 66 iterations
+
+  Estimator                                         ML
+  Optimization method                           NLMINB
+  Number of model parameters                        26
+
+  Number of observations                          4158
+  Number of missing patterns                         7
+
+Model Test User Model:
+                                              Standard      Scaled
+  Test Statistic                                 0.971       0.957
+  Degrees of freedom                                 1           1
+  P-value (Chi-square)                           0.324       0.328
+  Scaling correction factor                                  1.015
+    Yuan-Bentler correction (Mplus variant)                       
+
+Model Test Baseline Model:
+
+  Test statistic                              1237.679    1222.942
+  Degrees of freedom                                12          12
+  P-value                                        0.000       0.000
+  Scaling correction factor                                  1.012
+
+User Model versus Baseline Model:
+
+  Comparative Fit Index (CFI)                    1.000       1.000
+  Tucker-Lewis Index (TLI)                       1.000       1.000
+                                                                  
+  Robust Comparative Fit Index (CFI)                         1.000
+  Robust Tucker-Lewis Index (TLI)                            1.000
+
+Loglikelihood and Information Criteria:
+
+  Loglikelihood user model (H0)             -47393.878  -47393.878
+  Scaling correction factor                                  1.202
+      for the MLR correction                                      
+  Loglikelihood unrestricted model (H1)     -47393.393  -47393.393
+  Scaling correction factor                                  1.195
+      for the MLR correction                                      
+                                                                  
+  Akaike (AIC)                               94839.756   94839.756
+  Bayesian (BIC)                             95004.409   95004.409
+  Sample-size adjusted Bayesian (SABIC)      94921.792   94921.792
+
+Root Mean Square Error of Approximation:
+
+  RMSEA                                          0.000       0.000
+  90 Percent confidence interval - lower         0.000       0.000
+  90 Percent confidence interval - upper         0.041       0.040
+  P-value H_0: RMSEA <= 0.050                    0.987       0.988
+  P-value H_0: RMSEA >= 0.080                    0.000       0.000
+                                                                  
+  Robust RMSEA                                               0.000
+  90 Percent confidence interval - lower                     0.000
+  90 Percent confidence interval - upper                     0.041
+  P-value H_0: Robust RMSEA <= 0.050                         0.987
+  P-value H_0: Robust RMSEA >= 0.080                         0.000
+
+Standardized Root Mean Square Residual:
+
+  SRMR                                           0.003       0.003
+
+Goodness of Fit Index:
+
+  Goodness of Fit Index (GFI)                    1.000            
+  90 Percent confidence interval - lower         0.999            
+  90 Percent confidence interval - upper         1.000            
+                                                                  
+  Robust GFI                                                 1.000
+  90 Percent confidence interval - lower                     0.999
+  90 Percent confidence interval - upper                     1.000
+
+Parameter Estimates:
+
+  Standard errors                             Sandwich
+  Information bread                           Observed
+  Observed information based on                Hessian
+
+Regressions:
+                   Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
+  hypertension ~                                                        
+    integratn (a2)   -0.009    0.004   -2.268    0.023   -0.009   -0.033
+    age               0.006    0.000   21.856    0.000    0.006    0.297
+    female           -0.016    0.011   -1.481    0.139   -0.016   -0.022
+  bmi ~                                                                 
+    integratn (a3)   -0.225    0.051   -4.438    0.000   -0.225   -0.066
+    age               0.025    0.004    6.122    0.000    0.025    0.092
+    female           -0.090    0.145   -0.618    0.537   -0.090   -0.010
+  disease_count ~                                                       
+    hypertnsn (c2)    0.639    0.052   12.321    0.000    0.639    0.234
+    bmi       (c3)    0.018    0.003    5.874    0.000    0.018    0.085
+    age               0.014    0.001   17.246    0.000    0.014    0.237
+    female            0.095    0.029    3.301    0.001    0.095    0.047
+
+Covariances:
+                   Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
+ .hypertension ~~                                                       
+   .bmi      (psi)    0.221    0.028    7.887    0.000    0.221    0.133
+  integration ~~                                                        
+    age               1.736    0.356    4.882    0.000    1.736    0.072
+    female           -0.050    0.011   -4.595    0.000   -0.050   -0.071
+  age ~~                                                                
+    female           -0.729    0.134   -5.425    0.000   -0.729   -0.084
+
+Intercepts:
+                   Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
+   .hypertension     -0.172    0.016  -11.064    0.000   -0.172   -0.464
+   .bmi              25.044    0.266   93.989    0.000   25.044    5.311
+   .disease_count    -0.709    0.086   -8.205    0.000   -0.709   -0.701
+    integration       1.216    0.022   56.289    0.000    1.216    0.873
+    age              56.233    0.270  208.549    0.000   56.233    3.234
+    female            0.519    0.008   66.919    0.000    0.519    1.038
+
+Variances:
+                   Estimate  Std.Err  z-value  P(>|z|)   Std.lv  Std.all
+   .hypertension      0.125    0.003   38.182    0.000    0.125    0.911
+   .bmi              21.969    0.849   25.863    0.000   21.969    0.988
+   .disease_count     0.858    0.033   25.669    0.000    0.858    0.840
+    integration       1.939    0.072   26.893    0.000    1.939    1.000
+    age             302.308    5.034   60.054    0.000  302.308    1.000
+    female            0.250    0.000  863.248    0.000    0.250    1.000
+
