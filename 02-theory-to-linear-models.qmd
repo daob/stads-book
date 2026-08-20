@@ -7,7 +7,7 @@ That paragraph is the verbal theory behind a study by Yang and colleagues, who t
 
 How can we turn this paragraph into an inference based on data? State the theory as a set of claims about specific variables, draw the claims, turn the drawing into equations, work out what the equations imply about data you have not yet seen, and compare. Two things come out at the end. Estimating the model tells you something about the world *if the model is true*. Testing the model tells you something about some of the assumptions and/or the theory.
 
-## From words to claims
+## From words to graphical models
 
 A verbal theory contains two kinds of statement.
 
@@ -99,7 +99,7 @@ Furthermore, chronic disease is an intervening variable between the body measure
 
 ![The final model. Chronic disease has been absorbed into the paths from the physiological states to death, which is why their coefficients carry primes, and the disturbances of the three physiological states are joined by curved two-headed arrows: their covariation beyond what social integration explains is acknowledged rather than explained.](diagrams/yang-correlated.png){#fig-yang-final width="90%" fig-align="center"}
 
-## Writing the equations
+## From graphical model to linear and additive equations
 
 We now turn the path diagram into a set of equations. **Every variable with an arrow pointing into it is a dependent variable and gets its own equation.** Its predictors are the variables at the tails of those arrows, and its disturbance goes on the end.
 
@@ -147,7 +147,7 @@ panel(function(x) 1.4 + 0.42 * (x - 2.8)^2,  "Nonlinear: reverses")
 par(op)
 ```
 
-**Additivity** says that the effect of one cause does not depend on the value of another. It fails whenever a theory contains the words "only if", "particularly for", or "unless". The theory of planned behaviour in @sec-rq-to-interpretation fails additivity, because intention converts to behaviour only when the person has the control to act. One method of modeling non-additivity is by including product terms ("interactions") in the equations (but note that this is a specific functional choice that comes with its own assumptions as well).
+**Additivity** says that the effect of one cause does not depend on the value of another. It fails whenever a theory contains the words "only if", "particularly for", or "unless". The theory of planned behaviour in @sec-rq-to-interpretation fails additivity, because intention converts to behaviour only when the person has the control to act. One method of modeling non-additivity is by including product terms ("interactions") in the equations.
 ```{r}
 #| label: fig-additivity
 #| echo: false
@@ -171,11 +171,6 @@ draw("Nonadditive: nonmonotonic",  ic = c(0.8, 1.3, 1.8), sl = c(0.2, 0.7, 0.2))
 par(op)
 ```
 
-The right-hand panel of @fig-additivity comes out of an ordinary linear equation,
-
-$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_2^2 + \beta_4 (X_1 \times X_2) + \beta_5 (X_1 \times X_2^2) + \zeta,$$
-
-with $X_1$ standing for inflammation and $X_2$ for blood pressure. Because $X_1$ is never raised to a power, the lines are perfectly straight: at any fixed blood pressure, the effect of inflammation is the constant $\beta_1 + \beta_4 X_2 + \beta_5 X_2^2$. But that constant is a curve in $X_2$, rising and then falling, which is what makes the slopes vary nonmonotonically across the lines.
 You can have either without the other. A model can be curved in $x$ and still additive; a model can be perfectly straight in both causes and still contain an interaction between them. Nonadditivity is also more general than just "product terms": on the right-hand side of @fig-additivity, the slope depends on blood pressure, but in a nonmonotonic way. So product terms are just one way to model nonadditivity, but they do not encompass all cases and still involve assumptions. 
 
 ::: {.callout-tip icon="false" title="Exercise 2.2"}
@@ -196,7 +191,7 @@ Which assumption does each scenario violate, linearity or additivity? Write the 
 (e) A chain: $X \rightarrow M \rightarrow Y$, with a disturbance arrow into $M$ and another into $Y$, and no equation for $X$. By omission it claims that $X$ has no direct effect on $Y$, that nothing causes $X$ within the model, and that $\zeta_M$ and $\zeta_Y$ are uncorrelated, which is to say that $M$ and $Y$ share no unmeasured cause.
 :::
 
-### Reading the coefficients
+### Interpreting the coefficients of linear equations
 
 
 An **unstandardized** coefficient is a statement in the original units: a one-unit increase in the predictor goes with a $b$-unit change in the outcome, holding constant the other variables in that equation. Take a real regression, on 189 births recorded at a hospital in Springfield, Massachusetts in 1986 [@venables2002; @hosmer2013]. The data are included with `R`, so you can run everything below as you read:
@@ -255,14 +250,17 @@ This is where our choice for linear and additive models will really help. As it 
 
 Here we will further simplify the discussion by ignoring means and standardizing all variables; we then only have to deal with correlations.
 
-The final model in @fig-yang-final is a lot to start with. So begin with a smaller practice model of the same shape, drawn in @fig-yang, and return to the full version once the rules are in hand. It keeps social integration, one physiological state, and mortality; a direct arrow from integration to mortality stands in for every route that bypasses inflammation. This model has three unknown parameters ($a$, $b$, and $c$). The data contain three correlations. What connects them?
+The final model in @fig-yang-final is a lot to start with. So begin with a smaller practice model of the same shape, drawn in @fig-yang, and return to the full version once the rules are in hand. It keeps social integration, one physiological state, and mortality; a direct arrow from integration to mortality stands in for every route that bypasses inflammation. This model has three unknown parameters ($a$, $b$, and $c$). The data contain three correlations. What connects the parameters and the equations? The answer is the **decomposition rule**.
 
 ![A three-variable practice model. Social integration affects inflammation, inflammation affects mortality risk, and the direct arrow collects every route from integration to mortality that bypasses inflammation. The coefficients $a$, $b$, $c$ are the quantities to be learned.](diagrams/yang.png){#fig-yang width="80%" fig-align="center"}
 
 > **Decomposition rule** 
 > The correlation coefficient between two variables is equal to the sum of the direct effects, the indirect effects, the spurious relationships and the joint effects.
 
- * A direct effect is equal to the corresponding path coefficient
+You should be able to recite this rule if woken up in the middle of the night.
+
+Now, 
+ * A direct effect is equal to the corresponding path coefficient (of course): $X \overset{a}{\rightarrow} Y$ means the direct effect equals $a$.
  * An indirect effect is equal to the *product* of path coefficients along the indirect paths
  * A spurious relationship is equal to the product of the two paths running from the common cause to each of the two variables
  * A joint effect passes through a curved two-headed arrow, and is equal to the product of the path coefficients with the value on the curved arrow in between
