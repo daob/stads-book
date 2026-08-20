@@ -250,7 +250,7 @@ This is where our choice for linear and additive models will really help. As it 
 
 Here we will further simplify the discussion by ignoring means and standardizing all variables; we then only have to deal with correlations.
 
-The final model in @fig-yang-final is a lot to start with. So begin with a smaller practice model of the same shape, drawn in @fig-yang, and return to the full version once the rules are in hand. It keeps social integration, one physiological state, and mortality; a direct arrow from integration to mortality stands in for every route that bypasses inflammation. This model has three unknown parameters ($a$, $b$, and $c$). The data contain three correlations. What connects the parameters and the equations? The answer is the **decomposition rule**.
+The final model in @fig-yang-final is a lot to start with. So begin with a smaller practice model of the same shape, drawn in @fig-yang, and return to the full version once the rules are in hand. It keeps social integration, one physiological state, and mortality; a direct arrow from integration to mortality stands in for every route that bypasses inflammation. This model has three unknown parameters ($a$, $b$, and $c$). The data contain three correlations. What connects the parameters and the equations? The answer is the **decomposition rule**^[The recipe works for **recursive** models, meaning models without reciprocal effects or feedback loops. This way of computing implied correlations is classically known as the *tracing rules* [@wright1934; @saris1984].].
 
 ![A three-variable practice model. Social integration affects inflammation, inflammation affects mortality risk, and the direct arrow collects every route from integration to mortality that bypasses inflammation. The coefficients $a$, $b$, $c$ are the quantities to be learned.](diagrams/yang.png){#fig-yang width="80%" fig-align="center"}
 
@@ -259,18 +259,17 @@ The final model in @fig-yang-final is a lot to start with. So begin with a small
 
 You should be able to recite this rule if woken up in the middle of the night.
 
+Each of the direct effects, indirect effects, spurious relationships, and joint effects makes a specific contribution to the total correlation:
 
-Now, 
+* **Direct effect.** An arrow from one variable to the other: $X \overset{a}{\rightarrow} Y$ contributes $a$.
 
- * A direct effect is equal to the corresponding path coefficient (of course): $X \overset{a}{\rightarrow} Y$ means the direct effect equals $a$.
+* **Indirect effect.** A chain of arrows, all pointing the same way, from one variable to the other through intermediates: $X \overset{a}{\rightarrow} Y_1 \overset{b}{\rightarrow} Y_2$ contributes $ab$. 
 
- * An indirect effect is equal to the *product* of path coefficients along the indirect paths: $X \overset{a}{\rightarrow} Y_1 \overset{b}{\rightarrow} Y_2$ means the indirect effect equals $ab$
+* **Spurious relationship.** A common cause, with a chain of arrows running out of it to each of the two variables: $Y_1 \overset{a}{\leftarrow} X \overset{b}{\rightarrow} Y_2$ contributes $ab$. With longer chains, multiply every coefficient along both: one spurious contribution for every common cause and every pair of chains out of it.
 
- * A spurious relationship is equal to the product of the two paths running from the common cause to each of the two variables: $X \begin{array}{c} \overset{a}{\nearrow} Y_1 \\ \underset{b}{\searrow} Y_2 \end{array}$ means the spurious effect is $ab$
+ * A **joint effect** is a relationship that has been left purposefully unspecified: it could be direct in either direction or spurious -- we just do not know. One way of thinking about joint effects is that they are spurious relationships in which the common cause has been replaced by a curved two-headed arrow. Chains of arrows run from the curve's two ends to the two variables, and the curve's value multiplies in like a coefficient: $X_1 \overset{\phi}{\leftrightarrow} X_2 \overset{b}{\rightarrow} Y$ means the joint effect equals $\phi b$. Either chain may be empty, as it is here on the $X_1$ side: a variable can sit directly on the curve.
 
- * A joint effect is a spurious relationship in which the common cause has been replaced by a curved two-headed arrow. Chains of arrows run from the curve's two ends to the two variables, and the curve's value multiplies in like a coefficient: $X_1 \overset{\phi}{\leftrightarrow} X_2 \overset{b}{\rightarrow} Y$ means the joint effect equals $\phi b$. Either chain may be empty, as it is here on the $X_1$ side: a variable can sit directly on the curve.
-
-Two remarks make these four rules a complete recipe.^[The recipe works for **recursive** models, meaning models without reciprocal effects or feedback loops; with arrows running both ways the implied correlations have to be derived algebraically. This way of computing implied correlations is classically known as the *tracing rules* [@wright1934; @saris1984].] First, the sum runs over *every* contribution of *every* kind: every arrow between the pair, every one-way chain, every common cause with every pair of chains running out of it, every curved arrow with every pair of chains running out of its ends; with longer chains, multiply every coefficient along the way. Second, nothing else counts. None of the four shapes contains two arrows colliding head-on, so a common *effect* of the pair never contributes: two causes of the same thing need not be correlated at all. As for the name of the fourth kind, it records an admission. The curved arrow is a common cause the model declined to name, or an effect it declined to orient, so its contribution can be filed neither under indirect nor under spurious, and it gets a heading of its own.
+Two remarks make these four rules a complete recipe. First, the sum runs over *every* contribution of *every* kind: every arrow between the pair, every one-way chain, every common cause with every pair of chains running out of it, every curved arrow with every pair of chains running out of its ends; with longer chains, multiply every coefficient along the way. 
 
 Apply this to @fig-yang. Suppose, for the sake of arithmetic, that the true values are $a = -0.20$, $b = 0.30$, and $c = -0.15$, with all three variables standardized.
 
