@@ -259,19 +259,16 @@ The final model in @fig-yang-final is a lot to start with. So begin with a small
 
 You should be able to recite this rule if woken up in the middle of the night.
 
+
 Now, 
+
  * A direct effect is equal to the corresponding path coefficient (of course): $X \overset{a}{\rightarrow} Y$ means the direct effect equals $a$.
- * An indirect effect is equal to the *product* of path coefficients along the indirect paths
- * A spurious relationship is equal to the product of the two paths running from the common cause to each of the two variables
+
+ * An indirect effect is equal to the *product* of path coefficients along the indirect paths: $X \overset{a}{\rightarrow} Y_1 \overset{b}{\rightarrow} Y_2$ means the indirect effect equals $ab$
+
+ * A spurious relationship is equal to the product of the two paths running from the common cause to each of the two variables: $X \begin{array}{c} \overset{a}{\nearrow} Y_1 \\ \underset{b}{\searrow} Y_2 \end{array}$ means the spurious effect is $ab$
+
  * A joint effect passes through a curved two-headed arrow, and is equal to the product of the path coefficients with the value on the curved arrow in between
-
-To find the correlation the model implies between two variables, written $\rho$ ("rho"):
-
-1. Find every **trace** between them. A trace is a route through the diagram.
-2. Multiply the coefficients along each trace.
-3. Add the traces up.
-
-A trace is valid when it obeys three restrictions. It may go backwards along arrows and then forwards, but never forwards and then backwards. It may pass through any variable only once. It may include at most one curved two-headed arrow, and a curved arrow may join two disturbances as well as two exogenous variables, which is how a model says that two endogenous variables share an unmeasured cause. Sewall Wright set all of this out in 1934, and his gloss on the first restriction is worth memorizing: "That two factors affect the same dependent variable does not contribute to the correlation between them" [@wright1934].^[Wright's own statement covers the first and third restrictions; the once-per-variable rule is the modern working version. The rules as given here apply to **recursive** models, meaning models without reciprocal effects or feedback loops. With arrows running both ways between two variables the intuitive rules fail and the implied correlations have to be derived algebraically [@saris1984].]
 
 Apply this to @fig-yang. Suppose, for the sake of arithmetic, that the true values are $a = -0.20$, $b = 0.30$, and $c = -0.15$, with all three variables standardized.
 
@@ -285,7 +282,6 @@ Between $I$ and $R$ there are also two: the direct arrow $b$, and the route back
 
 $$\rho_{IR} = b + ac = 0.30 + (-0.20)(-0.15) = 0.33.$$
 
-Every implied correlation is a sum of contributions of exactly four kinds, and naming them is the point of the exercise [@saris1984]. A **direct effect** is a single arrow. An **indirect effect** is a chain of arrows running the same way, like $a \times b$ above. A **spurious** contribution runs backwards to a common cause and then forwards again, like $a \times c$ in $\rho_{IR}$. And a **joint** contribution passes through a curved arrow between exogenous variables, which this model does not have. Direct plus indirect is the **total effect**, the thing you would change by intervening. Spurious and joint contributions are not effects of anything on anything, and they are sitting inside the correlation regardless.
 
 Look at what happened to $\rho_{IR}$. The causal effect of inflammation on mortality risk is 0.30, and the correlation between them is 0.33. The gap is confounding, manufactured by a variable that is in the model and that we know about. If it were not in the model we would read 0.33 as the effect and never know.
 
