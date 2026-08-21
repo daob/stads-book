@@ -39,7 +39,7 @@ Once the claims are sorted, three steps produce the theory in a form you can dra
 
 You have already seen the definition of a variable. Step 1 is also an opportunity to consider whether any obvious candidates are missing from the theory, and perhaps the theory may need to be amended.
 
-Causal order is not always easy to determine. In some cases it is possible to establish causal order in advance, particularly when one variable comes after another in time. Longitudinal data are therefore a very useful design to rule out mistakes in this step, and that is why they are so popular^[They do not, however, automatically establish causality, nor are they necessary for useful causal inference.]. Another example is when one variable has known randomness to it, such as random assignment in an RCT or natural disasters; in this case we are confident that our social and health variables are not affecting these random events as well. In most other cases, the causal order forms part of the assumptions in the theory and model, to be tested insofar as that is possible with the data at hand (see following chapter).
+Causal order is not always easy to determine. In some cases it is possible to establish causal order in advance, particularly when one variable comes after another in time. Longitudinal data are therefore a very useful design to rule out mistakes in this step, and that is why they are so popular^[They do not, however, automatically establish causality, nor are they required for useful causal inference.]. Another example is when one variable has known randomness to it, such as random assignment in an RCT or natural disasters; in this case we are confident that our social and health variables are not affecting these random events as well. In most other cases, the causal order forms part of the assumptions in the theory and model, to be tested insofar as that is possible with the data at hand (see following chapter).
 
 Step 3 does more than it appears to. When you say which variables affect which, you are also saying, of every pair you did not connect, that the effect between them is zero: "it is a convention that effects which are not specified are supposed to be zero" [@saris1984]. This is what makes a theory testable. It is very tempting to draw arrows between all variables because there "might" be an effect. However, a picture with an arrow between every pair of variables says nothing, forbids nothing, and cannot be wrong. Again these will remain as assumptions that should be made plausible through design, or tested with the data at hand, if possible. 
 
@@ -259,7 +259,7 @@ The final model in @fig-yang-final is a lot to start with. So begin with a small
 
 You should be able to recite this rule if woken up in the middle of the night.
 
-Each of the direct effects, indirect effects, spurious relationships, and joint effects makes a specific contribution to the total correlation:
+Each of the direct effects, indirect effects, spurious relationships, and joint effects makes a specific contribution to the total correlation. The rules for the contribution of each relationship to the overall correlation among two variables are as follows:
 
 * **Direct effect.** An arrow from one variable to the other: $X \overset{a}{\rightarrow} Y$ contributes $a$.
 
@@ -267,19 +267,19 @@ Each of the direct effects, indirect effects, spurious relationships, and joint 
 
 * **Spurious relationship.** A common cause, with a chain of arrows running out of it to each of the two variables: $Y_1 \overset{a}{\leftarrow} X \overset{b}{\rightarrow} Y_2$ contributes $ab$. With longer chains, multiply every coefficient along both: one spurious contribution for every common cause and every pair of chains out of it.
 
- * A **joint effect** is a relationship that has been left purposefully unspecified: it could be direct in either direction or spurious -- we just do not know. One way of thinking about joint effects is that they are spurious relationships in which the common cause has been replaced by a curved two-headed arrow. Chains of arrows run from the curve's two ends to the two variables, and the curve's value multiplies in like a coefficient: $X_1 \overset{\phi}{\leftrightarrow} X_2 \overset{b}{\rightarrow} Y$ means the joint effect equals $\phi b$. Either chain may be empty, as it is here on the $X_1$ side: a variable can sit directly on the curve.
+ * A **joint effect** is a relationship that has been left purposefully unspecified: it could be a direct effect in either direction, or spurious -- we just do not know. A popular way of thinking about joint effects <!-- DO: cite Pearl here --> is that they are spurious relationships in which the common cause has been replaced by a curved two-headed arrow. But the true relationship could be spurious or direct. @fig-joint illustrates this. It also shows that, whatever the true model, the rule for its contribution to the correlation is the same: 
+   for example, $X_1 \overset{\phi}{\leftrightarrow} X_2 \overset{b}{\rightarrow} Y$ means the joint effect equals $\phi b$. 
 
-@fig-joint draws the situation the fourth rule describes. On the left are three different models of the relationship between $X_1$ and $X_2$: $X_1$ causes $X_2$; $X_2$ causes $X_1$; and the two share an unnamed common cause, drawn as a circle because it is unobserved. Set $\gamma_1 = \gamma_2 = \lambda_1 \lambda_2 = \phi$ and all three imply exactly the same correlations among the observed variables: $\rho_{X_1 X_2} = \phi$, $\rho_{X_2 Y} = \beta$, and $\rho_{X_1 Y} = \phi\beta$. No data on these three variables can tell the stories apart. All that differs is the name of the $\phi\beta$ contribution: an indirect effect in the first story, a spurious relationship in the other two. The single diagram on the right therefore stands for all three at once. It records the covariation as a curved arrow, declines to say which story produced it, and its contribution to $\rho_{X_1 Y}$ is filed under the fourth heading: a joint effect of $\phi\beta$. This is the trade the curved arrow offers. You give up the claim about why $X_1$ and $X_2$ covary, you lose the right to name the contribution, and in exchange the model stops asserting something these data could never check.
+![Three possibilities for the $(X_1, X_2)$ relationship on the left-hand side, left unspecified as a joint effect on the right-hand side. Whichever of the three models is true, the implied correlations among $X_1$, $X_2$, and $Y$ are identical once $\phi = \gamma_1 = \gamma_2 = \lambda_1\lambda_2$, so the curved arrow can stand for all of them. Its contribution to the correlation between $X_1$ and $Y$ is the joint effect $\phi\beta$.](diagrams/joint-effect.png){#fig-joint width="90%" fig-align="center"}
 
-![Three stories on the left, one diagram on the right. Whichever of the three models is true, the implied correlations among $X_1$, $X_2$, and $Y$ are identical once $\phi = \gamma_1 = \gamma_2 = \lambda_1\lambda_2$, so the curved arrow can stand for all of them. Its contribution to the correlation between $X_1$ and $Y$ is the joint effect $\phi\beta$.](diagrams/joint-effect.png){#fig-joint width="90%" fig-align="center"}
+The sum in our decomposition rule runs over *every* contribution of *every* kind. Every arrow between the pair, every one-way chain, every common cause with every pair of chains running out of it, every curved arrow with every pair of chains running out of its ends; with longer chains, multiply every coefficient along the way. 
 
-One more remark makes these four rules a complete recipe: the sum runs over *every* contribution of *every* kind. Every arrow between the pair, every one-way chain, every common cause with every pair of chains running out of it, every curved arrow with every pair of chains running out of its ends; with longer chains, multiply every coefficient along the way. 
+Let's apply this to @fig-yang. Suppose, for the sake of arithmetic, that the true values are $a = -0.20$, $b = 0.30$, and $c = -0.15$, with all three variables standardized.
 
-Apply this to @fig-yang. Suppose, for the sake of arithmetic, that the true values are $a = -0.20$, $b = 0.30$, and $c = -0.15$, with all three variables standardized.
+<!-- DO: You are now calling Risk $R$, where before it was $M$. Choose a consistent notation and include this notation in the figures. I propose you just use LISREL notation, i.e. endogenous variables are eta's, exogenous are xi's, effects among endogenous are beta's etc. Also keep this notation in the text above, for example under interpretation and when introducing Equations. In the figures put the symbol for variables in brackets after the current longer name of the variable (i.e. keep the longer names so readers can understand what is going on.--> 
+Between $S$ and $I$ only one of the four relationships can be recognized: the direct arrow, so $\rho_{SI} = a = -0.20$. Note that even though there is a route $S \rightarrow R \leftarrow I$  (that is, $R$ is a common *effect* of the two), such *colliders* do not contribute anything to the correlation $\rho_{SI}$. Colliders such as $R$ are relevant in a different situation, however, namely when we *condition* on $R$: among people with high mortality risk, social integration and inflammation may correlate less, or even negatively, so the partial correlation $\rho_{SI.R}$ differs from $\rho_{SI}$. This "collider bias" <!-- cite Elwert & Winship 2014; Hernan 2004 --> is the same effect that is called "restriction of range" by some social scientists <!-- cite King Keohane & Verba -->. Another way of thinking about this phenomenon is that the rules for decomposing a *partial* correlation are different than those for a correlation. Here we are dealing with the latter. 
 
-Between $S$ and $I$ only one of the four shapes can be built: the direct arrow, so $\rho_{SI} = a = -0.20$. You might be tempted by the route $S \rightarrow R \leftarrow I$, but no rule produces it: $R$ is a common effect of the two, not a common cause.
-
-Between $S$ and $R$ two shapes appear: the direct effect $c$, and an indirect effect through inflammation, the chain $S \rightarrow I \rightarrow R$ with product $ab$.
+Between $S$ and $R$ two relationships appear: the direct effect $c$, and an indirect effect through inflammation, the chain $S \rightarrow I \rightarrow R$ with product $ab$.
 
 $$\rho_{SR} = c + ab = -0.15 + (-0.20)(0.30) = -0.21.$$
 
@@ -287,13 +287,12 @@ Between $I$ and $R$ there are also two: the direct effect $b$, and a spurious re
 
 $$\rho_{IR} = b + ac = 0.30 + (-0.20)(-0.15) = 0.33.$$
 
-
 Look at what happened to $\rho_{IR}$. The causal effect of inflammation on mortality risk is 0.30, and the correlation between them is 0.33. The gap is confounding, manufactured by a variable that is in the model and that we know about. If it were not in the model we would read 0.33 as the effect and never know.
+<!-- DO: this difference is only 0.03 and not very impressive. Can you make it larger, for example by including age in the model? -->
 
-Decomposing a correlation is bookkeeping. Take the pair of variables and walk the four rules in order: the direct arrow, if there is one; every one-way chain from one to the other; every common cause, with each pair of chains running out of it; every curved arrow, likewise. Add up what you find. In any model you can draw, the lists are short, and together they are the whole correlation.
 
 ::: {.callout-tip icon="false" title="Exercise 2.4"}
-Practice the mechanics one contribution at a time, on @fig-yang with the same values.
+Practice applying the decomposition rule one contribution at a time, on @fig-yang with the same values.
 
 (a) Which contributions make up $\rho_{SI}$, and what is its implied value?
 (b) Why does the route $S \rightarrow R \leftarrow I$ contribute nothing to $\rho_{SI}$?
@@ -303,18 +302,18 @@ Practice the mechanics one contribution at a time, on @fig-yang with the same va
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 2.4"}
 (a) A single direct effect, the arrow itself, so $\rho_{SI} = a = -0.20$.
-(b) $R$ is a common effect of the two, and none of the four shapes contains a common effect: it is not an arrow between them, not a one-way chain, not a common cause, not a curved arrow. Common effects do not induce correlation between their causes. (They do induce one *among units selected on $R$*, a separate trap with its own name, collider bias.)
+(b) $R$ is a common effect of the two, and none of the four relationships contains a common effect: it is not an arrow between them, not a one-way chain, not a common cause, not a curved arrow. Common effects do not induce correlation between their causes. (They do induce one *among units selected on $R$*, a separate trap with its own name, collider bias.)
 (c) $\rho_{IR} = 0.30 + (-0.20)(0.15) = 0.27$. Flipping the sign of a path that is not on the direct route still changes the correlation, and here it moves the other way, so the observed correlation now understates the effect. A correlation is a sum of contributions from the whole model, and no part of it can be read off in isolation.
 (d) With $c = 0$ the spurious relationship vanishes and $\rho_{IR} = b = 0.30$. The correlation would then be the effect. That is what "no confounding" buys, and it is bought with an assumption rather than with data.
 :::
 
-Now return to @fig-yang-final, where the new element is the curved arrows between disturbances. Read a curved arrow between two disturbances as if it joined the variables the disturbances point into. Between inflammation and blood pressure, two shapes can then be built. Social integration is a common cause, with the chains $a_1$ and $a_2$ running out of it: a spurious relationship of $a_1 a_2$. And the curved arrow joins the two variables directly, with both of its chains empty: a joint effect of $\psi_{IB}$. So $\rho_{IB} = a_1 a_2 + \psi_{IB}$: one part the model explains, one part it declines to. Between inflammation and death, three of the four kinds appear at once: the direct effect $c_1'$; two spurious relationships through social integration, $a_1 a_2 c_2' + a_1 a_3 c_3'$; and two joint effects through the curved arrows, $\psi_{IB}\, c_2' + \psi_{IA}\, c_3'$, each with an empty chain on the inflammation side and the chain into death on the other.
+Now return to @fig-yang-final. Between inflammation and blood pressure, two relationships can then be recognized. Social integration is a common cause, with the chains $a_1$ and $a_2$ running out of it: a spurious relationship of $a_1 a_2$. And the curved arrow joins the two variables directly, with both of its chains empty: a joint effect of $\psi_{IB}$. So $\rho_{IB} = a_1 a_2 + \psi_{IB}$: one part the model explains, one part it declines to. Between inflammation and death, three of the four kinds appear at once: the direct effect $c_1'$; two spurious relationships through social integration, $a_1 a_2 c_2' + a_1 a_3 c_3'$; and two joint effects through the curved arrows, $\psi_{IB}\, c_2' + \psi_{IA}\, c_3'$, each with an empty chain on the inflammation side and the chain into death on the other.
 
-Counting shows what all this buys. Five standardized variables give $5 \times 4/2 = 10$ correlations. The parameters are three $a$'s, three $c'$'s, and three $\psi$'s, which is nine. One degree of freedom is left over, and exactly one claim of absence is spending it: there is no direct arrow from social integration to death. Everything else the diagram might seem to forbid, the freed disturbance covariances quietly allow. The entire testable content of the final model is the claim that integration reaches death only through the body, which is the theory's own last sentence.
-
-The rules earn their keep on models with more structure. The classical twin design puts them to work on a question no experiment could touch. Identical twins share essentially all their genes; fraternal twins share half on average. So model each twin's trait as the sum of an additive genetic factor $A$, an environment $C$ shared by both twins, and an environment $E$ unique to each [@rijsdijk2002]. All three are unobserved, which is why @fig-ace draws them in circles.
+The decomposition rule does not apply only to models with observed variables (in boxes), but can also be applied to more complex models with unobserved variables in them (in circles). One example of such a model is the "ACE" model from twin studies. This is a model for data that have been collected from two groups of twins. 
+Identical twins share essentially all their genes; fraternal twins share half on average. ACE models each twin's trait as the sum of an additive genetic factor $A$, an environment $C$ shared by both twins, and an environment $E$ unique to each [@rijsdijk2002]. All three are unobserved, which is why @fig-ace draws them in circles. You can assume the variables $y_1$ and $y_2$ are standardized.
 
 ![The ACE model for a pair of fraternal twins. The correlation between the two genetic factors is fixed at 0.5 for fraternal twins and at 1 for identical twins. The shared environment is one variable acting on both; the unique environments are unconnected.](diagrams/ace.png){#fig-ace width="80%" fig-align="center"}
+<!-- DO: A1 is in a weird spot in this diagram. Maybe put the A factors on top and the C and E factors on the bottom. Use subscripts in the names, e.g. A1 should be $A_1$ and ensure render correctly. Put the monozygotic and dizygotic pictures side by side. Call them (a) and (b) so you can refer to them as such below. -->
 
 $$
 \begin{aligned}
@@ -323,9 +322,9 @@ y_2 &= 0.7\,A_2 + 0.5\,C + 0.5\,E_2 .
 \end{aligned}
 $$
 
-The 0.5 on the curved arrow was not estimated from these twins; genetics fixes it. Decompose the covariance between $y_1$ and $y_2$. The shared environment $C$ is a common cause, with a chain of 0.5 to each twin: a spurious relationship of $0.5 \times 0.5 = 0.25$. The genetic factors are joined by the curved arrow, with the chain 0.7 out of each end: a joint effect of $0.7 \times 0.5 \times 0.7 = 0.245$. The unique environments contribute nothing, since each acts on one twin alone: they are not common causes, and no chain connects them to the other twin. The sum is $0.495$.^[Strictly this is the implied covariance. The implied variance of each twin's score is $0.49 + 0.25 + 0.25 = 0.99$, so the implied correlation is $0.495/0.99 = 0.50$. The decomposition gives correlations when the variables are standardized; here they very nearly are, and the gap is 1 percent. With larger loadings it would be larger.]
+The 0.5 on the curved arrow was not estimated from these twins, but predetermined by the fact that fraternal twins share 50% of their genetic material on average. Decompose the correlation between $y_1$ and $y_2$. The shared environment $C$ is a common cause, with a chain of 0.5 to each twin: a spurious relationship of $0.5 \times 0.5 = 0.25$. The genetic factors are joined by the curved arrow, with the chain 0.7 out of each end: a joint effect of $0.7 \times 0.5 \times 0.7 = 0.245$. The unique environments contribute nothing, since each acts on one twin alone: they are not common causes, and no chain connects them to the other twin. The sum is $0.495$.
 
-Now change one number. For identical twins the genetic correlation is 1 instead of 0.5, and nothing else about the model changes. The genetic joint effect becomes $0.7 \times 1 \times 0.7 = 0.49$, and the implied covariance is $0.25 + 0.49 = 0.74$, a correlation of $0.747$. The model therefore predicts that identical twins will resemble each other considerably more than fraternal twins do, and by a specific amount. Comparing the two observed correlations is how heritability gets estimated; across 17,804 traits and fifty years of twin studies, the average reported heritability is 49 percent [@polderman2015].
+Now change one number. For identical twins the genetic correlation is 1 instead of 0.5 <!-- refer to figure (b) here -->, and nothing else about the model changes. The genetic joint effect becomes $0.7 \times 1 \times 0.7 = 0.49$, and the implied covariance is $0.25 + 0.49 = 0.74$, a correlation of $0.747$. The model therefore predicts that identical twins will resemble each other considerably more than fraternal twins do, and by a specific amount. Comparing the two observed correlations is how heritability gets estimated; across 17,804 traits and fifty years of twin studies, the average reported heritability is 49 percent [@polderman2015].
 
 ::: {.callout-tip icon="false" title="Exercise 2.5"}
 Using the ACE diagram, suppose a trait has a genetic loading of 0.6, a shared-environment loading of 0.4, and a unique-environment loading of 0.69.
@@ -345,7 +344,9 @@ Using the ACE diagram, suppose a trait has a genetic loading of 0.6, a shared-en
 
 ## Estimating and testing
 
-The decomposition rule runs in both directions. Given parameters it produces correlations; given correlations it can sometimes be solved for parameters. That is what fitting a structural model does, and `lavaan` does it in a few lines. To keep the truth in view I generate the data from the practice model of @fig-yang, with the same values as before.
+In the previous section, you saw that correlations can be written in terms of parameters by using the decomposition rule. In practice, we would like to know (or estimate) the parameters, because they say something about causal effects or about the theory, under the assumptions of the model (made plausible by the design). We cannot directly observe the parameters, but we can observe (or estimate) the correlations. And each correlation gives an equation in the parameters. So if we can solve these equations for the parameters, then *under the assumptions of the model* we will have estimated the parameters. 
+That is what fitting a structural model does, and `lavaan` does it in a few lines. To keep the truth in view I generate the data from the practice model of @fig-yang, with the same values as before.
+<!-- DO: instead of doing this, use the LISS data. First show the three equations in the three parameters (keep using LISREL notation, as you should now be doing throughout). Then solve these equations for the parameters. Next plug in the observed correlations, briefly noting that they are sample estimates. This should give parameter estimates.  Note they correspond to the original values, up to sampling error. Finally just use lavaan sem to fit the model and show that you get the same result. Change the prose of this section to be less choppy and overly severe ("means nothing at all").  --> 
 
 ```{r}
 #| label: sim-yang
@@ -378,6 +379,7 @@ Of course they match. This model has three parameters and three correlations to 
 Counting is how you tell in advance. With $k$ observed variables there are $k(k+1)/2$ variances and covariances to fit, or $k(k-1)/2$ correlations if everything is standardized; count the free parameters and subtract. A model with more parameters than moments cannot possibly be identified, and a model with the same number can fit anything. Saris and Stronkhorst are careful to add that passing the count is necessary and not sufficient, a point @sec-identification collects on.
 
 To learn something from fit, the theory must forbid something. Suppose the claim had been that integration works on mortality *only* through inflammation, so that $c = 0$. That is no hypothetical: it is the practice-model version of the claim our final model makes, that integration reaches death only through the body. Now there are two parameters for three correlations, one degree of freedom is left over, and the leftover equation is a prediction the data can refuse.
+<!-- DO: continuing from the derived equations for the correlations above, derive them quickly again while incorrectly assuming c=0, and solve the first two equation for the resulting two parameters. Then plug in the observed correlation for the remaining equation and note the residual. If I'm not mistaken the squareof this residual over the implied should give the chi-square with 1 df. It should be significant, meaning that the test is rejected. In this case, we are only testing one restriction, and the chisquare will be asymptotically equal to the wald test from estimating hte model and then looking at the z-value for the c parameter (the "Wald test"). But in practice you will have more than 1 df. Then again just use lavaan, noting that the choice to use the first two equations was arbitrary and it is better to use optimization to find the parameter values (this is called "maximum likelihood". lavaan also calculates the chisquare for more than one residual. It should be very close to the one calculated by hand.  --> 
 
 ```{r}
 #| label: test-claim
@@ -386,7 +388,7 @@ claim <- "inflammation ~ a * integration
 fitMeasures(sem(claim, data = d), c("chisq", "df", "pvalue"))
 ```
 
-The data refuse. A chi-square of 52.5 on one degree of freedom says that no values of $a$ and $b$ can reproduce these three correlations, and the reason is that this world does have a direct effect. Generate a world in which $c$ really is zero, fit the same claim, and the chi-square drops to 0.29 with a p-value of 0.59.
+The data reject the idea that $c=0$. A chi-square of 52.5 on one degree of freedom says that no values of $a$ and $b$ can reproduce these three correlations, and the reason is that this world does have a direct effect. Generate a world in which $c$ really is zero, fit the same claim, and the chi-square drops to 0.29 with a p-value of 0.59.
 
 ```{r}
 #| label: test-claim-true
@@ -397,24 +399,19 @@ d0 <- data.frame(integration, inflammation = inflammation0, risk = risk0)
 fitMeasures(sem(claim, data = d0), c("chisq", "df", "pvalue"))
 ```
 
-Three lessons come out of this, and they matter more than the arithmetic.
+Tests are great for comparing models, and you have seen that making the incorrect restriction $c=0$ is correctly rejected by the model test. However, there is an inherent limit to such tests. First, if the rest of the model is incorrect, it is possible that a set of restrictions is rejected while in fact it is a different aspect of the model that is causing the misfit. That is, tests, like estimation, are conditional on the assumptions behind the model. Second, as with all statistical tests, it is possible that an incorrect restriction will not be rejected. This is particularly likely when the statistical power is low. Aspects that affect the power are sample size, measurement error, and the overall predictive power of variables in the model. Third, it is possible for two completely different different models to produce the same model fit, regardless of the parameter values (the identification problem). We will discuss this in much more depth in the following chapter.
 
-The test tests the *model*, not a coefficient. Rejection says that the set of restrictions is wrong somewhere, and says nothing about where. Saris and Stronkhorst make the corresponding point about individual estimates: "the results of the tests are always conditional on the model that has been fitted to the data" [@saris1984]. A coefficient that is significant in one specification can vanish in another, and neither result is the truth about the world.
+## Binary outcomes: logistic regression and the *generalized* linear model
 
-Failure to reject is not proof. A test with low power fails to reject nearly everything, which is why Saris and Stronkhorst spend a whole chapter arguing that a model test without a power calculation cannot be interpreted [@saris1984].
-
-And fit is not truth. Many different models imply exactly the same correlations, so passing a fit test puts a model into a large club rather than crowning it. With seven variables there are $7! = 5{,}040$ different causal orderings, and every one of them fits any dataset equally perfectly. @sec-identification takes this apart and shows what to do about it.
-
-## When the outcome is not a quantity
-
-Everything so far assumed outcomes you can add up. Plenty of outcomes cannot be: whether a baby is born underweight, whether a person votes, whether a patient survives the year. Code such an outcome 0 and 1, fit a straight line, and two things go wrong. The fitted values run below 0 and above 1, where no probability lives. And the model claims that a unit of the predictor changes the probability by the same amount everywhere, which cannot hold near the ends, since a probability of 0.98 has almost no room left to rise.
-
-The fix is to model a transformation of the probability instead. Start with the **odds**, the probability of the event divided by the probability of its absence. A probability of 0.5 is odds of 1; a probability of 0.8 is odds of 4, or "four to one on". Odds run from 0 to infinity, which removes the ceiling but not the floor. Take the logarithm and you get the **log-odds**, or **logit**, which runs from minus infinity to plus infinity and is symmetric about zero. Now a straight line is safe:
+Everything so far assumed outcomes that are quantitative. Plenty of outcomes are not: whether a baby is born underweight, whether a person votes, whether a patient survives the year. Code such an outcome 0 and 1, fit a straight line, and two things go wrong. The fitted values run below 0 and above 1, where no probability lives. And the model claims that a unit of the predictor changes the probability by the same amount everywhere, which cannot hold near the ends, since a probability of 0.98 has almost no room left to rise.
+<!-- DO: I find this kind of prose quite annoying: "living" probabilities, "slippery" coefficients etc., because they suggest some kind of meaning that isn't there. Please remove or at least limit this kind of needlessly confusing talk and also go through the other text you wrote.  -->
+To fix this, we cannot have a linear model for the probability. But we can still have a linear model for a transformation of the probability.  To find this transformation, start with the **odds**, the probability of the event divided by the probability of its absence. A probability of 0.5 is odds of 1; a probability of 0.8 is odds of 4, or "four to one on". Odds run from 0 to infinity, which removes the ceiling but not the floor. Take the logarithm and you get the **log-odds**, or **logit**, which runs from minus infinity to plus infinity and is symmetric about zero. Now a straight line is safe:
 
 $$\log \frac{P(y_i = 1)}{1 - P(y_i = 1)} = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \dots$$
 
 This is **logistic regression**, and it is the most used member of the family of **generalized linear models**: a linear predictor, plus a function that connects it to the scale the outcome actually lives on.
 
+<!-- DO: can you use hypertension ~ social integration + covariates from the LISS data here instead? -->
 For a real example, take 189 births recorded at a hospital in Springfield, Massachusetts in 1986; the data are included with `R`, so you can run everything below as you read [@venables2002; @hosmer2013]. `low` marks a birth weight under 2.5 kilograms, which happened to 59 of the 189 babies; `smoke` is 1 if the mother smoked during pregnancy, `ht` is 1 if she has a history of hypertension, and `lwt` is her weight in pounds at her last menstrual period.
 
 ```{r}
@@ -426,11 +423,13 @@ round(cbind(coef = coef(fit_low), odds_ratio = exp(coef(fit_low))), 3)
 
 Read the coefficient on smoking three ways, from most literal to most useful.
 
-*On the log-odds scale.* Smoking during pregnancy goes with 0.684 higher log-odds of low birth weight, holding the mother's weight and hypertension constant. True, and almost meaningless to a human being.
+*On the log-odds scale.* Smoking during pregnancy goes with 0.684 higher log-odds of low birth weight, holding the mother's weight and hypertension constant. To get some intuitive idea of what this means, you can use the divide-by-four rule: the log-odds coefficient divided by 4 is the maximum possible change in probability for a unit change in the independent variable. So in our case 0.6/4 = 0.15, so the maximum possible change across the range of X in probability for a unit change in X is 0.15. It can also be helpful to remember that log-odds of zero corresponds to a probability of 0.5, whereas log-odds of +3 and -3 are 0.95 and 0.05, respectively. So a change in 1 of log-odds is quite a lot already. 
+<!-- DO: illustrate the divide-by-four-rule with a small figure here -->
 
 *As an odds ratio.* Exponentiate: $\exp(0.684) = 1.98$. The odds of a low birth weight are about twice as high for smokers. This is the number papers report, and it is why regression tables in epidemiology so often carry a column headed OR. A rule of thumb helps for small coefficients: when $b$ is under about 0.2, $\exp(b) - 1 \approx b$, so a coefficient of 0.05 means roughly a 5 percent increase in the odds. It breaks down quickly as $b$ grows, and 0.684 is well past the point where it breaks, since $\exp(0.684)$ is 98 percent higher odds rather than 68 percent.
 
-*As a probability.* An odds ratio of 2 does not mean twice the probability. Do the conversion properly: add up the linear predictor for a specific person, call it $\eta$ ("eta"), then apply the inverse of the logit, $p = 1/(1 + e^{-\eta})$, which `R` calls `plogis`. For a smoker weighing 130 pounds with no history of hypertension,
+<!-- DO: I find the overuse of the imperative likewise very confusing throughout. It is not clear who you're talking to and it really breaks up the flow of the text. -->
+*As a probability.* For optimal interpretabiltiy, you can always convert to probabilities at informative points. Add up the linear predictor for a specific person, call it $\eta$ ("eta"), then apply the inverse of the logit, $p = 1/(1 + e^{-\eta})$, which `R` calls `plogis`. For a smoker weighing 130 pounds with no history of hypertension,
 
 $$\eta = 1.084 + 0.684 \times 1 + 1.822 \times 0 - 0.018 \times 130 = -0.57,$$
 
@@ -504,13 +503,15 @@ Stay with @tbl-forster, and use the column for women, model (2), throughout.
 (d) Age squared applies to everyone at a given age regardless of which school they went to, so it enters both sides of the comparison and cancels. Only terms involving the vocational variable belong in the calculation of the vocational effect.
 :::
 
-A last warning about generalized linear models and the decomposition rule. The rule multiplies coefficients along chains of arrows, and that works because each coefficient means the same kind of thing. Once a link function enters, coefficients on different arrows live on different scales. A published mediation diagram may show an ordinary regression coefficient running into the mediator and log-odds coefficients running out of it [@bayerl2024]; multiplying those two numbers produces something with no clear interpretation. @sec-identification returns to what replaces the product in that case.
+The advantage of the logistic model is that it can never predict probabilities beyond the [0,1] range. It also has disadvantages. One large disadvantage of the GLM, at least for didactical purposes, is that it is not linear, so the decomposition rule does not apply. And, in fact, correlations are no longer enough to estimate the full model. <!-- DO: here summarize the old and recent discussion on using the LPM versus logistic regression. Lay out the arguments rather than giving a historical overview. See: stads-book/sources/lpm-debate.md. For each reference, check that the full text or abstracts says what you claim it says. If you do not have the full text, ask me for it.  -->
 
-## Beyond the straight line
 
-Straight lines are a small corner of the space of models. Agent-based models specify no equations at all; random forests, boosted trees, Gaussian processes and neural networks fit shapes that no one writes down. All of these exist and later chapters use some of them.
+## Nonlinear and nonadditive models
 
-The logic is unchanged: those methods also answer a question by combining data with assumptions, and their assumptions are warranted by a design or not warranted at all. The logic is simply harder to see through the machinery. Flexibility also has to be paid for in data, and the bill is steeper than most people expect: pinning down an interaction commonly takes about sixteen times the sample a main effect needs, because interactions tend to be about half the size and their standard errors about twice as large, and estimating an unknown curve takes more again. In the sample sizes normal in social and health research, a linear additive model is often all the data can support, whatever the truth may be, and over the range most predictors actually cover a straight line is frequently a good approximation anyway.
+We all know the world isn't really linear and additive, and there is an infinite number of ways in which it can be nonlinear and nonadditive.
+Many modeling approaches exist to account for such phenomena. Agent-based models specify no equations at all; random forests, boosted trees, Gaussian processes and neural networks fit shapes that no one writes down. All of these exist and later chapters use some of them.
+
+Even though the world is not linear, it can still be a good idea to use linear models anyway. <!-- DO: Summarize the discussion about using linear models even though we don't really believe everything is linear (both pro and con).  Lay out the arguments rather than giving a historical overview. As well as the situations in which it might be useful.  See stads-book/sources/linearity-debate.md. You can use several paragraphs if necessary. For each reference, check that the full text or abstracts says what you claim it says. If you do not have the full text, ask me for it. --> 
 
 What generalized linear models buy you is that every part is inspectable. You can read a coefficient, trace a path, work out what the model implies about a correlation you have not looked at yet, and discover that the implication is false. @sec-identification shows where that sequence stops working, and why no amount of data restarts it.
 
