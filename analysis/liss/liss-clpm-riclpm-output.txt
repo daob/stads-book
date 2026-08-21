@@ -1,0 +1,141 @@
+CLPM and RI-CLPM, integration -> BMI -> disease, LISS 2009/2017/2025.
+Built: 2026-08-21  N (adults, any wave): 10748 
+
+Observations per variable:
+    S1     S2     S3     B1     D1     B2     D2     B3     D3    age female 
+  4750   5739   4255   5899   5398   5754   5684   4525   4542  10748  10744 
+
+============================================================
+CLPM (first-order + direct S1 -> D3) 
+============================================================
+       ntotal  chisq.scaled     df.scaled pvalue.scaled    cfi.robust 
+    10738.000        54.159         8.000         0.000         0.980 
+ rmsea.robust          srmr 
+        0.102         0.023 
+
+Structural paths (standardized):
+   lhs rhs label est.std    se      z pvalue
+1   S2  S1   ss1   0.588 0.016 36.301  0.000
+2   S2  B1   bs1   0.001 0.014  0.104  0.917
+3   S2  D1   ds1  -0.038 0.016 -2.402  0.016
+4   B2  S1   sb1   0.013 0.013  0.962  0.336
+5   B2  B1   bb1   0.800 0.027 29.803  0.000
+6   B2  D1   db1  -0.013 0.013 -1.024  0.306
+7   D2  S1   sd1   0.005 0.015  0.308  0.758
+8   D2  B1   bd1   0.095 0.016  6.115  0.000
+9   D2  D1   dd1   0.588 0.018 31.905  0.000
+10  S3  S2   ss2   0.592 0.019 30.646  0.000
+11  S3  B2   bs2  -0.011 0.014 -0.824  0.410
+12  S3  D2   ds2  -0.017 0.016 -1.053  0.292
+13  B3  S2   sb2  -0.023 0.010 -2.437  0.015
+14  B3  B2   bb2   0.839 0.020 42.763  0.000
+15  B3  D2   db2  -0.031 0.013 -2.348  0.019
+16  D3  S2   sd2   0.005 0.019  0.280  0.779
+17  D3  B2   bd2   0.083 0.014  5.945  0.000
+18  D3  D2   dd2   0.654 0.017 38.636  0.000
+19  D3  S1   dir  -0.009 0.022 -0.396  0.692
+
+Defined effects (unstandardized, delta method):
+    label    est    se      z pvalue ci.lower ci.upper
+ indirect  0.001 0.001  0.961  0.336   -0.001    0.002
+   direct -0.006 0.015 -0.396  0.692   -0.035    0.023
+    via_S  0.002 0.008  0.280  0.779   -0.013    0.017
+    via_D  0.002 0.006  0.308  0.758   -0.011    0.015
+
+Defined effects (standardized):
+    label est.std    se      z pvalue
+ indirect   0.001 0.001  0.960  0.337
+   direct  -0.009 0.022 -0.396  0.692
+    via_S   0.003 0.011  0.280  0.779
+    via_D   0.003 0.010  0.308  0.758
+
+============================================================
+CLPM with lag-2 autoregressive paths 
+============================================================
+       ntotal  chisq.scaled     df.scaled pvalue.scaled    cfi.robust 
+    10738.000         5.507         5.000         0.357         1.000 
+ rmsea.robust          srmr 
+        0.005         0.005 
+
+Structural paths (standardized):
+   lhs rhs label est.std    se      z pvalue
+1   S2  S1   ss1   0.585 0.016 35.953  0.000
+2   S2  B1   bs1   0.002 0.014  0.131  0.896
+3   S2  D1   ds1  -0.040 0.016 -2.489  0.013
+4   B2  S1   sb1   0.013 0.013  0.979  0.327
+5   B2  B1   bb1   0.799 0.027 29.796  0.000
+6   B2  D1   db1  -0.013 0.013 -0.983  0.326
+7   D2  S1   sd1   0.006 0.015  0.398  0.691
+8   D2  B1   bd1   0.095 0.016  6.074  0.000
+9   D2  D1   dd1   0.585 0.019 31.526  0.000
+10  S3  S2   ss2   0.458 0.032 14.244  0.000
+11  S3  B2   bs2  -0.017 0.014 -1.232  0.218
+12  S3  D2   ds2  -0.021 0.016 -1.330  0.184
+13  B3  S2   sb2  -0.027 0.010 -2.735  0.006
+14  B3  B2   bb2   0.698 0.088  7.924  0.000
+15  B3  D2   db2  -0.036 0.013 -2.767  0.006
+16  D3  S2   sd2   0.002 0.019  0.086  0.931
+17  D3  B2   bd2   0.081 0.014  5.771  0.000
+18  D3  D2   dd2   0.603 0.027 22.726  0.000
+19  D3  S1   dir  -0.001 0.022 -0.060  0.952
+26  S3  S1         0.224 0.035  6.352  0.000
+27  B3  B1         0.175 0.097  1.815  0.070
+28  D3  D1         0.088 0.034  2.586  0.010
+
+Defined effects (unstandardized, delta method):
+    label    est    se      z pvalue ci.lower ci.upper
+ indirect  0.001 0.001  0.977  0.329   -0.001    0.002
+   direct -0.001 0.015 -0.060  0.952   -0.029    0.028
+    via_S  0.001 0.008  0.086  0.931   -0.014    0.015
+    via_D  0.002 0.006  0.398  0.691   -0.009    0.014
+
+Defined effects (standardized):
+    label est.std    se      z pvalue
+ indirect   0.001 0.001  0.976  0.329
+   direct  -0.001 0.022 -0.060  0.952
+    via_S   0.001 0.011  0.086  0.931
+    via_D   0.004 0.009  0.398  0.691
+
+============================================================
+RI-CLPM (within-person dynamics + direct wS1 -> wD3) 
+============================================================
+       ntotal  chisq.scaled     df.scaled pvalue.scaled    cfi.robust 
+    10738.000         9.383         2.000         0.009         0.999 
+ rmsea.robust          srmr 
+        0.042         0.006 
+
+Structural paths (standardized):
+   lhs rhs label est.std    se      z pvalue
+28 wS2 wS1   ss1   0.233 0.058  4.006  0.000
+29 wS2 wB1   bs1  -0.040 0.076 -0.526  0.599
+30 wS2 wD1   ds1  -0.043 0.052 -0.816  0.415
+31 wB2 wS1   sb1   0.024 0.051  0.461  0.645
+32 wB2 wB1   bb1   0.456 0.214  2.134  0.033
+33 wB2 wD1   db1  -0.001 0.050 -0.020  0.984
+34 wD2 wS1   sd1   0.022 0.034  0.656  0.512
+35 wD2 wB1   bd1   0.163 0.055  2.939  0.003
+36 wD2 wD1   dd1   0.409 0.076  5.374  0.000
+37 wS3 wS2   ss2   0.150 0.086  1.735  0.083
+38 wS3 wB2   bs2  -0.097 0.075 -1.293  0.196
+39 wS3 wD2   ds2  -0.015 0.050 -0.293  0.769
+40 wB3 wS2   sb2  -0.067 0.031 -2.139  0.032
+41 wB3 wB2   bb2   0.591 0.142  4.151  0.000
+42 wB3 wD2   db2  -0.017 0.041 -0.419  0.675
+43 wD3 wS2   sd2   0.007 0.027  0.249  0.803
+44 wD3 wB2   bd2   0.123 0.038  3.193  0.001
+45 wD3 wD2   dd2   0.539 0.046 11.696  0.000
+46 wD3 wS1   dir   0.006 0.027  0.216  0.829
+
+Defined effects (unstandardized, delta method):
+    label   est    se     z pvalue ci.lower ci.upper
+ indirect 0.002 0.005 0.490  0.624   -0.007    0.011
+   direct 0.005 0.021 0.216  0.829   -0.037    0.046
+    via_S 0.001 0.005 0.249  0.803   -0.008    0.011
+    via_D 0.009 0.014 0.660  0.509   -0.018    0.037
+
+Defined effects (standardized):
+    label est.std    se     z pvalue
+ indirect   0.003 0.006 0.490  0.624
+   direct   0.006 0.027 0.216  0.829
+    via_S   0.002 0.006 0.249  0.803
+    via_D   0.012 0.018 0.659  0.510
