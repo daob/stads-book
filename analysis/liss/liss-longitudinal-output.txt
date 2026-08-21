@@ -1,0 +1,222 @@
+Longitudinal Yang models on LISS waves 16-18 (2023-2025)
+Built: 2026-08-21  N (adults, any wave): 6616 
+
+Observations per variable:
+  integration_16   integration_17   integration_18  hypertension_16 
+            5716             5344             4391             5930 
+          bmi_16 disease_count_16  hypertension_17           bmi_17 
+            5902             5930             5373             5362 
+disease_count_17  hypertension_18           bmi_18 disease_count_18 
+            5373             4556             4540             4556 
+             age           female 
+            6616             6608 
+
+Complete on all three waves of all model variables: 3916 
+
+
+============================================================
+M2: two-wave Yang model (integration 2024 -> states/disease 2025) 
+============================================================
+       ntotal  chisq.scaled     df.scaled pvalue.scaled    cfi.robust 
+     5628.000         0.142         1.000         0.706         1.000 
+ rmsea.robust          srmr 
+        0.000         0.001 
+                lhs op              rhs est.std    se pvalue
+1   hypertension_18  ~   integration_17   0.009 0.015  0.553
+2            bmi_18  ~   integration_17  -0.060 0.014  0.000
+3  disease_count_18  ~  hypertension_18   0.315 0.017  0.000
+4  disease_count_18  ~           bmi_18   0.089 0.014  0.000
+5   hypertension_18 ~~           bmi_18   0.162 0.015  0.000
+6   hypertension_18 ~~  hypertension_18   1.000 0.000  0.000
+7            bmi_18 ~~           bmi_18   0.996 0.002  0.000
+8  disease_count_18 ~~ disease_count_18   0.884 0.011  0.000
+9    integration_17 ~~   integration_17   1.000 0.000     NA
+10  hypertension_18 ~1                    0.431 0.016  0.000
+11           bmi_18 ~1                    5.611 0.095  0.000
+12 disease_count_18 ~1                    0.041 0.077  0.594
+13   integration_17 ~1                    0.882 0.011  0.000
+
+============================================================
+M2d: two-wave, direct integration -> disease path freed 
+============================================================
+       ntotal  chisq.scaled     df.scaled pvalue.scaled    cfi.robust 
+         5628             0             0            NA             1 
+ rmsea.robust          srmr 
+            0             0 
+                lhs op              rhs est.std    se pvalue
+1   hypertension_18  ~   integration_17   0.009 0.015  0.552
+2            bmi_18  ~   integration_17  -0.060 0.014  0.000
+3  disease_count_18  ~  hypertension_18   0.315 0.017  0.000
+4  disease_count_18  ~           bmi_18   0.089 0.014  0.000
+5   hypertension_18 ~~           bmi_18   0.162 0.015  0.000
+6  disease_count_18  ~   integration_17  -0.005 0.014  0.706
+7   hypertension_18 ~~  hypertension_18   1.000 0.000  0.000
+8            bmi_18 ~~           bmi_18   0.996 0.002  0.000
+9  disease_count_18 ~~ disease_count_18   0.884 0.011  0.000
+10   integration_17 ~~   integration_17   1.000 0.000     NA
+11  hypertension_18 ~1                    0.431 0.016  0.000
+12           bmi_18 ~1                    5.611 0.095  0.000
+13 disease_count_18 ~1                    0.048 0.079  0.544
+14   integration_17 ~1                    0.883 0.011  0.000
+
+============================================================
+M3: three-wave Yang model (2023 -> 2024 -> 2025) 
+============================================================
+       ntotal  chisq.scaled     df.scaled pvalue.scaled    cfi.robust 
+     6467.000         0.358         1.000         0.550         1.000 
+ rmsea.robust          srmr 
+        0.000         0.002 
+                lhs op              rhs est.std    se pvalue
+1   hypertension_17  ~   integration_16  -0.005 0.015  0.724
+2            bmi_17  ~   integration_16  -0.057 0.014  0.000
+3  disease_count_18  ~  hypertension_17   0.293 0.017  0.000
+4  disease_count_18  ~           bmi_17   0.104 0.015  0.000
+5   hypertension_17 ~~           bmi_17   0.153 0.014  0.000
+6   hypertension_17 ~~  hypertension_17   1.000 0.000  0.000
+7            bmi_17 ~~           bmi_17   0.997 0.002  0.000
+8  disease_count_18 ~~ disease_count_18   0.894 0.010  0.000
+9    integration_16 ~~   integration_16   1.000 0.000     NA
+10  hypertension_17 ~1                    0.421 0.016  0.000
+11           bmi_17 ~1                    5.586 0.082  0.000
+12 disease_count_18 ~1                   -0.030 0.082  0.713
+13   integration_16 ~1                    0.902 0.011  0.000
+
+============================================================
+M3d: three-wave, direct path freed 
+============================================================
+       ntotal  chisq.scaled     df.scaled pvalue.scaled    cfi.robust 
+         6467             0             0            NA            NA 
+ rmsea.robust          srmr 
+            0             0 
+                lhs op              rhs est.std    se pvalue
+1   hypertension_17  ~   integration_16  -0.005 0.015  0.731
+2            bmi_17  ~   integration_16  -0.057 0.014  0.000
+3  disease_count_18  ~  hypertension_17   0.293 0.017  0.000
+4  disease_count_18  ~           bmi_17   0.104 0.015  0.000
+5   hypertension_17 ~~           bmi_17   0.153 0.014  0.000
+6  disease_count_18  ~   integration_16  -0.008 0.014  0.550
+7   hypertension_17 ~~  hypertension_17   1.000 0.000  0.000
+8            bmi_17 ~~           bmi_17   0.997 0.002  0.000
+9  disease_count_18 ~~ disease_count_18   0.894 0.010  0.000
+10   integration_16 ~~   integration_16   1.000 0.000     NA
+11  hypertension_17 ~1                    0.421 0.016  0.000
+12           bmi_17 ~1                    5.586 0.082  0.000
+13 disease_count_18 ~1                   -0.020 0.084  0.814
+14   integration_16 ~1                    0.902 0.011  0.000
+
+============================================================
+M3c: three-wave model with age and sex controls 
+============================================================
+       ntotal  chisq.scaled     df.scaled pvalue.scaled    cfi.robust 
+     6616.000         4.615         1.000         0.032         0.998 
+ rmsea.robust          srmr 
+        0.028         0.005 
+                lhs op              rhs est.std    se pvalue
+1   hypertension_17  ~   integration_16  -0.034 0.014  0.016
+2   hypertension_17  ~              age   0.318 0.011  0.000
+3   hypertension_17  ~           female  -0.008 0.013  0.545
+4            bmi_17  ~   integration_16  -0.067 0.014  0.000
+5            bmi_17  ~              age   0.125 0.014  0.000
+6            bmi_17  ~           female   0.001 0.013  0.919
+7  disease_count_18  ~  hypertension_17   0.225 0.018  0.000
+8  disease_count_18  ~           bmi_17   0.093 0.014  0.000
+9  disease_count_18  ~              age   0.246 0.013  0.000
+10 disease_count_18  ~           female   0.045 0.014  0.001
+11  hypertension_17 ~~           bmi_17   0.122 0.015  0.000
+12  hypertension_17 ~~  hypertension_17   0.899 0.007  0.000
+13           bmi_17 ~~           bmi_17   0.981 0.004  0.000
+14 disease_count_18 ~~ disease_count_18   0.833 0.010  0.000
+15   integration_16 ~~   integration_16   1.000 0.000     NA
+16   integration_16 ~~              age   0.086 0.013  0.000
+17   integration_16 ~~           female  -0.054 0.013  0.000
+18              age ~~              age   1.000 0.000     NA
+19              age ~~           female  -0.077 0.012  0.000
+20           female ~~           female   1.000 0.000     NA
+21  hypertension_17 ~1                   -0.473 0.035  0.000
+22           bmi_17 ~1                    5.224 0.093  0.000
+23 disease_count_18 ~1                   -0.722 0.084  0.000
+24   integration_16 ~1                    0.894 0.011  0.000
+25              age ~1                    2.855 0.022  0.000
+26           female ~1                    1.083 0.013  0.000
+
+============================================================
+M3ar: three-wave with autoregressive controls (Cole-Maxwell) 
+============================================================
+       ntotal  chisq.scaled     df.scaled pvalue.scaled    cfi.robust 
+     6610.000        56.651         7.000         0.000         0.997 
+ rmsea.robust          srmr 
+        0.048         0.008 
+                lhs op              rhs est.std    se pvalue
+1   hypertension_17  ~   integration_16   0.000 0.007  0.964
+2   hypertension_17  ~  hypertension_16   0.900 0.009  0.000
+3            bmi_17  ~   integration_16  -0.019 0.005  0.000
+4            bmi_17  ~           bmi_16   0.911 0.014  0.000
+5  disease_count_18  ~  hypertension_17   0.052 0.010  0.000
+6  disease_count_18  ~           bmi_17   0.033 0.010  0.001
+7  disease_count_18  ~ disease_count_16   0.824 0.009  0.000
+8   hypertension_17 ~~           bmi_17   0.020 0.012  0.101
+9   hypertension_17 ~~  hypertension_17   0.189 0.016  0.000
+10           bmi_17 ~~           bmi_17   0.169 0.025  0.000
+11 disease_count_18 ~~ disease_count_18   0.285 0.013  0.000
+12   integration_16 ~~   integration_16   1.000 0.000     NA
+13   integration_16 ~~  hypertension_16  -0.019 0.013  0.155
+14   integration_16 ~~           bmi_16  -0.033 0.013  0.012
+15   integration_16 ~~ disease_count_16  -0.028 0.012  0.021
+16  hypertension_16 ~~  hypertension_16   1.000 0.000     NA
+17  hypertension_16 ~~           bmi_16   0.160 0.013  0.000
+18  hypertension_16 ~~ disease_count_16   0.334 0.015  0.000
+19           bmi_16 ~~           bmi_16   1.000 0.000     NA
+20           bmi_16 ~~ disease_count_16   0.141 0.013  0.000
+21 disease_count_16 ~~ disease_count_16   1.000 0.000     NA
+22  hypertension_17 ~1                    0.052 0.009  0.000
+23           bmi_17 ~1                    0.417 0.089  0.000
+24 disease_count_18 ~1                   -0.060 0.052  0.250
+25   integration_16 ~1                    0.903 0.011  0.000
+26  hypertension_16 ~1                    0.395 0.007  0.000
+27           bmi_16 ~1                    5.555 0.076  0.000
+28 disease_count_16 ~1                    0.635 0.009  0.000
+
+============================================================
+M3ard: autoregressive model, direct path freed 
+============================================================
+       ntotal  chisq.scaled     df.scaled pvalue.scaled    cfi.robust 
+     6610.000        52.929         6.000         0.000         0.997 
+ rmsea.robust          srmr 
+        0.051         0.008 
+                lhs op              rhs est.std    se pvalue
+1   hypertension_17  ~   integration_16   0.000 0.007  0.969
+2   hypertension_17  ~  hypertension_16   0.900 0.009  0.000
+3            bmi_17  ~   integration_16  -0.019 0.005  0.000
+4            bmi_17  ~           bmi_16   0.911 0.014  0.000
+5  disease_count_18  ~  hypertension_17   0.052 0.010  0.000
+6  disease_count_18  ~           bmi_17   0.034 0.010  0.000
+7  disease_count_18  ~ disease_count_16   0.824 0.009  0.000
+8   hypertension_17 ~~           bmi_17   0.020 0.012  0.100
+9  disease_count_18  ~   integration_16   0.014 0.009  0.105
+10  hypertension_17 ~~  hypertension_17   0.189 0.016  0.000
+11           bmi_17 ~~           bmi_17   0.169 0.025  0.000
+12 disease_count_18 ~~ disease_count_18   0.284 0.013  0.000
+13   integration_16 ~~   integration_16   1.000 0.000     NA
+14   integration_16 ~~  hypertension_16  -0.019 0.013  0.151
+15   integration_16 ~~           bmi_16  -0.033 0.013  0.012
+16   integration_16 ~~ disease_count_16  -0.029 0.012  0.019
+17  hypertension_16 ~~  hypertension_16   1.000 0.000     NA
+18  hypertension_16 ~~           bmi_16   0.160 0.013  0.000
+19  hypertension_16 ~~ disease_count_16   0.334 0.015  0.000
+20           bmi_16 ~~           bmi_16   1.000 0.000     NA
+21           bmi_16 ~~ disease_count_16   0.141 0.013  0.000
+22 disease_count_16 ~~ disease_count_16   1.000 0.000     NA
+23  hypertension_17 ~1                    0.052 0.009  0.000
+24           bmi_17 ~1                    0.417 0.089  0.000
+25 disease_count_18 ~1                   -0.078 0.053  0.142
+26   integration_16 ~1                    0.903 0.011  0.000
+27  hypertension_16 ~1                    0.395 0.007  0.000
+28           bmi_16 ~1                    5.555 0.076  0.000
+29 disease_count_16 ~1                    0.635 0.009  0.000
+
+
+Indirect effects (standardized), delta-method z:
+M2     via hypertension: 0.0028   via BMI: -0.0054   total: -0.0026
+M3     via hypertension: -0.0015   via BMI: -0.0060   total: -0.0075
+M3c    via hypertension: -0.0078   via BMI: -0.0062   total: -0.0140
+M3ar   via hypertension: -0.0000   via BMI: -0.0006   total: -0.0006
