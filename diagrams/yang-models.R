@@ -25,6 +25,9 @@
 # Requires: ggplot2, ragg, and the Fira Sans font.
 # Usage:  Rscript yang-models.R   ->  writes yang-full.png, yang-correlated.png
 
+loc <- suppressWarnings(Sys.setlocale("LC_CTYPE", "C.UTF-8"))
+if (identical(loc, "")) suppressWarnings(Sys.setlocale("LC_CTYPE", "en_US.UTF-8"))
+
 library(ggplot2)
 
 here <- dirname(sub("^--file=", "", grep("^--file=", commandArgs(), value = TRUE)[1]))
@@ -146,21 +149,22 @@ build(N_full, Z_full, E_full, NULL,
 ## ---- chronic disease removed, disturbances free to covary ------------------
 
 N_cor <- rbind(
-  node("S", 1.00, 2.80, "Social\nintegration", 0.80, 0.42),
-  node("I", 4.40, 5.30, "Inflammation",        0.88, 0.30),
-  node("B", 4.40, 2.80, "Blood\npressure",     0.88, 0.42),
-  node("A", 4.40, 0.30, "Central\nadiposity",  0.88, 0.42),
-  node("M", 8.20, 2.80, "Death",               0.64, 0.30)
+  node("S", 1.00, 2.80, "Social\nintegration (ξ)",   0.86, 0.42),
+  node("I", 4.40, 5.30, "Inflammation (η₁)",          1.02, 0.30),
+  node("B", 4.40, 2.80, "Blood\npressure (η₂)",       0.94, 0.42),
+  node("A", 4.40, 0.30, "Central\nadiposity (η₃)",    0.94, 0.42),
+  node("M", 8.20, 2.80, "Death (η₄)",                 0.74, 0.30)
 )
 Z_cor <- data.frame(
   to    = c("I", "B", "A", "M"),
   x     = c(4.40, 4.40, 4.40, 8.20),
   y     = c(6.50, 4.05, 1.55, 4.30),
-  label = c("zeta[I]", "zeta[B]", "zeta[A]", "zeta[M]")
+  label = c("zeta[1]", "zeta[2]", "zeta[3]", "zeta[4]")
 )
 E_cor <- list(
-  c("S", "I", "a[1]"), c("S", "B", "a[2]"), c("S", "A", "a[3]"),
-  c("I", "M", "c[1]*minute"), c("B", "M", "c[2]*minute"), c("A", "M", "c[3]*minute")
+  c("S", "I", "gamma[1]"), c("S", "B", "gamma[2]"), c("S", "A", "gamma[3]"),
+  c("I", "M", "beta[1]*minute"), c("B", "M", "beta[2]*minute"),
+  c("A", "M", "beta[3]*minute")
 )
 COV <- data.frame(
   x    = c(4.62, 4.62, 4.55),
@@ -168,7 +172,7 @@ COV <- data.frame(
   xend = c(4.62, 4.62, 4.55),
   yend = c(4.24, 1.79, 1.74),
   k    = c(-0.95, -0.95, -0.62),
-  lab  = c("psi[IB]", "psi[BA]", "psi[IA]"),
+  lab  = c("psi[12]", "psi[23]", "psi[13]"),
   lx   = c(5.98, 5.98, 6.92),
   ly   = c(5.28, 2.36, 4.12)
 )

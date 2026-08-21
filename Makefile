@@ -57,7 +57,7 @@ diagrams: $(PNG)
 # and Fira Sans.
 figures: images/ross-1970-breathalyser.png images/gam-path-diagram.png \
          diagrams/yang-full.png diagrams/yang-correlated.png \
-         diagrams/joint-effect.png
+         diagrams/joint-effect.png diagrams/ace.png
 
 images/ross-1970-breathalyser.png: figures/ross-1970-figure.R figures/ross-1970-data.csv
 	Rscript $<
@@ -70,6 +70,10 @@ diagrams/yang-full.png diagrams/yang-correlated.png: diagrams/yang-models.R
 	Rscript $<
 
 diagrams/joint-effect.png: diagrams/joint-effect.R
+	Rscript $<
+
+# The two-panel ACE twin diagram (fraternal and identical side by side).
+diagrams/ace.png: diagrams/ace-models.R
 	Rscript $<
 
 diagrams/%.png: diagrams/%.mmd $(MMDC_CFG) $(MMDC_CSS)
