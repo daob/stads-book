@@ -108,7 +108,7 @@ With a direct path from $\xi$ to $\eta_2$ still in the model, the unknowns are $
 
 $$
 \rho_{\xi\eta_1} = \gamma_1, \qquad
-\rho_{\eta_1\eta_2} = \beta + \psi\text{-term}, \qquad
+\rho_{\eta_1\eta_2} = \beta + \psi, \qquad
 \rho_{\xi\eta_2} = \gamma_1\,\beta .
 $$
 
@@ -255,7 +255,7 @@ Two further results from the fuller analysis are worth carrying forward.^[The co
 
 @sec-theory-to-glm left a question open. When the arrow into the mediator carries an ordinary regression coefficient and the arrow out of it carries a log-odds coefficient, as in the published diagram of @bayerl2024, the product of the two multiplies numbers on different scales and means nothing in particular. Here is the answer. The framework above is linear; real mediation problems bring binary outcomes, interactions, and nonlinearity, and for those the modern literature defines the effects counterfactually before estimating anything [@vanderweele2016]. This literature has its own notation, which we adopt for this section: $X$ is the treatment, $M$ the mediator, $Y$ the outcome; $M(x)$ is the mediator value a person would have under treatment level $x$, and $Y(x, m)$ the outcome they would have under treatment $x$ with the mediator set to $m$.
 
-Two definitions are worth knowing, because applied papers run on them. The **natural direct effect** compares the outcome under treatment versus control while the mediator is held at the value it would naturally take under control,
+Two definitions are worth knowing, because applied papers run on them. The **natural direct effect** compares the outcome under treatment versus control while the mediator is held at the value it would naturally take under control ($M(0)$),
 
 $$\text{NDE} = E[\,Y(1, M(0)) - Y(0, M(0))\,],$$
 
@@ -263,7 +263,7 @@ the effect that does not run through the mediator. The **natural indirect effect
 
 $$\text{NIE} = E[\,Y(1, M(1)) - Y(1, M(0))\,],$$
 
-the effect that does run through the mediator. Adding the two makes the middle terms cancel, leaving $E[Y(1, M(1)) - Y(0, M(0))]$: the total effect, a decomposition as tidy as the linear one. In the linear model without interactions the NIE is exactly the coefficient product of this chapter's first section. As soon as the model departs from that form, the classic product and the counterfactual definitions part ways, and the counterfactual ones are right.
+the effect that does run through the mediator. Adding the two makes the middle terms cancel, leaving $E[Y(1, M(1)) - Y(0, M(0))]$: the total effect, a decomposition as tidy as the linear one. In the linear and additive model the NIE is exactly the coefficient product of this chapter's first section. As soon as the model departs from that form, the classic product and the counterfactual definitions differ.
 
 The smallest departure already shows it. Suppose treatment is 0 or 1 and the fitted equations are
 
@@ -272,7 +272,7 @@ M = 0.5\,X + \zeta_M, \qquad
 Y = 0.2\,X + 0.3\,M + 0.4\,XM + \zeta_Y,
 $$
 
-an ordinary mediation model plus one interaction term: the mediator matters more for treated units (0.3 + 0.4 = 0.7) than for controls (0.3). The classic product multiplies the treatment's effect on the mediator by the mediator's coefficient: $0.5 \times 0.3 = 0.15$. The counterfactual calculation asks instead what actually happens through the mediator when a unit is treated. Treatment raises the mediator by $E[M(1)] - E[M(0)] = 0.5$; for a treated unit, each unit of mediator is worth $0.3 + 0.4 = 0.7$; so $\text{NIE} = 0.5 \times 0.7 = 0.35$, more than twice the classic answer. (The NDE here is $0.2 + 0.4 \times E[M(0)] = 0.2$ when the untreated mediator averages zero, and $0.35 + 0.2 = 0.55$ is the total effect.) The classic product is not wrong arithmetic; it is the right answer to a question the model no longer asks, because with the interaction present there is no longer any single "effect of the mediator" to multiply by.
+an ordinary mediation model plus one interaction term: the mediator matters more for treated units (0.3 + 0.4 = 0.7) than for controls (0.3). The classic product multiplies the treatment's effect on the mediator by the mediator's coefficient: $0.5 \times 0.3 = 0.15$. The counterfactual calculation asks instead what actually happens through the mediator when a unit is treated. Treatment raises the mediator by $E[M(1)] - E[M(0)] = 0.5$; for a treated unit, each unit of mediator is worth $0.3 + 0.4 = 0.7$; so $\text{NIE} = 0.5 \times 0.7 = 0.35$, more than twice the classic answer. (The NDE here is $0.2 + 0.4 \times E[M(0)] = 0.2$ when the untreated mediator averages zero, and $0.35 + 0.2 = 0.55$ is the total effect.)
 
 The R package `mediation` computes these effects by simulation for a wide menu of models [@tingley2014], under the same no-confounding assumptions you met above, there called "sequential ignorability". A classic demonstration uses a framing experiment: participants were randomized to an anxiety-inducing immigration news story, with anxiety as the mediator and sending an anti-immigration letter to Congress as the binary outcome [@brader2008].
 
@@ -295,6 +295,7 @@ The first model explains the mediator, the second the outcome; `mediate()` combi
 
 A closing word on standard errors, because the mediation literature is oddly obsessed with them. The indirect effect $\gamma_1\beta$ is a product of two estimates, and `lavaan`'s `:=` operator gives its standard error by the delta method in one line. Bootstrapping, which is discussed in subsequent chapters, gives nearly the same answer at ordinary sample sizes.^[The product of two normal estimates is not itself normal, which matters near zero and in small samples [@mackinnon2007]; the bootstrap handles this and is a fine tool.]
 
+<!-- DO: change the weird title of this following subsection (honestly do not know what "reading backwards" is supposed to mean. Be clearer about what you are trying to argue here. For me the main point would be the if-then nature of mediation analysis (and any causal analysis). It is not the case that if you fit a mediation model and find mediation then you have therefore shown there is mediation (because of the equivalence problem). That is very confusing for people. Instead the statement about mediation is predicated on a lot of assumptions which might be more or less plausible, depending on the design. -->
 ## Reading the chapter backwards
 
 Identification is a property of the question-design pair. It does not belong to the estimator, and neither sample size nor software can supply it. The mediation story taught each general lesson in miniature. Two opposite models fit identically, so data cannot orient an edge the design did not orient. A hidden confounder made every estimate precise and wrong, because assumptions the design does not support fail silently. One untestable assumption, exclusion, restored identification: what the data cannot supply, assumptions must, and the design determines how plausible those assumptions are. Panel data restored part of the causal order, while leaving the confounding problem and the choice of lag untouched. And the instrument's own conditions moved the limits rather than abolishing them. When you meet an analysis, any analysis, ask the fifth of the five questions of @sec-rq-to-interpretation with maximal severity: what in the design put the answer to this question into the data at all? If none did, no estimator will get it out. Mediation analysis is an if-then statement: if the assumptions hold, then this is the mediation process. Papers that claim mediation because the model said so are walking in a circle.

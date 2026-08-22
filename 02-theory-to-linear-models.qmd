@@ -573,6 +573,12 @@ Taken together: a linear model is a good default when the sample is of ordinary 
 
 A further advantage of (generalized) linear models is that every part of them is inspectable. A coefficient can be read, a path traced, and the model's implication for a correlation worked out in advance and then found false in the data. @sec-identification shows where that sequence stops working, and why no amount of data restarts it.
 
+## Models can be complex
+
+I am using examples of relatively simple models for didactic purposes. Simple models can be very useful in practice. But models do not have to be simple. As an illustration, see the model below for health outcomes of preterm babies shared by Fustolo-Gunnink et al. 
+
+![Example of causal loop diagram as developed for cord blood derived red blood cell transfusions (Fustolo-Gunnink et al. 2026).](images/causal-loop.jpg){#causal-loop width="100%" fig-align="center"}
+
 ## Test yourself {.unnumbered}
 
 ::: {.callout-tip icon="false" title="Exercise 2.A"}
