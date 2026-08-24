@@ -300,48 +300,6 @@ One question remains open, deliberately, because @sec-evaluation exists to answe
 ## Test yourself {.unnumbered}
 
 ::: {.callout-tip icon="false" title="Exercise 6.A"}
-The figure below shows a **learning curve**: one classifier, fitted to training sets of increasing size drawn from the same population, with its classification accuracy measured each time on the training data itself and on a large held-out test set.
-
-```{r}
-#| label: fig-learning-exercise
-#| echo: false
-#| fig-cap: "Accuracy of one classifier as a function of training-set size, measured on the training data and on held-out data. Each point averages many training sets of that size."
-#| fig-width: 6
-#| fig-height: 3.6
-set.seed(12)
-p_all <- 10
-gen_cls <- function(n) {
-  X <- matrix(rnorm(n * p_all), n, p_all)
-  colnames(X) <- paste0("x", 1:p_all)
-  data.frame(y = rbinom(n, 1, plogis(0.8 * X[, 1] - 0.8 * X[, 2])), X)
-}
-test_cls <- gen_cls(20000)
-sizes <- c(25, 50, 100, 250, 500, 1000, 2500, 5000)
-acc <- sapply(sizes, function(n) rowMeans(replicate(40, {
-  d <- gen_cls(n)
-  m <- suppressWarnings(glm(y ~ ., data = d, family = binomial))
-  c(train = mean((predict(m, d, type = "response") > 0.5) == d$y),
-    test  = mean((suppressWarnings(predict(m, test_cls, type = "response")) > 0.5)
-                 == test_cls$y))
-})))
-par(mar = c(4, 4, 1, 1))
-matplot(sizes, t(acc), type = "b", pch = c(1, 16), lty = 1, log = "x",
-        xlab = "training-set size (log scale)", ylab = "accuracy")
-legend("right", c("training", "test"), pch = c(1, 16), bty = "n")
-```
-
-(a) The training accuracy starts near its maximum in the smallest samples and *falls* as the data grow. Explain why, using the vocabulary of this chapter.
-(b) Is this model's capacity high or low, relative to this problem? Point to the features of the figure that tell you.
-(c) The two curves have met by a few thousand observations. What would collecting another hundred thousand observations buy, and what would be needed instead to improve the predictions?
-:::
-
-::: {.callout-note collapse="true" icon="false" title="Answer 6.A"}
-(a) A small training set is easy to memorize: with 25 observations and a handful of coefficients, the model can fit much of the noise along with the signal, and fitted noise *counts as correct* on the data being scored. As the sample grows the data outgrow the model's capacity to memorize, the accidents average out, and the training accuracy falls toward the accuracy the model genuinely earns. The falling training curve is Exercise 6.2(c) in classification dress: apparent performance above the achievable level is the signature of fitting noise.
-(b) Low. The two giveaways are that the curves converge early, by a few thousand observations, and then run flat *together*: no persistent gap between training and test (which would signal variance left to tame), and no further improvement with more data (which a higher-capacity model could still convert). The common plateau near 0.70 is the model's bias plus the problem's noise floor.
-(c) Almost nothing: the test curve is flat, so variance is already spent and more of the same data cannot help. Improvement would have to come from lowering bias or the floor itself, that is, from a more flexible model *if* the truth is more complicated than this model can express, or from better predictors and better measurement if the floor is what remains.
-:::
-
-::: {.callout-tip icon="false" title="Exercise 6.B"}
 A researcher predicts a binary health outcome from omics data, in the spirit of the examples in @rajkomar2018 and the omics prediction literature. Candidate features are ranked in advance and models using the top 1, 2, 5, ..., 100 features are fitted to the same 200 training cases; the figure shows each model's accuracy on two datasets, labelled only A and B.
 
 ```{r}
@@ -379,10 +337,52 @@ legend("topleft", c("dataset A", "dataset B"), pch = c(1, 16), bty = "n")
 (c) At 100 features the model classifies dataset A almost perfectly. Restate what has happened in the terms of @eq-bias-variance.
 :::
 
-::: {.callout-note collapse="true" icon="false" title="Answer 6.B"}
+::: {.callout-note collapse="true" icon="false" title="Answer 6.A"}
 (a) A is the training data: its curve rises monotonically, because added features can never worsen the fit to the data being fitted, only improve or preserve it, exactly as the training curve of @fig-overfit only falls. B, which improves while added features carry signal and then deteriorates, is the held-out data; only fresh data can reveal that the later features are being used to fit noise.
 (b) The model at the peak of curve B, here around 15 features, with an expected accuracy of about 0.70, the peak's height. Curve A's numbers are not estimates of performance on new cases and play no role in the choice, though the *comparison* of the two curves is what diagnoses the problem.
 (c) With 100 features and 200 training cases the model has enough capacity to memorize its training set, so its error on dataset A approaches zero while its variance term explodes: each training set produces a very different fitted model, and the swings are pure error on fresh data. Near-perfect training accuracy is not an achievement but a warning.
+:::
+
+::: {.callout-tip icon="false" title="Exercise 6.B"}
+The figure below shows a **learning curve**: one classifier, fitted to training sets of increasing size drawn from the same population, with its classification accuracy measured each time on the training data itself and on a large held-out test set.
+
+```{r}
+#| label: fig-learning-exercise
+#| echo: false
+#| fig-cap: "Accuracy of one classifier as a function of training-set size, measured on the training data and on held-out data. Each point averages many training sets of that size."
+#| fig-width: 6
+#| fig-height: 3.6
+set.seed(12)
+p_all <- 10
+gen_cls <- function(n) {
+  X <- matrix(rnorm(n * p_all), n, p_all)
+  colnames(X) <- paste0("x", 1:p_all)
+  data.frame(y = rbinom(n, 1, plogis(0.8 * X[, 1] - 0.8 * X[, 2])), X)
+}
+test_cls <- gen_cls(20000)
+sizes <- c(25, 50, 100, 250, 500, 1000, 2500, 5000)
+acc <- sapply(sizes, function(n) rowMeans(replicate(40, {
+  d <- gen_cls(n)
+  m <- suppressWarnings(glm(y ~ ., data = d, family = binomial))
+  c(train = mean((predict(m, d, type = "response") > 0.5) == d$y),
+    test  = mean((suppressWarnings(predict(m, test_cls, type = "response")) > 0.5)
+                 == test_cls$y))
+})))
+par(mar = c(4, 4, 1, 1))
+matplot(sizes, t(acc), type = "b", pch = c(1, 16), lty = 1, log = "x",
+        xlab = "training-set size (log scale)", ylab = "accuracy")
+legend("right", c("training", "test"), pch = c(1, 16), bty = "n")
+```
+
+(a) The training accuracy starts near its maximum in the smallest samples and *falls* as the data grow. Explain why, using the vocabulary of this chapter.
+(b) Is this model's capacity high or low, relative to this problem? Point to the features of the figure that tell you.
+(c) The two curves have met by a few thousand observations. What would collecting another hundred thousand observations buy, and what would be needed instead to improve the predictions?
+:::
+
+::: {.callout-note collapse="true" icon="false" title="Answer 6.B"}
+(a) A small training set is easy to memorize: with 25 observations and a handful of coefficients, the model can fit much of the noise along with the signal, and fitted noise *counts as correct* on the data being scored. As the sample grows the data outgrow the model's capacity to memorize, the accidents average out, and the training accuracy falls toward the accuracy the model genuinely earns. The falling training curve is Exercise 6.2(c) in classification dress: apparent performance above the achievable level is the signature of fitting noise.
+(b) Low. The two giveaways are that the curves converge early, by a few thousand observations, and then run flat *together*: no persistent gap between training and test (which would signal variance left to tame), and no further improvement with more data (which a higher-capacity model could still convert). The common plateau near 0.70 is the model's bias plus the problem's noise floor.
+(c) Almost nothing: the test curve is flat, so variance is already spent and more of the same data cannot help. Improvement would have to come from lowering bias or the floor itself, that is, from a more flexible model *if* the truth is more complicated than this model can express, or from better predictors and better measurement if the floor is what remains.
 :::
 
 ::: {.callout-tip icon="false" title="Exercise 6.C"}
