@@ -1,10 +1,8 @@
 # Machine learning: overfitting and the bias-variance tradeoff {#sec-overfitting}
 
-<!-- DO: go through the entirety of the chapter below and see if you can rewrite things into more normal academic language. --> 
+Researchers who consult a statistician sometimes ask whether they are "allowed" to use a particular model. Taken literally the question has no answer, since no authority licenses statistical models; what it usually means is: are the assumptions of this model defensible for my data and my question? That is a sensible question, and the first four chapters of this book were largely about how to answer it. It reflects a concern with **input validity**: on this view, a good analysis is one whose ingredients are in order — the question, the design, the data, and the assumptions — and if the input is good, the numbers that come out inherit its credibility.
 
-Researchers who visit a statistical consultant sometimes open with a question that sounds reasonable and is, on reflection, strange: "am I allowed to use this model?" Allowed by whom? There is no licensing board for regression. What the question means is: are the assumptions of this model defensible for my data and my question? That is a sensible thing to ask, and the first four chapters of this book were largely about how to answer it. Call it a concern with **input validity**: a good analysis is one whose ingredients are in order: the question, the design, the data, and the assumptions. If the input is good, the numbers that come out inherit its credibility.
-
-Machine learning runs on a different definition, and the difference is the door into this chapter and the next. A good model, to a machine learner, is a model that *performs*: one whose predictions of data it has never seen are demonstrably accurate, whatever its ingredients. Call that **output validity**. On this definition "am I allowed to use this model?" has a precise answer, and the answer is another question: did it predict well, measured honestly? @fig-input-output draws the two definitions side by side.
+Machine learning works with a different definition of quality, and the difference motivates this chapter and the next. To a machine learner, a good model is a model that *performs*: one whose predictions of data it has never seen are demonstrably accurate, whatever its ingredients. This is a concern with **output validity**. On this definition the question "am I allowed to use this model?" has a precise, empirical answer: did it predict well, measured honestly? @fig-input-output draws the two definitions side by side.
 
 ::: {#fig-input-output layout-ncol="1"}
 
@@ -15,18 +13,17 @@ Machine learning runs on a different definition, and the difference is the door 
 Two definitions of a good model. Classical statistics polices the input; machine learning measures the output.
 :::
 
-Each definition sees what the other misses, and the caricature runs in both directions. Statisticians shake their heads at machine learning applications that ignore measurement, sampling, and validity, which is input blindness. Machine learners shake their heads at analyses defended entirely by the pedigree of their assumptions, with no check on whether the model predicts anything, which is output blindness. The fields are converging from both ends, and this book needs both: chapters 1 to 4 taught you to interrogate inputs, and this chapter and the next teach you to measure outputs. What they do not do is teach you a zoo of new models. Some new models will wander through, but the ideas are the thing, and the ideas apply just as well to the regressions you already know.
+Each definition sees what the other misses. Statisticians criticize machine learning applications that ignore measurement, sampling, and validity: input blindness. Machine learners criticize analyses defended entirely by the pedigree of their assumptions, with no check on whether the model predicts anything: output blindness. The fields are converging from both ends, and this book needs both perspectives: chapters 1 to 4 concerned the interrogation of inputs, and this chapter and the next concern the measurement of outputs. They do not present a catalogue of new models. A few new models will appear along the way, but the ideas are the point, and the ideas apply just as well to the regression models of the earlier chapters.
 
 ## What machine learning is
 
 The standard definition is Tom Mitchell's, and it is thirty years old: "A computer program is said to learn from experience E with respect to some class of tasks T and performance measure P, if its performance at tasks in T, as measured by P, improves with experience E" [@mitchell1997].
 
-Read it slowly, because everything in it is load-bearing and nothing in it mentions neural networks. The **task** is what the program must do: assign a probability of low birth weight to a mother, translate a sentence, flag a fraudulent transaction. The **experience** is data: for us, a set of observations with the outcome recorded, the setting called **supervised** learning, because the recorded outcomes supervise the fit. The **performance measure** is a number that says how well the task was done, measured on cases the program did not learn from. Learning is nothing more than performance improving with experience.
+Every element of this definition matters, and none of it mentions neural networks. The **task** is what the program must do: assign a probability of hypertension to a survey respondent, translate a sentence, flag a fraudulent transaction. The **experience** is data: for us, a set of observations with the outcome recorded, the setting called **supervised** learning, because the recorded outcomes supervise the fit. The **performance measure** is a number that says how well the task was done, measured on cases the program did not learn from. Learning is nothing more than performance improving with experience.
 
-<!-- DO: note that the example in chapter 2 changed. Adjust below. -->
-By this definition, the logistic regression of @sec-theory-to-glm is a machine learning method. The task: predict which babies will be born underweight. The experience: 189 recorded births. The performance measure: how well the predicted probabilities fit births the model never saw. Nothing about the model changed. What changed is the judge. In @sec-theory-to-glm the model was judged by its inputs: whether the theory justified the variables, whether the coefficients meant what we claimed. Here it is judged by its output, and the coefficients could be gibberish so long as the predictions hold up.^[This is the two-cultures split of @sec-explanation-prediction, now operational. Breiman's algorithmic culture is exactly the output-validity culture, and his complaint about the other 98 percent was input blindness about the one input that is a model: "if the model is a poor emulation of nature, the conclusions may be wrong" [@breiman2001].]
+By this definition, the logistic regression of @sec-theory-to-glm is a machine learning method. The task: predict which panel members have a hypertension diagnosis. The experience: 4,158 LISS respondents with their integration scores, ages, genders, and BMIs recorded alongside the outcome. The performance measure: how well the predicted probabilities fit respondents the model never saw. Nothing about the model changed. What changed is the judge. In @sec-theory-to-glm the model was judged by its inputs: whether the theory justified placing social integration among the predictors, whether the coefficients meant what we claimed. Here it is judged by its output, and the coefficients could be gibberish so long as the predictions hold up.^[This is the two-cultures split of @sec-explanation-prediction, now operational. Breiman's algorithmic culture is exactly the output-validity culture, and his complaint about the other 98 percent was input blindness about the one input that is a model: "if the model is a poor emulation of nature, the conclusions may be wrong" [@breiman2001].]
 
-The definition is liberating, and I mean that practically. Once the task and the performance measure are fixed, questions that formerly required doctrine become empirical. Should I log-transform income? Include the interaction? Use a random forest instead? Try it, measure performance honestly, keep what wins. Nobody needs to win an argument about assumptions first. The liberation has a price, which is the word *honestly*: every one of those comparisons can leak and flatter, and the whole of @sec-evaluation is about paying the price properly. This chapter is about the phenomenon that makes honest measurement hard.
+The definition is liberating in a practical sense. Once the task and the performance measure are fixed, questions that formerly required doctrine become empirical. Should income be log-transformed? Should the interaction be included? Would a random forest do better? Each candidate can be tried, its performance measured honestly, and the best kept; no argument about assumptions needs to be settled first. The liberation has a price, which is contained in the word *honestly*: each of these comparisons can flatter the model if information leaks from the evaluation data into the fit, and the whole of @sec-evaluation is about preventing that. This chapter is about the phenomenon that makes honest measurement hard in the first place.
 
 ::: {.callout-tip icon="false" title="Exercise 6.1"}
 State the task, the experience, and the performance measure for each scenario, and say on which data the performance must be measured.
@@ -44,7 +41,7 @@ State the task, the experience, and the performance measure for each scenario, a
 
 ## Watching overfitting
 
-Now the phenomenon. As always I build a world we control: a smooth curve, $f(x) = \sin(2\pi x)$, plus noise with standard deviation 0.5. Fifty observations for learning, and ten thousand fresh ones for judging. To this world I fit polynomials of increasing degree, from a straight line to a degree-12 monster, and I measure each fit twice, by mean squared error (MSE), the average of the squared misses: once on the fifty points it learned from, and once on the ten thousand it never saw.
+As always, the phenomenon is easiest to see in a world we control: a smooth curve, $f(x) = \sin(2\pi x)$, plus noise with standard deviation 0.5. Fifty observations are drawn for learning, and ten thousand fresh ones for evaluation. To this world we fit polynomials of increasing degree, from a straight line to degree 12, and measure each fit twice by mean squared error (MSE), the average of the squared prediction errors: once on the fifty points it learned from, and once on the ten thousand it never saw.
 
 ```{r}
 #| label: fig-overfit
@@ -80,9 +77,9 @@ abline(h = 0.25, lty = 2)
 legend("topleft", c("training", "test"), pch = c(1, 16), bty = "n")
 ```
 
-The training error only goes down. It has to: a higher-degree polynomial can do everything a lower-degree one can and more, so giving the model more freedom can never hurt its fit *to the data it is fitting*. The test error tells the real story. It falls at first, because the straight line genuinely misses the curve; it bottoms out around degree 3 to 5; and then it climbs, slowly and then steeply, until the degree-12 fit predicts fresh data far worse than the straight line did. James, Witten, Hastie, and Tibshirani call this U-shape "a fundamental property of statistical learning that holds regardless of the particular data set at hand and regardless of the statistical method being used" [@james2021].
+The training error only goes down, and necessarily so: a higher-degree polynomial can do everything a lower-degree one can and more, so giving the model more freedom can never hurt its fit *to the data it is fitting*. The test error behaves differently. It falls at first, because the straight line misses the curve; it reaches a minimum around degree 3 to 5; and then it climbs, slowly and then steeply, until the degree-12 fit predicts fresh data far worse than the straight line did. James, Witten, Hastie, and Tibshirani call this U-shape "a fundamental property of statistical learning that holds regardless of the particular data set at hand and regardless of the statistical method being used" [@james2021].
 
-A model in the climbing region is **overfitting**: it has memorized the accidents of its fifty points, the noise, and mistaken them for structure. Look at the dotted curve in the left panel chasing individual observations. Every wiggle is the model explaining something that was never there to explain. And notice what the training error is worth as a warning: nothing. At degree 12 the training error is at its lowest of the whole sequence while the test error is at its worst. Judged by input thinking, nothing dramatic has happened, since a polynomial is a perfectly respectable model. Judged by output, the model has quietly failed.
+A model in the climbing region is **overfitting**: it has fitted the accidents of its fifty points, the noise, and mistaken them for structure. In the left panel, the dotted degree-12 curve can be seen following individual observations; every such wiggle is the model explaining variation that was never there to explain. Note also that the training error gives no warning of any of this: at degree 12 the training error is the lowest of the whole sequence while the test error is at its worst. Judged by input thinking, nothing remarkable has happened, since a polynomial is a perfectly respectable model. Judged by output, the model has quietly failed.
 
 ::: {.callout-tip icon="false" title="Exercise 6.2"}
 Run the chunk above and modify it. (a) Raise the training sample from 50 to 500 and rerun. Where is the bottom of the U now, and why did it move? (b) Set the noise standard deviation to 0 and rerun. What happens to the U, and what does that tell you about what overfitting is made of? (c) Your training error at degree 12 with the original settings is about 0.16, well below the noise floor of 0.25. Explain how a model can beat the noise floor on training data, and why it can never do so on test data.
@@ -96,11 +93,10 @@ Run the chunk above and modify it. (a) Raise the training sample from 50 to 500 
 
 ## Why: the decomposition
 
-The U-shape has an anatomy, and it is the most useful equation in these two chapters. Fix a single point $x_0$ and ask: if I repeatedly drew fresh training sets of 50 from this world, fitted my model to each, and each time predicted a fresh observation at $x_0$, how large would my squared error be on average? For any model fitted by any method, the answer splits into three terms [@james2021; @hastie2009]:
+The U-shape can be explained by a decomposition that is the most useful equation in these two chapters. Fix a single point $x_0$ and ask: if fresh training sets of 50 were repeatedly drawn from this world, the model fitted to each, and a fresh observation at $x_0$ predicted each time, how large would the squared error be on average? For any model fitted by any method, the answer splits into three terms [@james2021; @hastie2009]:
 
-<!-- DO: define each term in the equation, including y_0, f, \hat{f}, \sigma, and E. Use brackets around the term whose expectation is taken for clarity. -->
 $$
-\underbrace{E\,\bigl(y_0 - \hat f(x_0)\bigr)^2}_{\text{expected test error}}
+\underbrace{E\left[\bigl(y_0 - \hat f(x_0)\bigr)^2\right]}_{\text{expected test error}}
 \;=\;
 \underbrace{\sigma^2}_{\text{noise}}
 \;+\;
@@ -109,11 +105,13 @@ $$
 \underbrace{\operatorname{Var}\bigl(\hat f(x_0)\bigr)}_{\text{variance}} .
 $$ {#eq-bias-variance}
 
-Take the terms one at a time, in their exact meanings, because loose versions of these words cause endless confusion.
+The notation requires care. Here $f$ is the true regression function, the curve the world actually uses to turn $x$ into the systematic part of $y$; in the simulation it is $\sin(2\pi x)$, and in real problems it is unknown. The outcome $y_0 = f(x_0) + \varepsilon$ is a fresh observation at the point $x_0$, one the model has never seen, and $\sigma^2 = \operatorname{Var}(\varepsilon)$ is the variance of its noise around the true curve. The estimate $\hat f$ is the fitted function produced by applying the method to one training set, so $\hat f(x_0)$ is that fitted function's prediction at $x_0$. The expectation operator $E$ averages over both sources of randomness at once: the training set that produced $\hat f$, and the noise in the fresh observation $y_0$. The left-hand side is therefore an average of the bracketed squared error $\bigl(y_0 - \hat f(x_0)\bigr)^2$ over many repetitions of the whole procedure, not the error of any single fit; likewise, $E\hat f(x_0)$ on the right is the average prediction at $x_0$ across repeated training sets, and $\operatorname{Var}\bigl(\hat f(x_0)\bigr)$ is the variance of that prediction across the same repetitions.
 
-The **noise**, $\sigma^2$, is the variance of the outcome around the true curve: the part of $y$ that nothing at all predicts, because it is measurement error, unmeasured causes, or genuine randomness. It is called the **irreducible error**, and it sets a floor. No model, however clever, can have expected test error below $\sigma^2$, because even a model that knew $f$ exactly would still miss each fresh observation by the noise. In our simulated world the floor is $0.5^2 = 0.25$, the dashed line in @fig-overfit. In real problems the floor is real but unknown, and forgetting its existence is how people come to demand the impossible from prediction. The Fragile Families result of @sec-explanation-prediction reads differently in this light: when 160 teams with thirteen thousand variables all plateau at an $R^2$ of 0.2 for the most predictable outcomes, and near zero for the rest, the parsimonious explanation is not that all 160 teams were clumsy but that the floor for a single child's life outcomes is high, that much of what happens to a person is, from the standpoint of age-nine data, noise.^[Parsimonious, not proven: a floor is only demonstrated relative to the information you have. Better measurements or different variables could lower it, which is exactly the question PreFer was designed to ask.]
+With the notation fixed, the three terms on the right can be taken one at a time, in their exact meanings, because loose versions of these words cause endless confusion.
 
-**Bias** is a property of the average fit: it "refers to the error that is introduced by approximating a real-life problem, which may be extremely complicated, by a much simpler model" [@james2021]. Fit a straight line to a sine curve a thousand times and average the thousand lines: the average is still a line, and at the peak of the curve it will sit far below the truth, every single time. That systematic miss is bias. It does not shrink as you collect more data, because its source is the model's shape, not the sample's size. Another example of bias was shown in chapter @sec-explanation-prediction, section 5.2: in that example the true causal factor medication was absent from the model with lowest prediction error. Therefore this model's average predictions cannot correspond exactly to the true value (before noise) of each observation.
+The **noise**, $\sigma^2$, is the variance of the outcome around the true curve: the part of $y$ that nothing at all predicts, because it is measurement error, unmeasured causes, or genuine randomness. It is called the **irreducible error**, and it sets a floor. No model, however clever, can have expected test error below $\sigma^2$, because even a model that knew $f$ exactly would still miss each fresh observation by the noise. In our simulated world the floor is $0.5^2 = 0.25$, the dashed line in @fig-overfit. In real problems the floor is real but unknown, and forgetting its existence leads to impossible demands on prediction. The Fragile Families result of @sec-explanation-prediction reads differently in this light: when 160 teams with thirteen thousand variables all plateau at an $R^2$ of 0.2 for the most predictable outcomes, and near zero for the rest, the parsimonious explanation is not that all 160 teams were incompetent but that the floor for a single child's life outcomes is high, that much of what happens to a person is, from the standpoint of age-nine data, noise.^[Parsimonious, not proven: a floor is only demonstrated relative to the information you have. Better measurements or different variables could lower it, which is exactly the question PreFer was designed to ask.]
+
+**Bias** is a property of the average fit: it "refers to the error that is introduced by approximating a real-life problem, which may be extremely complicated, by a much simpler model" [@james2021]. Fit a straight line to a sine curve a thousand times and average the thousand lines: the average is still a line, and at the peak of the curve it will sit far below the truth, every single time. That systematic miss is bias. It does not shrink as more data are collected, because its source is the model's shape, not the sample's size. The simulation of @sec-explanation-prediction supplied another example of bias: there, the true causal factor, medication, was absent from the model with the lowest prediction error, so that model's average predictions cannot correspond exactly to the true expected value of each observation. The next section returns to that example in detail.
 
 **Variance** is a property of the fit's instability: it "refers to the amount by which $\hat f$ would change if we estimated it using a different training data set" [@james2021]. The degree-12 polynomial threads its fifty points beautifully, but hand it a different fifty points from the same world and it threads those instead, producing a visibly different curve. Its predictions at $x_0$ swing from training set to training set, and the swinging is error, even though it averages out to roughly the right place.
 
@@ -138,7 +136,7 @@ rownames(tab) <- paste("degree", c(1, 3, 12))
 round(tab, 3)
 ```
 
-Read the table across. The straight line is stable (variance 0.017) and wrong (bias$^2$ 0.265): it misses the peak the same way every time. The degree-12 fit is right on average (bias$^2$ 0.000) and unstable (variance 0.067, four times the straight line's). Degree 3 is nearly right *and* nearly stable, and its total, 0.267, sits just above the floor of 0.25: close to the best any method could do at this point. That is the **bias-variance tradeoff**: flexibility buys less bias at the price of more variance, and expected error is minimized where the exchange rate turns against you, not at either extreme. Everything on the complexity menu below is a way of choosing a position on this dial, and ISL calls the tradeoff "one of the most important recurring themes in this book" [@james2021]. It is one of the most important recurring themes in this one too: it is why a wrong model can predict better than the true one, the fact that @sec-explanation-prediction promised this chapter would explain. The true model has zero bias, and zero bias is worth nothing if the variance swamps it.
+Reading across the table: the straight line is stable (variance 0.017) but wrong (bias$^2$ 0.265), missing the peak the same way every time. The degree-12 fit is right on average (bias$^2$ 0.000) but unstable (variance 0.067, four times the straight line's). Degree 3 is nearly right *and* nearly stable, and its total, 0.267, sits just above the floor of 0.25: close to the best any method could achieve at this point. This is the **bias-variance tradeoff**: flexibility buys less bias at the price of more variance, and expected error is minimized where the terms of that exchange become unfavourable, not at either extreme. Every method discussed later in this chapter is a way of choosing a position on this tradeoff, and ISL calls it "one of the most important recurring themes in this book" [@james2021]. It is one of the most important recurring themes in this one too: it explains why a wrong model can predict better than the true one, the fact that @sec-explanation-prediction promised this chapter would explain. The true model has zero bias, and zero bias is worth little if the variance overwhelms it.
 
 ::: {.callout-tip icon="false" title="Exercise 6.3"}
 Using @eq-bias-variance and the table above, say which term or terms each change moves, in which direction, and what happens to expected test error.
@@ -205,7 +203,7 @@ Summing the three terms gives each model's expected test error $E(\text{MSE})$, 
 | `fit_best`  | 1.900 | 0     | 0.344 |  2.24 | 1.50 |
 | `fit_wrong` | 1.900 | 0.023 | 0.215 |  2.14 | 1.46 |
 
-Read the verdicts off the columns. `fit_true` is destroyed by bias, and by nothing else: its 8.1 dwarfs every other entry in the table, no sample size will shrink it, and its source is the decision to discard the one variable that carries information about the dominant cause of symptoms. The real contest, `fit_best` against `fit_wrong`, is settled by an exchange of the two small terms: including medication removes $b^2 = 0.0225$ of bias and costs one extra coefficient's rent, roughly $\sigma^2/n \approx 0.10$ of variance. At $n = 20$ the rent exceeds the bias fourfold, so the wrong model wins, though only narrowly, $1.46$ against $1.50$, both a whisker above the floor's $\sqrt{1.9} \approx 1.38$. The trade tips where $b^2$ outgrows the rent, at $n \approx \sigma^2/b^2$, about ninety observations here, which is why, when Exercise 5.3 pushed `n_train` from 20 to 100 to 500, `fit_best` pulled ahead somewhere in the low hundreds and never looked back.
+The verdicts can be read off the columns. `fit_true` fails because of bias, and nothing else: its 8.1 dwarfs every other entry in the table, no sample size will shrink it, and its source is the decision to discard the one variable that carries information about the dominant cause of symptoms. The real contest, `fit_best` against `fit_wrong`, is settled by an exchange of the two small terms: including medication removes $b^2 = 0.0225$ of bias and costs one extra coefficient's rent, roughly $\sigma^2/n \approx 0.10$ of variance. At $n = 20$ the rent exceeds the bias fourfold, so the wrong model wins, though only narrowly, $1.46$ against $1.50$, both a whisker above the floor's $\sqrt{1.9} \approx 1.38$. The trade tips where $b^2$ outgrows the rent, at $n \approx \sigma^2/b^2$, about ninety observations here, which is why, when Exercise 5.3 pushed `n_train` from 20 to 100 to 500, `fit_best` pulled ahead somewhere in the low hundreds and never looked back.
 
 Arithmetic deserves checking as much as equations do, so let the computer referee: two thousand fresh training sets of twenty, each model refitted every time and scored on a common test set.
 
@@ -234,7 +232,7 @@ The simulated values of $E(\text{MSE})$ land on the table's column to within sim
 
 ## The dial: controlling complexity
 
-If complexity is a dial, the practical question is where the useful settings are and what turning it looks like across model families. Watch one turn of it in a slightly more realistic world: a linear regression with two real predictors and a supply of junk. The truth is $y = 1 + 0.5x_1 - 0.5x_2 + \varepsilon$ with $\sigma^2 = 1$, a hundred observations for training, and the junk predictors are pure noise.
+If complexity is a dial, the practical question is where the useful settings are and what turning it looks like across model families. The following example shows one turn of the dial in a slightly more realistic world: a linear regression with two real predictors and a supply of junk. The truth is $y = 1 + 0.5x_1 - 0.5x_2 + \varepsilon$ with $\sigma^2 = 1$, a hundred observations for training, and the junk predictors are pure noise.
 
 ```{r}
 #| label: noise-predictors
@@ -258,10 +256,9 @@ for (p_junk in c(0, 20, 60)) {
 
 With no junk the model achieves 1.07, just above the floor of 1. Twenty junk predictors cost a quarter of a point; sixty, on a hundred observations, nearly triple the error. Nothing biased the model. It simply had 62 coefficients to estimate from 100 observations, and every spurious correlation it found became a spurious prediction. This is the small-scale version of what the curse of dimensionality does at large scale: as the number of predictors grows, a fixed sample spreads impossibly thin, and Hastie, Tibshirani, and Friedman compute that matching the density of 100 observations on one predictor would take $100^{10}$ observations on ten [@hastie2009].
 
-<!-- DO: rewrite and finish below -->
-An intuitive approach to solving this problem in practice is to fit all possible models with 0, 1, 2, ..., 60 predictors and evaluate their performance in held-out data and pick the best one. With enough data this will indeed find the right model (0 predictors), but unfortunately, there are $\sum_{p=0}^{60} \choose{60}{j} = 2^{60}$ possible models to consider, and that's just with linear regression. 
-**Shrinkage** is the remedy to this problem. What it does is to replace [TODO]
-, and it is bias administered on purpose. Ridge regression adds a penalty $\lambda \sum_j \beta_j^2$ to the least-squares criterion, and the lasso adds $\lambda \sum_j |\beta_j|$; both pull every coefficient toward zero, and the lasso pulls small ones exactly to zero, throwing predictors out of the model entirely [@james2021]. A pulled-toward-zero coefficient is a biased estimate of a nonzero effect. It is also a far less variable one, and @eq-bias-variance does not care where error comes from, so if a little squared bias buys a large drop in variance, the trade profits:
+An intuitive solution is to search: fit every model that uses some subset of the 62 candidate predictors, evaluate each on held-out data, and keep the winner. Given enough data this **best-subset selection** would indeed find the right answer, the model with the two real predictors and no junk. Unfortunately the number of subsets of 62 candidates is $\sum_{j=0}^{62} \binom{62}{j} = 2^{62}$, more models than any computer will fit, and that count is for linear regression alone; every transformation and interaction considered would double it again. The discrete search is hopeless, and even its feasible approximations, such as stepwise selection, inherit a subtler problem: each of the many comparisons is another opportunity to fit noise, so the search itself adds variance.
+
+**Shrinkage** is the remedy, and its idea is to replace the discrete search over subsets with a single continuous dial. Instead of asking, for each predictor separately, the yes-or-no question of whether it belongs in the model, shrinkage keeps all 62 predictors and asks one question with a numerical answer: how strongly should every coefficient be pulled toward zero? That strength is a single number $\lambda$, chosen by performance on held-out data, so the search over $2^{62}$ subsets collapses into the search over one dimension. What shrinkage buys with this move is bias administered on purpose. Ridge regression adds a penalty $\lambda \sum_j \beta_j^2$ to the least-squares criterion, and the lasso adds $\lambda \sum_j |\beta_j|$; both pull every coefficient toward zero, and the lasso pulls small ones exactly to zero, throwing predictors out of the model entirely, so that a shadow of subset selection survives inside the continuous method [@james2021]. A pulled-toward-zero coefficient is a biased estimate of a nonzero effect. It is also a far less variable one, and @eq-bias-variance does not care where error comes from, so if a little squared bias buys a large drop in variance, the trade profits:
 
 ```{r}
 #| label: shrinkage
@@ -282,9 +279,9 @@ round(c(ols    = mean((test62$y - predict(ols, data.frame(test62$X)))^2),
 
 On this training draw plain least squares scores 1.97, ridge 1.25, and the lasso 1.04, a whisker from the floor; `cv.glmnet` chose $\lambda$ automatically, by a method that is the centrepiece of @sec-evaluation. The lasso kept 12 of the 62 predictors, including both real ones. The fourth row previews the next paragraph: a random forest, fitted with one line and no tuning at all, lands at 1.18. If shrinkage feels familiar, it should: the multilevel models of @sec-anova shrink each group's estimate toward the grand mean, and it is the same trade, variance sold for bias, discovered independently by several fields.
 
-The rest of the model zoo can now be introduced for what it is, positions and tricks on the same dial, and this book will not make a big deal of any of them. **Regression trees** cut the predictor space into boxes and predict a constant in each: grown deep, they are flexible and wildly unstable, the far end of the dial. A **random forest** grows hundreds of deep trees, each on a random redraw of the data (the "bootstrap" of @sec-evaluation), letting each split consider only a random subset of predictors so the trees disagree, and averages them: averaging many unstable, roughly unbiased fits slashes variance while keeping the flexibility, which is why the untuned forest above did so well [@james2021]. **Boosting** goes the other way, growing tiny trees in sequence, each one fitted to what the previous ensemble still gets wrong, shrunk by a learning rate so that the model creeps toward the data; ISL's summary is that methods which "learn slowly tend to perform well" [@james2021]. **Neural networks**, transformers included, stack layers of simple regressions into functions of enormous flexibility, tamed by their own bag of variance-control tricks, among them stopping the training early, before the fit has memorized the noise. On a hundred observations of tabular survey data they buy you nothing; at the scale of language, as @sec-explanation-prediction described, the same recipe rewrote what prediction can do.
+The remaining model families can now be introduced for what they are, positions on the same dial, and this book will not treat any of them in depth. **Regression trees** cut the predictor space into boxes and predict a constant in each: grown deep, they are flexible and highly unstable, the far end of the dial. A **random forest** grows hundreds of deep trees, each on a random redraw of the data (the "bootstrap" of @sec-evaluation), letting each split consider only a random subset of predictors so the trees disagree, and averages them: averaging many unstable, roughly unbiased fits reduces variance greatly while keeping the flexibility, which is why the untuned forest above did so well [@james2021]. **Boosting** works in the opposite direction, growing small trees in sequence, each one fitted to what the previous ensemble still gets wrong, shrunk by a learning rate so that the model approaches the data gradually; ISL's summary is that methods which "learn slowly tend to perform well" [@james2021]. **Neural networks**, transformers included, stack layers of simple regressions into functions of enormous flexibility, controlled by their own collection of variance-reduction techniques, among them stopping the training early, before the fit has memorized the noise. On a hundred observations of tabular survey data they offer no advantage; at the scale of language, as @sec-explanation-prediction described, the same recipe transformed what prediction can do.
 
-Which brings back the liberation. Since these are all positions on a dial, the choice among them is an empirical question, task by task, and the empirical answers are frequently deflating for the exotic end. A systematic review of 71 clinical prediction studies found no average performance benefit of flexible machine learning methods over logistic regression on tabular clinical data, and found that the comparisons claiming one were disproportionately the ones with biased evaluations [@christodoulou2019]. When deep learning on 216,000 electronic health records did beat traditional risk scores at predicting in-hospital mortality, it did so by a margin worth having but not a revolution [@rajkomar2018]. The dial, not the destiny, decides: lots of signal-rich data favours the flexible end, and the modest samples of much social and health research favour the rigid end, exactly as @eq-bias-variance says it must.
+This returns us to the liberation. Since these are all positions on a dial, the choice among them is an empirical question, task by task, and the empirical answers are frequently sobering for the flexible end. A systematic review of 71 clinical prediction studies found no average performance benefit of flexible machine learning methods over logistic regression on tabular clinical data, and found that the comparisons claiming one were disproportionately the ones with biased evaluations [@christodoulou2019]. When deep learning on 216,000 electronic health records did beat traditional risk scores at predicting in-hospital mortality, it did so by a margin worth having but not a revolution [@rajkomar2018]. The outcome is decided by the data, not by the method's sophistication: large amounts of signal-rich data favour the flexible end, and the modest samples of much social and health research favour the rigid end, exactly as @eq-bias-variance says they must.
 
 ::: {.callout-tip icon="false" title="Exercise 6.4"}
 Extend the shrinkage chunk. (a) Plot `ridge$lambda` against the cross-validated error (`plot(ridge)` does this) and describe the shape in the vocabulary of this chapter. (b) At $\lambda$ near zero, which term of @eq-bias-variance dominates ridge's error, and at very large $\lambda$, which? (c) What does the model predict for everyone when $\lambda \to \infty$, and what named quantity does its test MSE then approach? Check numerically with `predict(ridge, newx = test$X, s = max(ridge$lambda))`.
@@ -298,28 +295,97 @@ Extend the shrinkage chunk. (a) Plot `ridge$lambda` against the cross-validated 
 
 ## The price of the liberation
 
-One loose end remains, and it is deliberately loose, because @sec-evaluation exists to tie it. Every trustworthy number in this chapter came from ten thousand fresh observations that I could conjure because the world was simulated. Real problems offer no such luxury: there is one dataset, and every choice of model and tuning constant must somehow be paid for out of it. Pay carelessly and the performance measure itself overfits, the empirical liberation collapses into a new way of fooling yourself, and the fishing of @sec-rq-to-interpretation returns with official permission. How to split and resample your way to a number you can trust, and what the trustworthy numbers of the prediction literature actually look like, is next.
+One question remains open, deliberately, because @sec-evaluation exists to answer it. Every trustworthy number in this chapter came from ten thousand fresh observations, available only because the world was simulated. Real problems offer no such luxury: there is one dataset, and every choice of model and tuning constant must somehow be evaluated on it. Done carelessly, the performance measure itself overfits, the empirical liberation becomes a new way of fooling oneself, and the fishing of @sec-rq-to-interpretation returns with official permission. How to split and resample one dataset into a number that can be trusted, and what the trustworthy numbers of the prediction literature actually look like, is the subject of the next chapter.
 
 ## Test yourself {.unnumbered}
 
-<!--DO: Include an exercise like the learning curve one: "old-course/old-exams/Midterm exam ReMa Multivariate-resit-2025.docx" Question 3 (b) and (c), and Midterm exam ReMa Multivariate-example.docx in the same directory, Question 4 (a) and (b) (only). --> 
-
-<!-- DO: make the derivation an optional last. This will be too challengign for many studetnts (but not all!) -->
 ::: {.callout-tip icon="false" title="Exercise 6.A"}
-Derive @eq-bias-variance. Write $y_0 = f(x_0) + \varepsilon$ with $E(\varepsilon) = 0$, $\operatorname{Var}(\varepsilon) = \sigma^2$, and $\varepsilon$ independent of the training data (and hence of $\hat f$). Take these steps.
+The figure below shows a **learning curve**: one classifier, fitted to training sets of increasing size drawn from the same population, with its classification accuracy measured each time on the training data itself and on a large held-out test set.
 
-(a) In $E(y_0 - \hat f(x_0))^2$, substitute for $y_0$, and expand the square around the two pieces $\varepsilon$ and $f(x_0) - \hat f(x_0)$. Why does the cross term vanish?
-(b) In the remaining piece $E(f(x_0) - \hat f(x_0))^2$, add and subtract $E\hat f(x_0)$ inside the square, expand again, and identify the three resulting terms. Why does this cross term vanish too?
-(c) State what is random in each expectation, in words. This is the step that makes the equation mean something.
+```{r}
+#| label: fig-learning-exercise
+#| echo: false
+#| fig-cap: "Accuracy of one classifier as a function of training-set size, measured on the training data and on held-out data. Each point averages many training sets of that size."
+#| fig-width: 6
+#| fig-height: 3.6
+set.seed(12)
+p_all <- 10
+gen_cls <- function(n) {
+  X <- matrix(rnorm(n * p_all), n, p_all)
+  colnames(X) <- paste0("x", 1:p_all)
+  data.frame(y = rbinom(n, 1, plogis(0.8 * X[, 1] - 0.8 * X[, 2])), X)
+}
+test_cls <- gen_cls(20000)
+sizes <- c(25, 50, 100, 250, 500, 1000, 2500, 5000)
+acc <- sapply(sizes, function(n) rowMeans(replicate(40, {
+  d <- gen_cls(n)
+  m <- suppressWarnings(glm(y ~ ., data = d, family = binomial))
+  c(train = mean((predict(m, d, type = "response") > 0.5) == d$y),
+    test  = mean((suppressWarnings(predict(m, test_cls, type = "response")) > 0.5)
+                 == test_cls$y))
+})))
+par(mar = c(4, 4, 1, 1))
+matplot(sizes, t(acc), type = "b", pch = c(1, 16), lty = 1, log = "x",
+        xlab = "training-set size (log scale)", ylab = "accuracy")
+legend("right", c("training", "test"), pch = c(1, 16), bty = "n")
+```
+
+(a) The training accuracy starts near its maximum in the smallest samples and *falls* as the data grow. Explain why, using the vocabulary of this chapter.
+(b) Is this model's capacity high or low, relative to this problem? Point to the features of the figure that tell you.
+(c) The two curves have met by a few thousand observations. What would collecting another hundred thousand observations buy, and what would be needed instead to improve the predictions?
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 6.A"}
-(a) $E(y_0 - \hat f)^2 = E(\varepsilon + f - \hat f)^2 = E(\varepsilon^2) + 2E[\varepsilon(f - \hat f)] + E(f - \hat f)^2$. The middle term is zero because $\varepsilon$ is independent of $\hat f$ and has mean zero, so $E[\varepsilon(f - \hat f)] = E(\varepsilon)\,E(f - \hat f) = 0$. The first term is $\sigma^2$.
-(b) $E(f - \hat f)^2 = E\bigl[(f - E\hat f) - (\hat f - E\hat f)\bigr]^2 = (f - E\hat f)^2 + E(\hat f - E\hat f)^2 - 2(f - E\hat f)\,E(\hat f - E\hat f)$. The last term vanishes because $E(\hat f - E\hat f) = 0$ by construction. What remains is bias squared plus variance.
-(c) The expectations average over two sources of randomness: the fresh observation's noise $\varepsilon$, and the training set that produced $\hat f$. Bias and variance are statements about repeated *training sets*, which is why the simulation in this chapter estimated them by drawing two thousand of them, and why neither can be seen in any single fitted model.
+(a) A small training set is easy to memorize: with 25 observations and a handful of coefficients, the model can fit much of the noise along with the signal, and fitted noise *counts as correct* on the data being scored. As the sample grows the data outgrow the model's capacity to memorize, the accidents average out, and the training accuracy falls toward the accuracy the model genuinely earns. The falling training curve is Exercise 6.2(c) in classification dress: apparent performance above the achievable level is the signature of fitting noise.
+(b) Low. The two giveaways are that the curves converge early, by a few thousand observations, and then run flat *together*: no persistent gap between training and test (which would signal variance left to tame), and no further improvement with more data (which a higher-capacity model could still convert). The common plateau near 0.70 is the model's bias plus the problem's noise floor.
+(c) Almost nothing: the test curve is flat, so variance is already spent and more of the same data cannot help. Improvement would have to come from lowering bias or the floor itself, that is, from a more flexible model *if* the truth is more complicated than this model can express, or from better predictors and better measurement if the floor is what remains.
 :::
 
 ::: {.callout-tip icon="false" title="Exercise 6.B"}
+A researcher predicts a binary health outcome from omics data, in the spirit of the examples in @rajkomar2018 and the omics prediction literature. Candidate features are ranked in advance and models using the top 1, 2, 5, ..., 100 features are fitted to the same 200 training cases; the figure shows each model's accuracy on two datasets, labelled only A and B.
+
+```{r}
+#| label: fig-features-exercise
+#| echo: false
+#| fig-cap: "Accuracy of models using an increasing number of ranked features, all fitted to 200 training cases, evaluated on two datasets A and B. Each point averages many training sets."
+#| fig-width: 6
+#| fig-height: 3.6
+set.seed(13)
+p_max <- 100
+beta_f <- c(rep(0.5, 5), rep(0.3, 10), rep(0, 85))
+gen_feat <- function(n) {
+  X <- matrix(rnorm(n * p_max), n, p_max)
+  list(X = X, y = rbinom(n, 1, plogis(X %*% beta_f)))
+}
+test_f <- gen_feat(20000)
+ks <- c(1, 2, 5, 10, 15, 20, 30, 50, 75, 100)
+accf <- sapply(ks, function(k) rowMeans(replicate(40, {
+  d <- gen_feat(200)
+  df <- data.frame(y = d$y, d$X[, 1:k, drop = FALSE])
+  m <- suppressWarnings(glm(y ~ ., data = df, family = binomial))
+  te <- data.frame(test_f$X[, 1:k, drop = FALSE]); names(te) <- names(df)[-1]
+  c(A = mean((predict(m, df, type = "response") > 0.5) == d$y),
+    B = mean((suppressWarnings(predict(m, te, type = "response")) > 0.5)
+             == test_f$y))
+})))
+par(mar = c(4, 4, 1, 1))
+matplot(ks, t(accf), type = "b", pch = c(1, 16), lty = 1,
+        xlab = "number of features in the model", ylab = "accuracy")
+legend("topleft", c("dataset A", "dataset B"), pch = c(1, 16), bty = "n")
+```
+
+(a) One of A and B is the training data and the other is held-out data. Which is which, and how can you tell without being told?
+(b) Which of the fitted models should be preferred, and what accuracy should the researcher honestly expect from it on new cases?
+(c) At 100 features the model classifies dataset A almost perfectly. Restate what has happened in the terms of @eq-bias-variance.
+:::
+
+::: {.callout-note collapse="true" icon="false" title="Answer 6.B"}
+(a) A is the training data: its curve rises monotonically, because added features can never worsen the fit to the data being fitted, only improve or preserve it, exactly as the training curve of @fig-overfit only falls. B, which improves while added features carry signal and then deteriorates, is the held-out data; only fresh data can reveal that the later features are being used to fit noise.
+(b) The model at the peak of curve B, here around 15 features, with an expected accuracy of about 0.70, the peak's height. Curve A's numbers are not estimates of performance on new cases and play no role in the choice, though the *comparison* of the two curves is what diagnoses the problem.
+(c) With 100 features and 200 training cases the model has enough capacity to memorize its training set, so its error on dataset A approaches zero while its variance term explodes: each training set produces a very different fitted model, and the swings are pure error on fresh data. Near-perfect training accuracy is not an achievement but a warning.
+:::
+
+::: {.callout-tip icon="false" title="Exercise 6.C"}
 Two models are fitted to predict school dropout from administrative data, and their error is plotted against training-set size. Model L (logistic regression, 10 predictors): training error rises from 8% to 11% as the sample grows from 500 to 50,000; held-out error falls from 13% to 11.5% and is flat from 10,000 onward. Model G (gradient-boosted trees, tuned deep): training error stays near 0.5% at every sample size; held-out error falls from 19% to 12.4% and is still falling at 50,000.
 
 (a) Diagnose each model in bias-variance vocabulary, using the gap between the curves and their levels.
@@ -327,13 +393,13 @@ Two models are fitted to predict school dropout from administrative data, and th
 (c) The base rate of dropout is 9%. What does that make of both models' numbers, and which question from @sec-explanation-prediction should have been asked first?
 :::
 
-::: {.callout-note collapse="true" icon="false" title="Answer 6.B"}
+::: {.callout-note collapse="true" icon="false" title="Answer 6.C"}
 (a) Model L: the curves converge to a common plateau, training error from below, held-out from above, so variance is spent and what remains is bias plus noise; the model is too rigid or the floor is high. Model G: a huge persistent gap between near-zero training error and 12.4% held-out error is high variance, memorization; the still-falling held-out curve says more data is still buying something.
 (b) Model L: add flexibility, better predictors, or interactions; more data is the waste, as the flat curve shows. Model G: more data, or less flexibility (shallower trees, stronger shrinkage, earlier stopping); polishing training error is the waste, since it is already near zero and means nothing.
 (c) A model predicting "nobody drops out" scores 9% error, so 11.5% and 12.4% are both *worse than the no-information rule* on raw error. Error rate is the wrong performance measure at this base rate, and the first question should have been the task-and-metric question: what decision does this prediction feed, and what does a miss cost in each direction? @sec-evaluation takes this up properly.
 :::
 
-::: {.callout-tip icon="false" title="Exercise 6.C"}
+::: {.callout-tip icon="false" title="Exercise 6.D"}
 Rajkomar and colleagues trained deep learning models on 216,221 hospitalizations from two American academic medical centres to predict, among other things, in-hospital mortality, reporting an AUC of about 0.93 to 0.94 at both sites [@rajkomar2018].
 
 (a) State the task, experience, and performance measure, and one detail in the description above that input-oriented chapters of this book would immediately interrogate.
@@ -341,8 +407,24 @@ Rajkomar and colleagues trained deep learning models on 216,221 hospitalizations
 (c) The two hospitals are both large academic centres. Say precisely which question this leaves open, in the vocabulary of @sec-rq-to-interpretation, and why no amount of within-sample evaluation settles it.
 :::
 
-::: {.callout-note collapse="true" icon="false" title="Answer 6.C"}
+::: {.callout-note collapse="true" icon="false" title="Answer 6.D"}
 (a) Task: predict death during the current admission from the record so far. Experience: 216,221 completed hospitalizations with outcomes. Performance: discrimination on held-out admissions. The input eye lands on "two academic medical centres": the experience is two particular institutions' records, with their particular patients, coding habits, and clinical practices, so the units and the sampling deserve the same scrutiny as any survey's.
 (b) Using everything is a low-bias choice: no curator's judgement excludes signal. It is viable only because a quarter-million cases control the variance that tens of thousands of raw features would otherwise generate. With 2,000 patients the same choice sits at the far right of @fig-overfit's x-axis: the junk-predictor demonstration, at scale, with the model overfitting whichever chance patterns the notes contain.
 (c) External validity: whether the performance holds for other hospitals, populations, record systems, and years. Within-sample evaluation, however honest, estimates performance for the population the experience was drawn from; generalization beyond it is an assumption about exchangeability that only evaluation elsewhere can test. @sec-evaluation returns to this as external validation, where such transfers routinely disappoint.
+:::
+
+::: {.callout-tip icon="false" title="Exercise 6.E (optional)"}
+This last exercise is optional: it asks for the derivation of @eq-bias-variance itself, and it is more challenging than the others. Nothing later in the book depends on it, but working through it once turns the equation from a formula into a fact.
+
+Write $y_0 = f(x_0) + \varepsilon$ with $E(\varepsilon) = 0$, $\operatorname{Var}(\varepsilon) = \sigma^2$, and $\varepsilon$ independent of the training data (and hence of $\hat f$). Take these steps.
+
+(a) In $E(y_0 - \hat f(x_0))^2$, substitute for $y_0$, and expand the square around the two pieces $\varepsilon$ and $f(x_0) - \hat f(x_0)$. Why does the cross term vanish?
+(b) In the remaining piece $E(f(x_0) - \hat f(x_0))^2$, add and subtract $E\hat f(x_0)$ inside the square, expand again, and identify the three resulting terms. Why does this cross term vanish too?
+(c) State what is random in each expectation, in words. This is the step that makes the equation mean something.
+:::
+
+::: {.callout-note collapse="true" icon="false" title="Answer 6.E"}
+(a) $E(y_0 - \hat f)^2 = E(\varepsilon + f - \hat f)^2 = E(\varepsilon^2) + 2E[\varepsilon(f - \hat f)] + E(f - \hat f)^2$. The middle term is zero because $\varepsilon$ is independent of $\hat f$ and has mean zero, so $E[\varepsilon(f - \hat f)] = E(\varepsilon)\,E(f - \hat f) = 0$. The first term is $\sigma^2$.
+(b) $E(f - \hat f)^2 = E\bigl[(f - E\hat f) - (\hat f - E\hat f)\bigr]^2 = (f - E\hat f)^2 + E(\hat f - E\hat f)^2 - 2(f - E\hat f)\,E(\hat f - E\hat f)$. The last term vanishes because $E(\hat f - E\hat f) = 0$ by construction. What remains is bias squared plus variance.
+(c) The expectations average over two sources of randomness: the fresh observation's noise $\varepsilon$, and the training set that produced $\hat f$. Bias and variance are statements about repeated *training sets*, which is why the simulation in this chapter estimated them by drawing two thousand of them, and why neither can be seen in any single fitted model.
 :::
