@@ -12,7 +12,7 @@ Science has always used prediction in this sense as its court of appeal. A theor
 
 Aggregate models make the same move at larger scale. The SIR model of epidemics [@kermack1927] divides a population into susceptible, infected, and recovered persons and predicts a characteristic wave: rise, peak, decline. Real epidemics follow the wave roughly and depart from it instructively, and each departure, from superspreading to waning immunity, forced a better model. The DeGroot model of opinion dynamics [@degroot1974] predicts that people who keep averaging their opinions with their neighbours' will converge to consensus. Look around: no consensus. The model, taken literally, is false, and its failure is informative, since whatever blocks consensus (stubbornness, homophily) is exactly what a better theory must contain. Sociologists in the tradition of @coleman1990 and methodologists like @kkv1994 treat such observable implications as the currency of social theory: a theory that implies nothing checkable buys nothing.
 
-There is a catch, and psychology spent a decade learning it. A verbal theory usually implies far less than its authors think, and testing "the theory predicts a difference in the expected direction" is a feeble hurdle; almost any theory clears it [@yarkoni2022]. Meehl's old complaint applies: predicting *that* it will rain in April is nothing; predicting how many millimetres on which days is science. One diagnosis of the replication crisis is exactly this mismatch between sweeping verbal claims and the timid statistical statements offered as their tests. Real predictive performance, on data the model has not seen, is a discipline that verbal theorizing cannot fake.
+There is a catch. A verbal theory usually implies far less than its authors think, and testing "the theory predicts a difference in the expected direction" is a feeble hurdle; almost any theory clears it [@yarkoni2022]. Meehl's old complaint <!--DO: cite where Meehl said this. Verify that the reference actually contains this specific statement. --> applies: predicting *that* it will rain in April is nothing; predicting how many millimetres on which days is science. One diagnosis of the replication crisis is exactly this mismatch between sweeping verbal claims and the timid statistical statements offered as their tests. Real predictive performance, on data the model has not seen, is a discipline that verbal theorizing cannot fake.
 
 ::: {.callout-tip icon="false" title="Exercise 5.1"}
 For each claim, state one concrete prediction it makes about unseen data, and one observation that would embarrass it. (a) The DeGroot model of opinion dynamics. (b) The mediation model of @sec-identification with no direct effect ($X \to M \to Y$ only). (c) "Vocational education helps early careers but hurts late ones" [@forster2016].
@@ -34,24 +34,28 @@ You can watch the two objectives part ways in a world whose truth we control. Ta
 
 ```{r}
 #| label: predict-vs-explain
-set.seed(4242)
+set.seed(1015)
+
+g <- 3         # spurious relationship is g^2
+b <- 0.15       # direct effect from medication to symptoms
+n_train <- 20  # "training" sample size (used for fitting model)
 
 # This function is the data-generating process (DGP). It returns random data
 #.  from our population.
 generate_data <- function(n) {
-  medication <- rbinom(n, 1, 0.5) # A truly causal factor with a small effect
+  medication <- rnorm(n) # A truly causal factor with a small effect
   motivation <- rnorm(n) # An (later unobserved) confounder
-  exercise   <- rbinom(n, 1, plogis(3 * motivation)) # The motivated exercise more
+  exercise   <- g*motivation + rnorm(n) # The motivated exercise more
   
   # Symptoms are *not* improved by exercise, but only by motivation and medication
-  symptoms   <- 3*motivation + 0*exercise + 0.1*medication + rnorm(n)
+  symptoms   <- g*motivation + 0*exercise + b*medication + rnorm(n)
   
   # In the data we do not observe the confounder, motivation:
   return(data.frame(symptoms, exercise, medication))
 }
 
 # These are the observed data we can use to fit a predictive model:
-df_observed <- generate_data(50)
+df_observed <- generate_data(n_train)
 
 
 # The model with only the true cause "medication": 
@@ -63,7 +67,7 @@ fit_wrong  <- lm(symptoms ~ exercise, data = df_observed)
 
 # Now let's evaluate how our models can be expected to perform on completely 
 #.   newly generated data from the same population.
-df_test <- generate_data(1e5)
+df_test <- generate_data(1e5) # n is just set to a big number 
 
 # Evaluate the root-mean squared deviation (residuals)
 rmse <- function(m) {
@@ -74,7 +78,7 @@ rmse <- function(m) {
 
 # Model performance in unseen data from the same population (lower is better):
 data.frame(true = rmse(fit_true), 
-	   best = rmse(fit_best), 
+           best = rmse(fit_best), 
            wrong = rmse(fit_wrong))
 ```
 
@@ -84,11 +88,12 @@ In the code above,
  * The "best" model includes *both* the truly causal factor `medication` and the spurious factor `exercise`. It could be expected to be the "best" in terms of prediction, because both variables have predictive value for the outcome, even though changing `exercise` does nothing for symptoms. Indeed, its performance is much improved (RMSE = `r rmse(fit_best)`). However, in spite of its name, in this sample it is *not* the best;
  * The "wrong" model includes *only* the spurious factor `exercise`, and *not* the true causal factor `medication`. So this model can tell us nothing on how to improve symptoms. But this "wrong" model *is* actually the best in predictive terms, with an root-mean-squared error of only `r rmse(fit_wrong)`!
 
-This example demonstrates that the search for "true" (explanatory) models is not necessarily the most helpful if we are only trying to get the best possible prediction. At the same time, it also shows that highly predictive models are not necessarily helpful if we want to learn how to improve the outcome: it is very tempting for a doctor who has not seen our DGP to take the above prediction model and use it to advise their patients to exercise. This shows that establishing the goal of the analysis is extremely important. As argued in this chapter, that goal should sometimes be to just predict instead of (or in addition to) explain the phenomenon at hand.
+This -- perhaps surprising -- example demonstrates that the search for "true" (explanatory) models is not necessarily the most helpful if we are only trying to get the best possible prediction. At the same time, it also shows that highly predictive models are not necessarily helpful if we want to learn how to improve the outcome: it is very tempting for a doctor who has not seen our DGP to take the above prediction model and use it to advise their patients to exercise. This shows that establishing the goal of the analysis is extremely important. As argued in this chapter, that goal should sometimes be to just predict instead of (or in addition to) explain the phenomenon at hand.
 
 ::: {.callout-tip icon="false" title="Exercise 5.2"}
 Extend the chunk above as needed. (a) Which of the three models gives the right answer to the causal question: would prescribing exercise change symptoms? (b) Which model should a clinic use to forecast symptom burden, and why? (c) Running `coef(fit_wrong)` puts `exercise` at about $5.5$. A doctor reads this as "exercising changes the symptom score by about five and a half points". What can the printed output tell her about whether that reading is safe? (d) A principled analyst refuses to use any variable without causal standing and sticks to `fit_true`. What does the refusal cost, and what does it buy?
 :::
+<!-- DO: include a separate inline exercise where the reader fiddles with g,b, and n and reports what they find about the effect on whether wrong is better than "best". -->
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 5.2"}
 (a) None of them. The true effect of exercise is zero by construction, but `fit_wrong` and `fit_best` both attach a coefficient of about $5.5$ to it, because the confounder, motivation, is not in the observed data: no regression on these three columns can hold it constant. Adding the true cause `medication` (going from `fit_wrong` to `fit_best`) does not repair the exercise coefficient at all. The only model that avoids making a false causal claim about exercise is `fit_true`, and it does so by staying silent on the question. (b) `fit_wrong`, which has the lowest error on new data (2.51), with `fit_best` essentially tied (2.60); forecasts are judged on held-out error, and exercise carries real signal about symptoms regardless of its causal role. (c) Nothing. The printout for the confounded exercise coefficient looks exactly like the printout for the unconfounded medication coefficient: same standard errors, same stars. Which coefficients have causal standing is settled by design and assumptions, never by the fitted output. (d) The refusal costs predictive accuracy (3.21 against 2.51) and buys causal interpretability for the one variable it keeps: because `medication` was assigned independently of everything else, its coefficient is an unbiased estimate of a real effect. Even that purchase is partial, though. With $n = 50$ the estimate is $0.92$ where the truth is $0.1$: unconfounded is not the same as precise, and a causal design does not excuse a small sample.
@@ -169,7 +174,7 @@ The results are now in, and the decomposition delivered its verdict. Over 150 pa
 
 ## Pendulums: successes and failures
 
-Fields swing between explanation and prediction, and the swings are instructive.
+Arguments about whether to focus on explanation or prediction or both are nothing new. In fact, they appear to swing back and forth like a pendulum sometimes. 
 
 Macroeconomics swung twice. In the 1970s, its large "structural" models, hundreds of equations of interpretable theory, predicted poorly, and @sims1980 argued for replacing them with frankly atheoretical time-series models that simply let recent data forecast the near future. The forecasting improved; the approach earned Sims a Nobel prize in 2011. And then the pendulum returned: for questions about *policy*, rain-dance questions, forecasting models are silent by construction, and the following generation of economists rebuilt causal credibility with the designs and instruments of chapters 1 and 3, work honoured with its own Nobel a decade later. Both swings were rational. The field learned which of its questions were umbrella questions and which were not.
 
