@@ -165,30 +165,45 @@ X_1 = g\,U + \delta \quad \text{(exercise)}, \qquad
 Y = g\,U + b\,X_2 + \varepsilon \quad \text{(symptoms)}.
 $$
 
-<!-- DO: rewrite below as follows. First derive that "the best possible predictor from the observables is $E(Y \mid X_1, X_2) = \rho_{UX}^2\,X_1 + b\,X_2$", and that Var(Y|X1,X2) = rho^2 + var(eps). Then just give the irreducible variance by substituting 0.9 and 1. For bias, say "the average fit is E(), so the bias is E(Y | X_1 X_2) - E() = .. = .. For variance, leave as-is. -->
 Every variable is jointly normal, so every conditional expectation we need is linear and every conditional variance is a constant. One quantity appears throughout: the squared correlation between exercise and motivation,
 
 $$
 \rho_{UX}^2 = \operatorname{Cor}(U, X_1)^2 = \frac{g^2}{g^2 + 1} = 0.9,
 $$
 
-which comes with the regression of the unobserved $U$ on the observed $X_1$: $E(U \mid X_1) = \frac{g}{g^2+1}\,X_1$, with $\operatorname{Var}(U \mid X_1) = \frac{1}{g^2+1}$. Exercise does nothing to symptoms, but it is highly informative about the variable that does. Now take the three terms of @eq-bias-variance in turn.
+which comes with the regression of the unobserved $U$ on the observed $X_1$: $E(U \mid X_1) = \frac{g}{g^2+1}\,X_1$, with $\operatorname{Var}(U \mid X_1) = \frac{1}{g^2+1}$. Exercise does nothing to symptoms, but it is highly informative about the variable that does.
 
-**Irreducible variance.** None of the models observes $U$, so the noise term of @eq-bias-variance is
+From this the best possible predictor from the observables follows. Take the conditional expectation of the outcome equation given $X_1$ and $X_2$: motivation depends only on $X_1$, while $X_2$ is its own predictor and $\varepsilon$ has mean zero, so
 
 $$
-\sigma^2 = \operatorname{Var}(Y \mid X_1, X_2)
+E(Y \mid X_1, X_2) = g\,E(U \mid X_1) + b\,X_2
+= \frac{g^2}{g^2+1}\,X_1 + b\,X_2
+= \rho_{UX}^2\,X_1 + b\,X_2 .
+$$
+
+The variance around this best predictor is the part of $Y$ that no function of the observables can capture: the leftover piece of motivation, $g\,U - g\,E(U \mid X_1)$, plus the disturbance. Since the two are independent,
+
+$$
+\operatorname{Var}(Y \mid X_1, X_2)
 = g^2 \operatorname{Var}(U \mid X_1) + \operatorname{Var}(\varepsilon)
-= \rho_{UX}^2 + 1 = 1.9 :
+= \rho_{UX}^2 + \operatorname{Var}(\varepsilon) .
 $$
 
-the disturbance $\varepsilon$ contributes $1$, and the remaining tenth of motivation's contribution, the part that not even exercise can recover, contributes $\rho_{UX}^2 = 0.9$. This term is the same for all three models, because it depends on what is observable, not on what a model does with it; had motivation been observable, it would have been $1$.
+With these two results in hand, take the three terms of @eq-bias-variance in turn.
 
-**Bias.** Averaged over training sets, each model's fit is the population regression of $Y$ on its own predictors, $E(Y \mid \text{own predictors})$; its bias is the difference between that and the best possible predictor from the observables, $E(Y \mid X_1, X_2) = \rho_{UX}^2\,X_1 + b\,X_2$. Averaging the squared difference over test observations:^[Bias and variance here are the terms of @eq-bias-variance averaged additionally over fresh test observations $(X_1, X_2)$, rather than taken at one fixed point $x_0$.]
+**Irreducible variance.** Substituting $\rho_{UX}^2 = 0.9$ and $\operatorname{Var}(\varepsilon) = 1$ gives
 
-* `fit_true`: the average fit is $E(Y \mid X_2) = b\,X_2$, which misses $\rho_{UX}^2\,X_1$, so bias$^2 = E[(\rho_{UX}^2 X_1)^2] = \rho_{UX}^4 (g^2 + 1) = g^2 \rho_{UX}^2 = 8.1$.
-* `fit_best`: the average fit is $\rho_{UX}^2\,X_1 + b\,X_2$, the best possible predictor itself, so bias$^2 = 0$.
-* `fit_wrong`: the average fit is $E(Y \mid X_1) = \rho_{UX}^2\,X_1$, which misses $b\,X_2$, so bias$^2 = b^2 \operatorname{Var}(X_2) = b^2 = 0.0225$.
+$$
+\sigma^2 = \operatorname{Var}(Y \mid X_1, X_2) = 0.9 + 1 = 1.9 .
+$$
+
+This term is the same for all three models, because it depends on what is observable, not on what a model does with it; had motivation been observable, it would have been $1$.
+
+**Bias.** Averaged over training sets, each model's fit is the population regression of $Y$ on its own predictors, $E(Y \mid \text{own predictors})$; its bias is the difference between the best possible predictor $E(Y \mid X_1, X_2)$ and that average fit. Averaging the squared difference over test observations:^[Bias and variance here are the terms of @eq-bias-variance averaged additionally over fresh test observations $(X_1, X_2)$, rather than taken at one fixed point $x_0$.]
+
+* `fit_true`: the average fit is $E(Y \mid X_2) = b\,X_2$, so the bias is $E(Y \mid X_1, X_2) - E(Y \mid X_2) = \rho_{UX}^2\,X_1$, and bias$^2 = E[(\rho_{UX}^2 X_1)^2] = \rho_{UX}^4 (g^2 + 1) = g^2 \rho_{UX}^2 = 8.1$.
+* `fit_best`: the average fit is $E(Y \mid X_1, X_2)$ itself, so the bias, and with it bias$^2$, is $0$.
+* `fit_wrong`: the average fit is $E(Y \mid X_1) = \rho_{UX}^2\,X_1$, so the bias is $E(Y \mid X_1, X_2) - E(Y \mid X_1) = b\,X_2$, and bias$^2 = b^2 \operatorname{Var}(X_2) = b^2 = 0.0225$.
 
 **Variance.** Each model's coefficients must be estimated from $n = 20$ observations. The classical result for regression gives the expected estimation variance at a fresh test point as approximately $s^2\,p/n$, where $s^2 = \operatorname{Var}(Y \mid \text{own predictors})$ is the model's residual variance and $p$ its number of coefficients, intercept included.^[The table reports the exact version for normally distributed predictors, $s^2 \left[\frac{1}{n} + \left(1 + \frac{1}{n}\right)\frac{q}{n - q - 2}\right]$ with $q$ the number of slopes; at $n = 20$ it is somewhat larger than $s^2 p/n$.]
 
@@ -204,7 +219,7 @@ Summing the three terms gives each model's expected test error $E(\text{MSE})$, 
 | `fit_best`  | 1.900 | 0     | 0.344 |  2.24 | 1.50 |
 | `fit_wrong` | 1.900 | 0.023 | 0.215 |  2.14 | 1.46 |
 
-The verdicts can be read off the columns. `fit_true` fails because of bias, and nothing else: its 8.1 dwarfs every other entry in the table, no sample size will shrink it, and its source is the decision to discard the one variable that carries information about the dominant cause of symptoms. The real contest, `fit_best` against `fit_wrong`, is settled by an exchange of the two small terms: including medication removes $b^2 = 0.0225$ of bias and costs one extra coefficient's rent, roughly $\sigma^2/n \approx 0.10$ of variance. At $n = 20$ the rent exceeds the bias fourfold, so the wrong model wins, though only narrowly, $1.46$ against $1.50$, both a whisker above the floor's $\sqrt{1.9} \approx 1.38$. The trade tips where $b^2$ outgrows the rent, at $n \approx \sigma^2/b^2$, about ninety observations here, which is why, when Exercise 5.3 pushed `n_train` from 20 to 100 to 500, `fit_best` pulled ahead somewhere in the low hundreds and never looked back.
+The verdicts can be read off the columns. `fit_true` fails because of bias, and nothing else: its 8.1 dwarfs every other entry in the table, no sample size will shrink it, and its source is the decision to discard the one variable that carries information about the dominant cause of symptoms. The real contest, `fit_best` against `fit_wrong`, is settled by an exchange of the two small terms: including medication removes $b^2 = 0.0225$ of squared bias, but estimating its coefficient adds roughly $\sigma^2/n \approx 0.10$ of variance. At $n = 20$ the added variance exceeds the removed bias fourfold, so the wrong model wins, though only narrowly, $1.46$ against $1.50$, both just above the floor's $\sqrt{1.9} \approx 1.38$. The balance reverses where $b^2$ exceeds $\sigma^2/n$, at $n \approx \sigma^2/b^2$, about ninety observations here, which is why, when Exercise 5.3 pushed `n_train` from 20 to 100 to 500, `fit_best` pulled ahead somewhere in the low hundreds and stayed ahead.
 
 We can check our derivations by simulation as well: two thousand fresh training sets of twenty, each model refitted every time and scored on a common test set.
 
@@ -230,8 +245,7 @@ round(rowMeans(mses), 2)
 ```
 
 The simulated values of $E(\text{MSE})$ equal the table's column to within simulation error. The seed of @sec-explanation-prediction produced one draw from exactly this distribution; averaged over all possible training sets, the wrong model's victory is no accident of the seed but the expected outcome.  
-<!-- DO: rewrite the sentence below in normal language. I have no idea what you mean. -->
-The table shows the whole mechanism: a tiny bias accepted, a coefficient's rent saved, and a true cause whose effect is too small, in twenty observations, to pay its own way.
+In summary: omitting medication introduces a small squared bias, $b^2 = 0.0225$, but avoids estimating one extra coefficient, which at $n = 20$ would have added about $0.10$ of estimation variance. The error avoided is about four times the error introduced, so at this sample size leaving the true cause out of the model produces better predictions. Medication's effect is real, but too small to be estimated reliably from twenty observations.
 
 ## The dial: controlling complexity
 
