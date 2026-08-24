@@ -1,5 +1,7 @@
 project:
   type: book
+  resources:
+    - fonts/
 
 book:
   title: "Statistics and Data Analysis"
@@ -24,6 +26,9 @@ csl: apa.csl
 format:
   html:
     theme: cosmo
+    css: fonts/fonts.css
+    mainfont: "Fira Sans"
+    monofont: "Fira Code"
     toc: true
     number-sections: true
     code-fold: false

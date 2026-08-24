@@ -1,0 +1,63 @@
+/* Self-hosted fonts for the HTML edition.
+ *
+ * The cosmo theme imports Source Sans Pro from Google Fonts with
+ * display=swap; when that network fetch fails or is slow, a page renders
+ * permanently in the system fallback font, so chapters could differ
+ * slightly in text size and positioning depending on the network at load
+ * time. Bundling the book's own faces (Fira Sans and Fira Code, matching
+ * the print edition and every figure) and declaring them as the body and
+ * code fonts makes every page render identically, with or without a
+ * network connection.
+ */
+
+@font-face {
+  font-family: "Fira Sans";
+  src: url("FiraSans-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: fallback;
+}
+@font-face {
+  font-family: "Fira Sans";
+  src: url("FiraSans-Italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: fallback;
+}
+@font-face {
+  font-family: "Fira Sans";
+  src: url("FiraSans-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: fallback;
+}
+@font-face {
+  font-family: "Fira Sans";
+  src: url("FiraSans-BoldItalic.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+  font-display: fallback;
+}
+@font-face {
+  font-family: "Fira Code";
+  src: url("FiraCode-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: fallback;
+}
+@font-face {
+  font-family: "Fira Code";
+  src: url("FiraCode-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: fallback;
+}
+
+/* One font stack for every page, ending in locally bundled faces. */
+body {
+  font-family: "Fira Sans", -apple-system, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+}
+code, pre, kbd, samp {
+  font-family: "Fira Code", "SFMono-Regular", Menlo, Consolas, monospace;
+}
