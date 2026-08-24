@@ -165,6 +165,7 @@ X_1 = g\,U + \delta \quad \text{(exercise)}, \qquad
 Y = g\,U + b\,X_2 + \varepsilon \quad \text{(symptoms)}.
 $$
 
+<!-- DO: rewrite below as follows. First derive that "the best possible predictor from the observables is $E(Y \mid X_1, X_2) = \rho_{UX}^2\,X_1 + b\,X_2$", and that Var(Y|X1,X2) = rho^2 + var(eps). Then just give the irreducible variance by substituting 0.9 and 1. For bias, say "the average fit is E(), so the bias is E(Y | X_1 X_2) - E() = .. = .. For variance, leave as-is. -->
 Every variable is jointly normal, so every conditional expectation we need is linear and every conditional variance is a constant. One quantity appears throughout: the squared correlation between exercise and motivation,
 
 $$
@@ -205,7 +206,7 @@ Summing the three terms gives each model's expected test error $E(\text{MSE})$, 
 
 The verdicts can be read off the columns. `fit_true` fails because of bias, and nothing else: its 8.1 dwarfs every other entry in the table, no sample size will shrink it, and its source is the decision to discard the one variable that carries information about the dominant cause of symptoms. The real contest, `fit_best` against `fit_wrong`, is settled by an exchange of the two small terms: including medication removes $b^2 = 0.0225$ of bias and costs one extra coefficient's rent, roughly $\sigma^2/n \approx 0.10$ of variance. At $n = 20$ the rent exceeds the bias fourfold, so the wrong model wins, though only narrowly, $1.46$ against $1.50$, both a whisker above the floor's $\sqrt{1.9} \approx 1.38$. The trade tips where $b^2$ outgrows the rent, at $n \approx \sigma^2/b^2$, about ninety observations here, which is why, when Exercise 5.3 pushed `n_train` from 20 to 100 to 500, `fit_best` pulled ahead somewhere in the low hundreds and never looked back.
 
-Arithmetic deserves checking as much as equations do, so let the computer referee: two thousand fresh training sets of twenty, each model refitted every time and scored on a common test set.
+We can check our derivations by simulation as well: two thousand fresh training sets of twenty, each model refitted every time and scored on a common test set.
 
 ```{r}
 #| label: wrong-model-decomposition
@@ -228,7 +229,9 @@ mses <- replicate(2000, {
 round(rowMeans(mses), 2)
 ```
 
-The simulated values of $E(\text{MSE})$ land on the table's column to within simulation error. The seed of @sec-explanation-prediction produced one draw from exactly this distribution; averaged over all possible training sets, the wrong model's victory is no accident of the seed but the expected outcome, and the table shows the whole mechanism: a tiny bias accepted, a coefficient's rent saved, and a true cause whose effect is too small, in twenty observations, to pay its own way.
+The simulated values of $E(\text{MSE})$ equal the table's column to within simulation error. The seed of @sec-explanation-prediction produced one draw from exactly this distribution; averaged over all possible training sets, the wrong model's victory is no accident of the seed but the expected outcome.  
+<!-- DO: rewrite the sentence below in normal language. I have no idea what you mean. -->
+The table shows the whole mechanism: a tiny bias accepted, a coefficient's rent saved, and a true cause whose effect is too small, in twenty observations, to pay its own way.
 
 ## The dial: controlling complexity
 
