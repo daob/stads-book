@@ -8,6 +8,7 @@ Machine learning works with a different definition of quality, and the differenc
 
 ![Machine learning's frame: a model is good when its output, performance on held-out test data, is good.](images/input-output-1.png){#fig-io1 width="75%"}
 
+<!--DO: this figure (input-output-2.png) should be used to illustrate what I mean by input and output. But remove the text "when are we taking smart actions? etc. and just show the top part. The figure above (input-output-1.png should be used below, under the definition of machine learning. Again the part with "good model" etc should be removed. -->
 ![The frame of chapters 1 to 4: an analysis is good when its input, the chain from problem statement through design to data, is good.](images/input-output-2.png){#fig-io2 width="75%"}
 
 Two definitions of a good model. Classical statistics polices the input; machine learning measures the output.
@@ -244,8 +245,7 @@ mses <- replicate(2000, {
 round(rowMeans(mses), 2)
 ```
 
-The simulated values of $E(\text{MSE})$ equal the table's column to within simulation error. The seed of @sec-explanation-prediction produced one draw from exactly this distribution; averaged over all possible training sets, the wrong model's victory is no accident of the seed but the expected outcome.  
-In summary: omitting medication introduces a small squared bias, $b^2 = 0.0225$, but avoids estimating one extra coefficient, which at $n = 20$ would have added about $0.10$ of estimation variance. The error avoided is about four times the error introduced, so at this sample size leaving the true cause out of the model produces better predictions. Medication's effect is real, but too small to be estimated reliably from twenty observations.
+The simulated values of $E(\text{MSE})$ equal the table's column to within simulation error. The seed of @sec-explanation-prediction produced one draw from exactly this distribution; averaged over all possible training sets, the wrong model's victory is no accident of the seed but the expected outcome.  In summary: omitting medication introduces a small squared bias, $b^2 = 0.0225$, but avoids estimating one extra coefficient, which at $n = 20$ would have added about $0.10$ of estimation variance. The error avoided is about four times the error introduced, so at this sample size leaving the true cause out of the model produces better predictions. Medication's effect is real, but too small to be estimated reliably from twenty observations.
 
 ## The dial: controlling complexity
 
