@@ -14,8 +14,19 @@ here <- dirname(sub("^--file=", "", grep("^--file=", commandArgs(), value = TRUE
 if (!is.na(here) && nzchar(here)) data_dir <- file.path(here, data_dir)
 out_dir <- data_dir
 
-ch <- read_dta(file.path(data_dir, "ch25r_EN_1.0p.dta"))
-av <- read_dta(file.path(data_dir, "avars_202501_EN_1.0p.dta"))
+# Source files may sit at the top of the data directory or inside an
+# extracted subdirectory named after the archive (as delivered by LISS).
+find_dta <- function(name) {
+  stem <- sub("\\.dta$", "", name)
+  cands <- c(file.path(data_dir, name), file.path(data_dir, stem, name))
+  hit <- cands[file.exists(cands)]
+  if (length(hit) == 0)
+    stop("cannot find ", name, " in ", data_dir, " (looked in ",
+         paste(cands, collapse = ", "), ")")
+  hit[1]
+}
+ch <- read_dta(find_dta("ch25r_EN_1.0p.dta"))
+av <- read_dta(find_dta("avars_202501_EN_1.0p.dta"))
 
 # Ten diagnosed conditions, 0/1. Codes follow analysis/liss/01-prepare-liss.R.
 items <- c(angina      = "ch25r080",
