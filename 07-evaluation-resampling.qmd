@@ -1,33 +1,122 @@
 # Machine learning: honest evaluation {#sec-evaluation}
 
-<!-- DO: rewrite the whole chapter to be in more normal academic language. Try to avoid repetition of the "<main sentence>, and <needless additional remark>" trope.  -->
-
 Between 2015 and 2020 the American Food and Drug Administration cleared 130 medical devices that run on artificial intelligence. Researchers who read every approval found that 126 of the 130 had been evaluated only retrospectively, on stored data, and that for 93 there was no publicly reported evaluation at more than one site [@wu2021]. None of the 54 highest-risk devices had been tested prospectively on the patients they would actually serve.
 
-@sec-overfitting ended with a promise and a warning. The promise: once the task and the performance measure are fixed, modelling choices can be settled empirically. The warning: the settling has to be honest, because the same overfitting that inflates a model's opinion of itself will happily inflate your evaluation of the model. Honesty here is a set of techniques, and there are three to learn: choosing a performance measure that fits the task, keeping the data that judge a model strictly out of the choices that built it, and recycling scarce data through resampling. After all three, the honestly evaluated model still has to meet the world, and the news from there is sobering.
+@sec-overfitting ended with a promise and a warning. The promise: once the task and the performance measure are fixed, modelling choices can be settled empirically. The warning: the settling has to be honest, because the same overfitting that inflates a model's apparent fit will inflate the evaluation of the model just as easily. Honesty here consists of three techniques: choosing a performance measure that fits the task, keeping the data that judge a model strictly out of the choices that built it, and recycling scarce data through resampling. After all three comes the question of how honestly evaluated models fare in actual use, which closes the chapter.
 
 ## Metrics follow the task
-<!-- DO: This section is too terse for the reader to understand. Expand it so a reader from the social or health sciences can understand what you're talking about. -->
 
-<!-- DO: define each metric below mathematically.  -->
-In earlier chapters we saw that in machine learning, defining the performance metric is defining success. So the performance metric should be chosen with care depending on the task. There are many such metrics. However, in practice we often encounter specific ones. These are discussed below.
+In machine learning, defining the performance metric is defining success, so the metric should be chosen with care to fit the task. Many metrics exist, but in practice a modest number account for most use, and this section defines those, first for continuous outcomes and then for binary ones.
 
-For a continuous outcome the most common metrics are the **root mean squared error**, in the outcome's own units, its more outlier-tolerant sibling the **mean absolute error**, and out-of-sample $R^2$, error relative to predicting the mean for everyone. An interesting point to note is that in machine learning, the out-of-sample performance of a model can be worse than predicting the mean. Therefore the $R^2$ can be negative.
-<!-- DO: discuss asymmetric metrics noting they are little used but can be relevant in some cases. Illustrate various metrics in a grid with small graphs of the residual (horizontal) versus loss (vertical), eg absolute error will look like V and MSE like U, etc. Don't make the picture take up too much space, it is just there to illustrate that different shapes are possible. Do comment on robustness and asymmetric versions.   -->
+For a continuous outcome, write $y_i$ for the observed outcome of test case $i$, $\hat y_i$ for the model's prediction of it, and $m$ for the number of test cases. The most common metric is the mean squared error familiar from @sec-overfitting, usually reported as its square root so that it lives in the outcome's own units, the **root mean squared error**:
 
-Binary outcomes are more complex, because a prediction model for a binary outcome produces a *probability*, and a probability can be good or bad in two different ways. **Discrimination** asks whether the model ranks cases above non-cases: do the babies who will be born underweight get higher probabilities than the ones who will not? The standard measure is the **concordance statistic**, or c-statistic, equal for binary outcomes to the area under the receiver operating characteristic curve (AUC). It has a direct interpretation: take a random case and a random non-case, and the c-statistic is the probability that the model ranks them correctly [@riley2024part2]. A value of 0.5 is a coin flip; 1 is perfect ranking.
-<!-- DO: decompose MSE into calibration and discrimination term -->
+$$
+\text{RMSE} = \sqrt{\frac{1}{m} \sum_{i=1}^{m} (y_i - \hat y_i)^2} .
+$$
 
-**Calibration** asks whether the probabilities mean what they say: among patients given a risk of 20 percent, do about 20 in 100 have the event [@vancalster2026]? A model can discriminate superbly and be badly calibrated, or the reverse, because ranking uses only the order of the probabilities and calibration only their values. The workhorse summaries are the **calibration intercept**, which catches predictions that are too high or too low overall, and the **calibration slope**, which catches predictions that are too extreme or too timid: a slope below 1 means the model's high risks are too high and its low risks too low, the classic signature of overfitting [@vancalster2025]. Calibration has been called "the Achilles heel of predictive analytics" [@vancalster2019]: a systematic review found it simply unassessed in 79 percent of studies comparing prediction methods [@christodoulou2019]. It is not always necessary to have calibrated probabilities, but in decision-making it is often needed for optimizing decisions: if were are to weigh the probability of a con against a pro then we need to get that probability right. Therefore calibration is important in settings in which optimal decision making is of interest.
+An RMSE of 1.3 days on a length-of-stay model means the predictions miss by about 1.3 days on a typical case. Because the errors are squared before averaging, large misses count disproportionately: one prediction that is off by ten days contributes as much as a hundred predictions off by one day. Its more outlier-tolerant sibling, the **mean absolute error**,
 
-<!-- DO: illustrate the story below and build up a ROC curve and show what AUC is -->
-Everything else on the usual menu is derived from a **threshold**. Declare everyone above some cutoff "positive" and you can count four kinds of result, and from the counts build **sensitivity** (the fraction of true cases flagged), **specificity** (the fraction of non-cases left in peace), **precision** (the fraction of flags that are right), **accuracy** (the fraction of all calls that are right), and the **F1 score** (a compromise between precision and sensitivity). Two warnings about this family. Their values depend on the threshold, which is a decision about costs, not a property of the model, so reporting them without defending the threshold is reporting nothing. And accuracy in particular flatters ignorance whenever one class is rare: a model that predicts "no dropout" for every pupil scores 91 percent accuracy on a 9 percent base rate, the trap Exercise 6.C already sprang. The recent guidance from the STRATOS initiative goes further and advises against F1 for clinical decisions altogether, on the ground that it is not a *proper* measure: a model supplying the correct probabilities is not guaranteed to optimize it [@vancalster2025].
+$$
+\text{MAE} = \frac{1}{m} \sum_{i=1}^{m} \lvert y_i - \hat y_i \rvert ,
+$$
 
-<!-- DO: discuss sensivitity and specificity -->
+weighs every unit of error equally, so a few extreme cases cannot dominate the verdict. The third common metric compares the model against the simplest possible competitor, predicting the training mean $\bar y$ for everyone. The **out-of-sample $R^2$** is the fraction by which the model's squared error improves on that benchmark:
+
+$$
+R^2_{\text{oos}} = 1 - \frac{\sum_{i=1}^{m} (y_i - \hat y_i)^2}{\sum_{i=1}^{m} (y_i - \bar y)^2} .
+$$
+
+Unlike the in-sample $R^2$ of earlier chapters, this quantity can be negative: an overfitted model can predict fresh data *worse* than the mean does, in which case the numerator exceeds the denominator. A negative out-of-sample $R^2$ is a common and instructive experience for newcomers to prediction.
+
+All three metrics are averages of a **loss function**, a rule $\ell(e)$ that converts one prediction error $e_i = y_i - \hat y_i$ into a penalty, and the choice of metric is really the choice of that rule's shape. @fig-losses draws four. Squared error is a U: gentle near zero, punishing in the tails. Absolute error is a V: every unit of error costs the same. The Huber loss splices the two, quadratic near zero and linear beyond, buying most of the squared loss's smoothness with most of the absolute loss's robustness to outliers. The fourth shape is the useful oddity: an **asymmetric** loss charges more for errors in one direction than the other. Such losses are little used in practice, but they are exactly right whenever the two directions of error have different costs, as they often do: understaffing a ward is worse than overstaffing it, and underestimating a flood level is worse than overestimating it. Minimizing an asymmetric linear loss amounts to predicting a chosen *quantile* of the outcome rather than its mean, which is why this loss is also called the quantile (or pinball) loss.
+
+```{r}
+#| label: fig-losses
+#| echo: false
+#| fig-cap: "Four loss functions: the penalty (vertical) attached to a prediction error of a given size and sign (horizontal). Squared error is a U, absolute error a V, the Huber loss a splice of the two, and the asymmetric (quantile) loss a tilted V, here charging four times more for under-prediction than for over-prediction."
+#| fig-width: 7.5
+#| fig-height: 2.1
+e <- seq(-2, 2, length.out = 401)
+losses <- list(
+  "squared"    = e^2,
+  "absolute"   = abs(e),
+  "Huber"      = ifelse(abs(e) <= 1, e^2 / 2, abs(e) - 0.5),
+  "asymmetric" = ifelse(e >= 0, 0.8 * e, -0.2 * e)
+)
+par(mfrow = c(1, 4), mar = c(2.5, 2.5, 1.8, 0.6), mgp = c(1.5, 0.5, 0))
+for (nm in names(losses)) {
+  plot(e, losses[[nm]], type = "l", lwd = 2, main = nm, cex.main = 0.95,
+       xlab = "error", ylab = "loss", cex.axis = 0.8, cex.lab = 0.85)
+  abline(v = 0, lty = 3, col = "grey60")
+}
+```
+
+Binary outcomes are more complex, because a prediction model for a binary outcome produces a *probability*, and a probability can be good or bad in two different ways, which this section builds up to. The simplest way to use a predicted probability is to **threshold** it: declare everyone above some cutoff "positive". Each prediction then lands in one of four cells: a **true positive** (a case correctly flagged), a **false positive** (a non-case flagged), a **true negative** (a non-case left alone), or a **false negative** (a case missed). From the four counts come the two workhorses of diagnostic research. **Sensitivity** is the fraction of true cases the model flags,
+
+$$
+\text{sensitivity} = \frac{\text{TP}}{\text{TP} + \text{FN}},
+\qquad
+\text{specificity} = \frac{\text{TN}}{\text{TN} + \text{FP}},
+$$
+
+and **specificity** is the fraction of non-cases it leaves in peace. The two pull against each other as the threshold moves: lower the cutoff and more cases are flagged, so sensitivity rises, but more non-cases are flagged with them, so specificity falls. Neither number means anything alone, because either can be made perfect trivially: flag everyone and sensitivity is 1, flag no one and specificity is 1. The left panel of @fig-roc shows the trade for a real model, a logistic regression predicting diabetes that is introduced in full at the end of this section.
+
+The same four counts yield **precision** (the fraction of flags that are right), **accuracy** (the fraction of all calls that are right), and the **F1 score** (a compromise between precision and sensitivity). Two warnings about this family. Their values depend on the threshold, which is a decision about costs, not a property of the model, so reporting them without defending the threshold is reporting nothing. And accuracy in particular flatters ignorance whenever one class is rare: a model that predicts "no dropout" for every pupil scores 91 percent accuracy on a 9 percent base rate, the trap Exercise 6.C already sprang. The recent guidance from the STRATOS initiative goes further and advises against F1 for clinical decisions altogether, on the ground that it is not a *proper* measure: a model supplying the correct probabilities is not guaranteed to optimize it [@vancalster2025].
+
+A threshold-free summary follows from sweeping the threshold across its whole range. As the cutoff falls from 1 to 0, the pair (sensitivity, specificity) traces out every operating point the model can offer; plotting sensitivity against $1 - \text{specificity}$, the false-positive rate, draws the **receiver operating characteristic (ROC) curve**, shown in the right panel of @fig-roc. A model no better than chance runs along the diagonal, since flagging patients at random buys sensitivity and false positives in equal measure; a model with perfect separation hugs the upper-left corner. The area under this curve, the **AUC**, compresses the whole trade into one number between 0.5 (a coin flip) and 1 (perfect ranking), and it equals the **concordance statistic**, or c-statistic: take a random case and a random non-case, and the c-statistic is the probability that the model ranks them correctly [@riley2024part2]. This is the standard measure of **discrimination**, the first of the two ways a probability can be good: do the babies who will be born underweight get higher probabilities than the ones who will not? Discrimination uses only the *ordering* of the probabilities; their actual values could all be shifted or squeezed without changing it.
+
+```{r}
+#| label: fig-roc
+#| echo: false
+#| fig-cap: "Building the ROC curve for the diabetes model of this section. Left: sensitivity and specificity as the threshold moves; each vertical slice is one confusion matrix. Right: the same information with the threshold swept from 1 to 0, plotting sensitivity against the false-positive rate; four thresholds are marked. The shaded area is the AUC (here 0.87); the diagonal is a model no better than chance."
+#| fig-width: 8
+#| fig-height: 3.4
+#| message: false
+library(MASS)
+fit_roc <- glm(type ~ ., data = Pima.tr, family = binomial)
+p_roc   <- predict(fit_roc, newdata = Pima.te, type = "response")
+y_roc   <- as.numeric(Pima.te$type == "Yes")
+th   <- seq(0, 1, by = 0.002)
+sens <- sapply(th, function(t) mean(p_roc[y_roc == 1] >= t))
+spec <- sapply(th, function(t) mean(p_roc[y_roc == 0] < t))
+par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
+plot(th, sens, type = "l", lwd = 2, xlab = "threshold", ylab = "proportion",
+     main = "Sensitivity and specificity")
+lines(th, spec, lwd = 2, lty = 2)
+legend("right", c("sensitivity", "specificity"), lwd = 2, lty = c(1, 2),
+       bty = "n", cex = 0.85)
+plot(1 - spec, sens, type = "n", xlab = "1 - specificity (false-positive rate)",
+     ylab = "sensitivity (true-positive rate)", main = "ROC curve")
+polygon(c(1 - spec, 1), c(sens, 0), col = "grey92", border = NA)
+lines(1 - spec, sens, lwd = 2)
+abline(0, 1, lty = 3)
+marks <- c(0.1, 0.3, 0.5, 0.7)
+mx <- sapply(marks, function(t) 1 - mean(p_roc[y_roc == 0] < t))
+my <- sapply(marks, function(t) mean(p_roc[y_roc == 1] >= t))
+points(mx, my, pch = 16)
+text(mx, my, labels = sprintf("%.1f", marks), pos = 4, cex = 0.75)
+text(0.62, 0.35, "AUC = 0.87", cex = 0.9)
+```
+
+**Calibration** is the second way a probability can be good, and it asks whether the probabilities mean what they say: among patients given a risk of 20 percent, do about 20 in 100 have the event [@vancalster2026]? A model can discriminate superbly and be badly calibrated, or the reverse, because ranking uses only the order of the probabilities and calibration only their values. The workhorse summaries are the **calibration intercept**, which catches predictions that are too high or too low overall, and the **calibration slope**, which catches predictions that are too extreme or too timid: a slope below 1 means the model's high risks are too high and its low risks too low, the signature of overfitting [@vancalster2025]. Calibration has been called "the Achilles heel of predictive analytics" [@vancalster2019]: a systematic review found it simply unassessed in 79 percent of studies comparing prediction methods [@christodoulou2019]. Not every use of a model requires calibrated probabilities, but decision-making usually does: when a probability is weighed against the costs and benefits of acting on it, the probability itself must be right. Calibration therefore matters most in settings where the model's numbers feed decisions.
+
+Discrimination and calibration are not merely two desiderata; they are the two components of a single overall error. Score each predicted probability $\hat p_i$ against its 0/1 outcome by squared error, giving the mean squared error on the probability scale, known as the **Brier score**. Group the test cases into $K$ bins by their predicted probability, with $w_k$ the fraction of cases in bin $k$, $\bar p_k$ the bin's mean prediction, $\bar y_k$ its observed event rate, and $\bar y$ the overall event rate. The Brier score then decomposes as [@murphy1973]
+
+$$
+\underbrace{\frac{1}{m} \sum_{i=1}^{m} (\hat p_i - y_i)^2}_{\text{Brier score}}
+\;=\;
+\underbrace{\sum_k w_k (\bar p_k - \bar y_k)^2}_{\text{miscalibration}}
+\;-\;
+\underbrace{\sum_k w_k (\bar y_k - \bar y)^2}_{\text{discrimination}}
+\;+\;
+\underbrace{\bar y (1 - \bar y)}_{\text{irreducible}} .
+$$
+
+The first term charges the model wherever a bin's predictions miss that bin's observed rate, which is exactly miscalibration. The second term is subtracted, so it is a reward: it grows when the bins' event rates spread far from the base rate, that is, when the model sorts patients into genuinely different risk groups, which is discrimination. The last term is the outcome's own variance, the error that remains for a perfectly calibrated, maximally discriminating model, the binary sibling of the noise floor $\sigma^2$ in @eq-bias-variance. A model improves its Brier score only by predicting accurately *and* meaning it.
 
 The measure that faces the decision directly is the **net benefit**: at a chosen treatment threshold, the rate of true positives minus the rate of false positives, the latter weighted by the odds of the threshold so that a flag's harm is priced by the threshold itself. Comparing a model's net benefit against the two free policies, treat everyone and treat no one, across a range of plausible thresholds is called decision curve analysis, and it answers the question the other metrics circle: would using this model to decide actually do more good than harm [@riley2024part2]?
 
-I will compute the core set once, on a real problem. The `MASS` package ships a study of diabetes among 532 Pima women, already split by its curators into a training set of 200 and a test set of 332; the model is a logistic regression, the workhorse of @sec-theory-to-glm, promoted to machine learning by the change of judge.
+The core set can now be computed once, on a real problem: the model behind @fig-roc. The `MASS` package ships a study of diabetes among 532 Pima women, already split by its curators into a training set of 200 and a test set of 332; the model is a logistic regression, the workhorse of @sec-theory-to-glm, promoted to machine learning by the change of judge.
 
 ```{r}
 #| label: pima-metrics
@@ -59,9 +148,9 @@ cal2 <- glm(y ~ qlogis(p2), family = binomial)
 round(c(AUC = auc(p2, y), cal_slope = coef(cal2)[2]), 3)
 ```
 
-The AUC slips from 0.87 to 0.83, a visible dent. The calibration slope collapses to 0.63: the overfitted model has learned to shout, pushing predictions toward 0 and 1 with a confidence the data never licensed. This asymmetry is general and worth memorizing. Overfitting degrades ranking slowly and degrades probabilities fast, so a report that gives only the AUC can hide most of the damage [@vancalster2019].
+The AUC slips from 0.87 to 0.83, a modest deterioration. The calibration slope collapses to 0.63: the overfitted model pushes predictions toward 0 and 1 with a confidence the data do not support. This asymmetry is general. Overfitting degrades ranking slowly and degrades probabilities fast, so a report that gives only the AUC can hide most of the damage [@vancalster2019].
 
-Choosing the metric is upstream of everything, and getting it wrong can do more harm than any modelling sin. A widely used American algorithm prioritized patients for extra care by predicting health care *costs*, a convenient label present in every record. It predicted costs well. But at any given risk score, Black patients were considerably sicker than White patients, because less money is spent on Black patients at the same level of need; the label was a biased proxy for the target. Fixing the target roughly tripled the fraction of Black patients flagged for help, from 17.7 to 46.5 percent [@obermeyer2019]. Every metric in this section was fine; the task was wrong. Mitchell's definition cuts both ways: performance is relative to the task you specified, not the one you meant.
+Choosing the metric comes before everything else, and getting it wrong can do more harm than any error of modelling. A widely used American algorithm prioritized patients for extra care by predicting health care *costs*, a convenient label present in every record. It predicted costs well. But at any given risk score, Black patients were considerably sicker than White patients, because less money is spent on Black patients at the same level of need; the label was a biased proxy for the target. Fixing the target roughly tripled the fraction of Black patients flagged for help, from 17.7 to 46.5 percent [@obermeyer2019]. Every metric in this section was fine; the task was wrong. Mitchell's definition cuts both ways: performance is relative to the task you specified, not the one you meant.
 
 ::: {.callout-tip icon="false" title="Exercise 7.1"}
 Choose the primary performance measure, and defend it in a sentence, for each task.
@@ -95,22 +184,19 @@ Ten patients receive predicted risks $0.05, 0.10, 0.15, 0.20, 0.35, 0.40, 0.60, 
 
 ## Splitting: three jobs, three datasets
 
-<!-- DO: rewrite the section in more normal language and do not assume the reader already knows what you are talking about. -->
-<!-- DO: briefly recall that the previous chapter could simulate from DGP. In practice we can't do that. Instead we assume the data we already have come from the target DGP. This is a big assumption which is the same as external validity. Under that assumption you can subsample for train-val-test --> 
-With a metric in hand, the question is what data may legitimately produce the number. The working answer across machine learning is Andrew Ng's three-way division of labour [@ng2018]. The **training set** fits models. The **validation set** (or development set) compares them: degrees, $\lambda$s, model families, feature codings, every choice you make by looking at performance. The **test set** does one thing, once: it estimates the performance of the final, chosen model, and its authority comes entirely from having had no influence on anything.
+With a metric in hand, the next question is which data may legitimately produce the number. In @sec-overfitting the answer was easy, because the world there was simulated: whenever fresh data were needed to judge a model, ten thousand new observations could be drawn directly from the data-generating process. Real research has no such source. There is one dataset, and the only way forward is to *assume* that this dataset comes from the same data-generating process as the future cases the model is meant to serve. This is a large assumption, and it should be recognized for what it is: external validity, in exactly the sense of @sec-rq-to-interpretation. No calculation on the data can establish it; it is supported, or undermined, by the design that produced the data. Under that assumption, however, the dataset itself can stand in for the data-generating process: parts of it can be set aside and treated as the "fresh" observations the simulation provided for free.
 
-The reason for the middle set is the lesson of @sec-overfitting turned on the analyst. Selection inflates. If you compare twenty modelling choices on the same held-out data and report the winner's score, the score is optimistic for the same reason the winner of twenty coin-flipping contests looks skilled, and the more choices you try, the worse it gets. Tuning is fishing with a licence: a dedicated dataset absorbs all your comparisons, so the test set stays unspent. Spend the test set anyway, creeping back to it after each adjustment, and you have converted it into a second validation set; the practice is common enough to have names, leaderboard chasing and benchmark hacking, and it is the fishing of @sec-rq-to-interpretation in new clothes. (A shared benchmark used *once per team*, with a referee guarding the holdout, is the constructive face of the same arrangement, and @sec-explanation-prediction showed what the common task framework has achieved; the corruption starts with the second visit.)
+The standard way to do this divides the data three ways [@ng2018]. The **training set** is used to fit models: to estimate their coefficients, grow their trees, and so on. The **validation set** (or development set) is used to compare models and to make choices: which polynomial degree, which penalty $\lambda$, which model family, which coding of the predictors. Each candidate is fitted on the training set and scored on the validation set, and the choices go to whichever scores best. The **test set** is used for one thing only, and only once: after every choice has been made, it estimates the performance of the final model. Its authority comes entirely from the fact that it influenced nothing.
 
-Ng's sharpest advice concerns what the test set should contain: data that mirror the situation the model will actually face, "data you expect to get in the future and want to do well on" [@ng2018]. If the model will run on next year's patients, test on the most recent patients you have, not a random shuffle of the past; if it will run in other schools, test on schools held out whole. A random split answers the narrow question "how well does this model do on more data exactly like its training data?" and every step away from that ideal, in time, place, or population, is an assumption the evaluation is silently making. This is external validity again, and the same words from @sec-rq-to-interpretation apply unchanged: a test set is a design, and the design decides which question the number answers.
+Why the middle set is necessary follows from the lesson of @sec-overfitting, now applied to the analyst rather than the model. Selection inflates performance estimates. When twenty modelling choices are compared on the same held-out data and the winner's score is reported, that score is optimistic, for the same reason that the winner of twenty coin-flipping contests appears skilled: the winner was partly selected for its luck on those particular data. The more choices are compared, the larger the inflation. A dedicated validation set contains this problem: it absorbs all the comparisons, so that the test set remains unspent. If the test set is used anyway, revisited after each adjustment, it gradually turns into a second validation set and its estimate inherits the same optimism. The practice is common enough to have names, leaderboard chasing and benchmark hacking, and it is the fishing of @sec-rq-to-interpretation in a new setting. (A shared benchmark used *once per team*, with a referee guarding the holdout, is the constructive version of the same arrangement, whose achievements @sec-explanation-prediction described; the corruption starts with the second visit.)
+
+The most consequential advice concerns what the test set should contain: data that mirror the situation the model will actually face, in Ng's words "data you expect to get in the future and want to do well on" [@ng2018]. If the model will run on next year's patients, the test set should hold the most recent patients available, not a random shuffle of the past; if it will run in other schools, the test set should hold schools left out whole. A random split answers only the narrow question of how well the model does on more data exactly like its training data, and every step away from that ideal, in time, place, or population, is an assumption the evaluation silently makes. A test set is a design, and the design decides which question the number answers.
 
 ## Leakage
 
-<!--DO: "seepage is called leakage" - omg this is horrible. Stop doing this kind of superfluous and confusing over-metaphorizing! -->
-<!-- DO: briefly recall from previous chapters where we said that we can focus on output validity only, but only provided the evaluation is done correctly -->
-The splitting discipline fails quietly when information from the held-out data seeps into the model anyway. The seepage is called **leakage**, and its damage is not that the model gets worse but that the *evaluation* gets better, falsely.
+Recall the argument of @sec-overfitting: questions about modelling choices can be settled by measuring output validity alone, without winning arguments about assumptions, *provided the measurement is honest*. Honest evaluation is the entire licence for that way of working. This section is about the ways the licence is voided. When information from the held-out data reaches the model, or the choices around the model, the evaluation is contaminated; this is called **leakage**, and its damage is not that the model gets worse but that the *evaluation* gets better, falsely.
 
-<!-- DO: the point is *not* that it's "classic" whatever that is supposed to mean. It is that overfitting and phacking etc are the same. The principle is that you need to include any choice that could be different based on data in the loop. This is just an example people sometimes forget to include because it is not done by a computer -->
-The classic form is preprocessing on the full dataset. Standardize the predictors, impute the missing values, or, deadliest of all, select promising variables, using all rows, and only then split or cross-validate: every fold's "unseen" data have already shaped the pipeline that predicts them. Hastie, Tibshirani and Friedman built a demonstration whose numbers deserve to be famous. Fifty observations, 5,000 pure-noise predictors, true error necessarily 50 percent: screen the 100 predictors most correlated with the outcome on all fifty observations, then cross-validate a classifier built on the survivors, and the cross-validation reports 3 percent error [@hastie2009]. Their diagnosis: the screened predictors "have already seen" the held-out samples. Here is the same trap sprung at small scale, with the repair alongside:
+The principle behind leakage is worth stating in full generality, because it shows that overfitting the evaluation and the p-hacking of @sec-rq-to-interpretation are the same error. Any choice that could have come out differently had the data been different is part of the modelling procedure, and it belongs inside the evaluation loop: the held-out data must not have been able to influence it. Fitting coefficients is such a choice, and everyone remembers to hold data out from the fitting. But standardizing the predictors, imputing missing values, and, most dangerous of all, selecting promising variables are also such choices, and these are easy to forget, because they do not feel like modelling: they happen before the model, and often by hand rather than inside a fitting algorithm. Do them on the full dataset and only then split or cross-validate, and every fold's "unseen" data have already shaped the pipeline that predicts them. Hastie, Tibshirani and Friedman built a striking demonstration. Fifty observations, 5,000 pure-noise predictors, true error necessarily 50 percent: screen the 100 predictors most correlated with the outcome on all fifty observations, then cross-validate a classifier built on the survivors, and the cross-validation reports 3 percent error [@hastie2009]. Their diagnosis: the screened predictors "have already seen" the held-out samples. The same trap can be demonstrated at small scale, with the repair alongside:
 
 ```{r}
 #| label: leakage
@@ -138,7 +224,7 @@ screen_fold <- function(tr)                   # RIGHT: screened inside each fold
 c(wrong = cv_error(screen_all), right = cv_error(screen_fold))
 ```
 
-The data are noise; no classifier can beat 50 percent. Screening before cross-validating reports 8 percent error, an apparently publishable classifier conjured from nothing. Screening inside each fold reports 46 percent, the truth up to simulation noise. The rule that generalizes, in ESL's words: "with a multistep modeling procedure, cross-validation must be applied to the entire sequence of modeling steps. In particular, samples must be 'left out' before any selection or filtering steps are applied" [@hastie2009]. Every decision that looked at the outcome belongs inside the loop, and when the decision is itself made by cross-validation, tuning $\lambda$, say, the tuning gets its own inner loop nested within each training portion, so that the outer folds never judge a choice they influenced. Steps that never touch the outcome, dropping constant columns, say, are exempt.
+The data are noise; no classifier can beat 50 percent. Screening before cross-validating reports 8 percent error, an apparently publishable classifier built from pure noise. Screening inside each fold reports 46 percent, the truth up to simulation error. The rule that generalizes, in ESL's words: "with a multistep modeling procedure, cross-validation must be applied to the entire sequence of modeling steps. In particular, samples must be 'left out' before any selection or filtering steps are applied" [@hastie2009]. Every decision that looked at the outcome belongs inside the loop, and when the decision is itself made by cross-validation, tuning $\lambda$, say, the tuning gets its own inner loop nested within each training portion, so that the outer folds never judge a choice they influenced. Steps that never touch the outcome, dropping constant columns, say, are exempt.
 
 Time is the other great leak. Predicting this quarter's outcomes with a model whose features quietly include next quarter's information, or randomly shuffling patients' repeated visits across the train-test boundary so the model meets the same patient on both sides, produces the same false comfort. The clustered version deserves its own alarm in this book. Pupils sit inside schools and measurements sit inside persons, the multilevel structure of @sec-anova; split such data by row and the split leaks identity, because the model meets the same school or person on both sides. The split that matches the claim holds out whole schools or whole persons, the unit the model must generalize across.
 
@@ -158,10 +244,32 @@ A colleague's script, in outline: (1) load 400 patients with 5,000 gene expressi
 
 ## Resampling: cross-validation, bootstrap, jackknife
 
-A three-way split is a luxury of large samples. With 200 observations, walling off a third of them to sit in judgement wastes data the model needs, and a single small test set gives a noisy verdict anyway; these are the two classic drawbacks of the simple holdout [@james2021]. Resampling methods let one dataset play both roles, repeatedly and honestly.
+A three-way split requires a large sample. With 200 observations, reserving a third of them for testing wastes data the model needs, and a single small test set gives a noisy verdict anyway; these are the two standard drawbacks of the simple holdout [@james2021]. Resampling methods let one dataset play both roles, repeatedly and honestly.
 
-<!-- DO: create a little illustration of k-fold -->
-**K-fold cross-validation** deals the data into $K$ equal folds; each fold in turn sits out while the model, the whole pipeline, is fitted to the rest and scored on it, and the $K$ scores are averaged. The choice of $K$ is itself a bias-variance trade. $K = n$, leave-one-out, trains on almost all the data every time, so it is nearly unbiased for the error of the full-sample model, but its $n$ training sets are nearly identical, and averaging highly correlated verdicts controls variance poorly; small $K$ trains on less data, biasing the error estimate upward. Both ISL and ESL land on the same compromise: five or ten [@james2021; @hastie2009]. Cross-validated performance on the Pima training set, next to the two numbers we already have:
+**K-fold cross-validation** divides the data into $K$ equal parts, called folds; each fold in turn is held out while the model, the whole pipeline, is fitted to the remaining folds and scored on the held-out one, and the $K$ scores are averaged. @fig-kfold shows the scheme.
+
+```{r}
+#| label: fig-kfold
+#| echo: false
+#| fig-cap: "Five-fold cross-validation on twenty observations. Each row is one round: the whole modelling pipeline is fitted to the light observations and scored on the dark held-out fold, and the five scores are averaged into the cross-validated estimate."
+#| fig-width: 6.5
+#| fig-height: 2.1
+K <- 5; n <- 20
+par(mar = c(2.2, 5.5, 1.6, 5.5))
+plot(NULL, xlim = c(0.5, n + 0.5), ylim = c(K + 0.6, 0.4),
+     axes = FALSE, xlab = "", ylab = "")
+for (k in 1:K) for (i in 1:n) {
+  held_out <- ceiling(i / (n / K)) == k
+  rect(i - 0.44, k - 0.36, i + 0.44, k + 0.36,
+       col = if (held_out) "#9370DB" else "#ECECFF", border = "grey45")
+}
+mtext(paste("round", 1:K), side = 2, at = 1:K, las = 1, line = 0.4, cex = 0.75)
+mtext("observations 1 to 20", side = 1, line = 0.6, cex = 0.8)
+text(n + 1.2, 1:K, sprintf("score %d", 1:K), xpd = NA, adj = 0, cex = 0.75)
+text(n + 1.2, K + 0.85, "then average", xpd = NA, adj = 0, cex = 0.75, font = 3)
+```
+
+The choice of $K$ is itself a bias-variance trade. $K = n$, leave-one-out, trains on almost all the data every time, so it is nearly unbiased for the error of the full-sample model, but its $n$ training sets are nearly identical, and averaging highly correlated verdicts controls variance poorly; small $K$ trains on less data, biasing the error estimate upward. Both ISL and ESL land on the same compromise: five or ten [@james2021; @hastie2009]. Cross-validated performance on the Pima training set, next to the two numbers we already have:
 
 ```{r}
 #| label: pima-cv
@@ -177,12 +285,44 @@ round(c(apparent = auc(p_app, as.numeric(Pima.tr$type == "Yes")),
         cv = mean(cv_auc), fold_sd = sd(cv_auc)), 3)
 ```
 
-The apparent AUC, the model judged on the very data it was fitted to, is 0.85; cross-validation says 0.82. The gap is the optimism that @sec-overfitting taught you to expect, modest here because the model is small. Note the fold standard deviation of 0.10: with twenty patients per fold, each fold's verdict is rough, and a report worth trusting carries that uncertainty rather than the bare mean. (The independent test set said 0.87 earlier, a reminder that these estimates have sampling error of their own; all three numbers are consistent.) Two refinements matter in this book's territory. **Stratified** folds preserve the outcome rate in each fold, which steadies everything when events are rare. **Clustered** folds hold out whole schools, hospitals, or persons, for the reason the leakage section gave; **temporal** splits hold out the most recent period. Choose the folds to match the generalization the model claims, and use the **one-standard-error rule** when tuning: prefer the simplest model within one standard error of the best, since the best is partly luck [@james2021].
+The apparent AUC, the model judged on the very data it was fitted to, is 0.85; cross-validation says 0.82. The gap is the optimism that @sec-overfitting taught you to expect, modest here because the model is small. Note the fold standard deviation of 0.10: with twenty patients per fold, each fold's verdict is rough, and a report worth trusting carries that uncertainty rather than the bare mean. (The independent test set said 0.87 earlier, a reminder that these estimates have sampling error of their own; all three numbers are consistent.) Two refinements matter in this book's territory. **Stratified** folds preserve the outcome rate in each fold, which stabilizes the estimates when events are rare. **Clustered** folds hold out whole schools, hospitals, or persons, for the reason the leakage section gave; **temporal** splits hold out the most recent period. Choose the folds to match the generalization the model claims, and use the **one-standard-error rule** when tuning: prefer the simplest model within one standard error of the best, since the best is partly luck [@james2021].
 
-Two cautions about what cross-validation is. What it evaluates is a *procedure*, not a fitted model: ten fits were scored, none of them the model you ship, which is fitted on everything. And it prevents nothing. Cross-validation measures generalization error, the expected test error of @sec-overfitting; only the modelling choices the measurement informs, a smaller $\lambda$, a shallower tree, reduce overfitting, and a cross-validated score can itself be overfitted by the leaderboard chasing of the previous section.
+Two cautions about what cross-validation is. What it evaluates is a *procedure*, not a fitted model: ten fits were scored, and none of them is the model actually used, which is fitted on all the data. And it prevents nothing. Cross-validation measures generalization error, the expected test error of @sec-overfitting; only the modelling choices the measurement informs, a smaller $\lambda$, a shallower tree, reduce overfitting, and a cross-validated score can itself be overfitted by the leaderboard chasing of the previous section.
 
-<!-- DO: also create a little illustration of the bootstrap. Show which rows are selected and how results are combined.  -->
-The **bootstrap** answers a different question: not "how well will this model predict?" but "how much would this number wobble if the study were run again?", which is the standard-error question of every earlier chapter, now answerable without formulas. The move is the plug-in principle: treat the sample as if it were the population, draw $B$ new samples of size $n$ from it *with replacement*, recompute the statistic on each, and read the spread [@efron1993]. The smoking odds ratio from @sec-theory-to-glm, which arrived there with no standard error at all:
+The **bootstrap** answers a different question: not "how well will this model predict?" but "how much would this number vary if the study were run again?", which is the standard-error question of every earlier chapter, now answerable without formulas. The idea is the plug-in principle: treat the sample as if it were the population, draw $B$ new samples of size $n$ from it *with replacement*, recompute the statistic on each, and read the spread of the recomputed values [@efron1993]. @fig-bootstrap shows one round of this concretely: because the draws are made with replacement, each bootstrap sample repeats some of the original rows and omits others, so the refitted statistic comes out a little different each time, and the standard deviation of those values is the bootstrap standard error.
+
+```{r}
+#| label: fig-bootstrap
+#| echo: false
+#| fig-cap: "The bootstrap on a sample of eight observations. Each bootstrap sample draws eight row numbers from the original data with replacement, so some rows appear more than once (dark) and others not at all; the statistic is recomputed on each bootstrap sample, and the spread of the recomputed values is the bootstrap standard error."
+#| fig-width: 6.5
+#| fig-height: 2.6
+set.seed(21)
+n_b <- 8; B <- 3
+draws <- replicate(B, sort(sample(n_b, replace = TRUE)))
+par(mar = c(0.5, 0.5, 1.8, 0.5))
+plot(NULL, xlim = c(0, 10.6), ylim = c(n_b + 2.6, 0.2),
+     axes = FALSE, xlab = "", ylab = "")
+draw_col <- function(x, vals, title, dup) {
+  text(x, 0.55, title, cex = 0.78, font = 2, xpd = NA)
+  for (r in seq_along(vals))
+    { rect(x - 0.42, r + 0.55, x + 0.42, r + 1.35,
+           col = if (dup[r]) "#9370DB" else "#ECECFF", border = "grey45")
+      text(x, r + 0.95, vals[r], cex = 0.75) }
+}
+draw_col(1, 1:n_b, "data", rep(FALSE, n_b))
+for (b in 1:B) {
+  v <- draws[, b]
+  draw_col(2.8 + 2.2 * (b - 1), v, sprintf("sample %d", b), duplicated(v))
+  text(2.8 + 2.2 * (b - 1), n_b + 2.15,
+       bquote(hat(theta)[.(b)]^"*"), cex = 0.85, xpd = NA)
+}
+arrows(1.55, 5, 2.25, 5, length = 0.06, col = "grey40")
+text(9.2, 5, "... x 2000", cex = 0.8, col = "grey30")
+text(9.2, n_b + 2.15, expression(SD(hat(theta)^"*") == SE), cex = 0.8, xpd = NA)
+```
+
+The smoking odds ratio from @sec-theory-to-glm, which arrived there with no standard error at all:
 
 ```{r}
 #| label: bootstrap-or
@@ -195,7 +335,7 @@ round(c(estimate = exp(0.684), se = sd(boot_or),
         quantile(boot_or, c(.025, .975))), 2)
 ```
 
-The odds ratio of 1.98 gets a standard error of 0.75 and a 95 percent interval from 1.03 to 3.96, computed by nothing more than resampling rows; the textbook large-sample interval is 1.04 to 3.79, reassuringly close. The same trick wraps an interval around an AUC, a calibration slope, an indirect effect, or any statistic you can compute, which is its glory; its limits are the sample it plugs in, since no resampling scheme can conjure information about patients unlike any you saw, or repair an identification problem, as @sec-identification's footnote on mediation already warned.^[The bootstrap's deterministic grandparent, the **jackknife**, recomputes the statistic $n$ times leaving out one observation each time and reads the standard error from an inflated spread of the results [@efron2016]. On the odds ratio above it gives 0.68 to the bootstrap's 0.75. You have met the leave-one-out move twice now, and a third cousin appears inside random forests: each observation is scored using only the trees whose bootstrap sample missed it, called the out-of-bag (OOB) error, an unbiased test-error estimate that comes free with the forest [@james2021].]
+The odds ratio of 1.98 gets a standard error of 0.75 and a 95 percent interval from 1.03 to 3.96, computed by nothing more than resampling rows; the textbook large-sample interval is 1.04 to 3.79, reassuringly close. The same procedure wraps an interval around an AUC, a calibration slope, an indirect effect, or any other computable statistic, which is its great strength. Its limit is the sample it plugs in: no resampling scheme can supply information about patients unlike any in the data, or repair an identification problem, as @sec-identification's footnote on mediation already warned.^[The bootstrap's deterministic predecessor, the **jackknife**, recomputes the statistic $n$ times leaving out one observation each time and reads the standard error from an inflated spread of the results [@efron2016]. On the odds ratio above it gives 0.68 to the bootstrap's 0.75. The leave-one-out idea has now appeared twice, and a related construction appears inside random forests: each observation is scored using only the trees whose bootstrap sample missed it, called the out-of-bag (OOB) error, an unbiased test-error estimate that comes free with the forest [@james2021].]
 
 The bootstrap also estimates prediction error, by putting a number on the optimism itself [@efron1993]. Fit the model to a bootstrap sample, score it on that sample and on the original data, and the difference is one draw of the optimism, the amount by which self-grading flatters; average many draws and subtract the result from the apparent performance:
 
@@ -213,7 +353,7 @@ round(c(apparent = 0.850, optimism = mean(optimism),
         corrected = 0.850 - mean(optimism)), 3)
 ```
 
-The optimism-corrected AUC, 0.826, lands next to cross-validation's 0.82, two routes to the same honest destination, and this correction is the standard internal validation of the clinical prediction literature [@collins2024part1].
+The optimism-corrected AUC, 0.826, lands next to cross-validation's 0.82: two routes to the same answer. This correction is the standard internal validation of the clinical prediction literature [@collins2024part1].
 
 ::: {.callout-tip icon="false" title="Exercise 7.4"}
 Pick the resampling design, and justify it in a sentence.
@@ -235,22 +375,21 @@ Pick the resampling design, and justify it in a sentence.
 
 ## From score to world
 
-<!-- DO: when discussing the issues in this section, use and cite:
-	Kernahan, J., Bartels, R., De Reuver, M., Oberski, D. L. and Dobbe, R. (2025). Burying The Lead: Adjusting Goals to Manage Functional Limitations of AI Tools in Healthcare. In: Proceedings of the Eighth AAAI/ACM Conference on AI, Ethics, and Society (AIES-25).
+Everything so far measures a model against data. Deployment measures it against the world. Prediction models multiply in the clinical literature, over 400 published for chronic obstructive pulmonary disease alone and more than 600 for COVID-19, yet next to none are used in care [@collins2024part1]. The reasons are not mainly algorithmic. Often the risk score feeds no decision: every patient gets the same action whatever the number says, so a better prediction changes nothing, and nobody redesigned the clinic's workflow so that a number could change anything. Often, too, the problem was built in at the design stage. A qualitative analysis of recently published clinical decision-support tools found a recurring pattern: the target variable was chosen because an available dataset happened to record it, rather than because it measured the clinical goal, so that construct invalidity of the kind @obermeyer2019 exemplifies was designed in from the start; when the resulting tool could not support the original clinical goal, alternative goals were formulated to justify its continued development; and the resulting limitations were rarely communicated clearly enough to be addressed [@kernahan2025]. A model earns deployment the way any intervention does, by improving what happens next, and a vocabulary has grown up around the ways that fails.
 
-It is in literature/00344-MainTrack.KernahanJ.pdf.
--->
+**External validation** means evaluating a model, exactly as frozen, on data from another setting, a later period, a different country, other hospitals, with no refitting [@riley2024part2]. It is the test-set idea carried across the boundary that matters for use, and it routinely delivers bad news, discrimination a notch lower and calibration visibly off, because case mix, measurement, and base rates shift between settings. Performance is not a property of a model; it is a property of a model in a population. The practical consequences are three. Expect heterogeneity: a model's c-statistic can easily range 0.1 across hospitals, so with multi-site data the informative design is **internal-external cross-validation**, leaving out each site in turn, which turns "does it transfer?" into a measured quantity rather than a hope [@collins2024part1; @vancalster2026]. Expect drift: populations and practices change under a deployed model, as the Google Flu Trends episode of @sec-explanation-prediction showed at scale, so evaluation is a maintenance activity, not a gate. And expect recalibration: a transported model is usually worth re-tuning at its intercept before use, which costs little and repairs the most consequential failures.
 
-Everything so far measures a model against data. Deployment measures it against the world. Prediction models multiply in the clinical literature, over 400 published for chronic obstructive pulmonary disease alone and more than 600 for COVID-19, and next to none are used in care [@collins2024part1]. The reasons are not mainly algorithmic. Often the risk score feeds no decision: every patient gets the same action whatever the number says, so a better prediction changes nothing, and nobody redesigned the clinic's workflow so that a number could change anything. A model earns deployment the way any intervention does, by improving what happens next, and a vocabulary has grown up around the ways that fails.
-
-**External validation** means evaluating a model, exactly as frozen, on data from another setting, a later period, a different country, other hospitals, with no refitting [@riley2024part2]. It is the test-set idea carried across the boundary that matters for use, and it routinely delivers bad news, discrimination a notch lower and calibration visibly off, because case mix, measurement, and base rates shift between settings. Performance is not a property of a model; it is a property of a model in a population. The practical consequences are three. Expect heterogeneity: a model's c-statistic can easily range 0.1 across hospitals, so with multi-site data the informative design is **internal-external cross-validation**, leaving out each site in turn, which turns "does it transfer?" into a measured quantity rather than a hope [@collins2024part1; @vancalster2026]. Expect drift: populations and practices change under a deployed model, Google Flu Trends being @sec-explanation-prediction's monument, so evaluation is a maintenance activity, not a gate. And expect recalibration: a transported model is usually worth re-tuning at its intercept before use, which costs little and repairs the most consequential failures.
-
-Validation studies have their own sample-size arithmetic. The old rule of thumb asked for 100 events; targeting a precise calibration slope for a realistic COVID deterioration model required 949 patients with 408 events, four times the folklore, and calibration is typically the binding constraint [@riley2024part3]. Small validation studies produce calibration curves that wander all over the plot, and a model can be declared broken, or fine, on noise.
+Validation studies have their own sample-size arithmetic. The old rule of thumb asked for 100 events; targeting a precise calibration slope for a realistic COVID deterioration model required 949 patients with 408 events, four times the rule of thumb, and calibration is typically the binding constraint [@riley2024part3]. Small validation studies produce calibration curves that fluctuate widely, and a model can be declared broken, or sound, on the basis of noise.
 
 Two honesty problems remain even after all of this, and they frame where the field is. The first is that most published evaluation falls short of the standards in this chapter: the reporting guideline TRIPOD+AI exists to force the basics into print, and its companion PROBAST+AI exists to grade the risk of bias in what is printed [@collins2024tripod; @moons2025]; the reviews that motivated them found the median study wanting on exactly the points of this chapter, unassessed calibration first among them [@christodoulou2019; @vancalster2026]. The second is that a validated risk score is still only a score. Whether *acting* on it helps anyone is a causal question about an intervention, the rain-dance half of the Kleinberg decomposition from @sec-explanation-prediction, and it is settled by the designs of @sec-rq-to-interpretation, ultimately a trial of the model-guided policy against care as usual, not by any accuracy metric whatever [@vancalster2026]. The five questions of @sec-rq-to-interpretation translate intact: what is the task; what were the experience and the metric; how were the judging data produced; what must hold for the score to transfer; and what in the evaluation design makes that plausible. Prediction did not escape the chain. It just entered at a different link.
 
-<!-- DO: include a few paragraphs about the link between sampling splitting, train-val-test, resampling, and things from the social science literature on phacking, preregistration, etc. These are the same ideas (cite literature, e.g. Yarkoni but perhaps also others), so for example sample holdouts can be used to keep yourself honest when doing model adjustement in the SEM models from previous chapters, or to allow more exploratory data analysis and testing, followed by a more rigorous single-test hypothesis test on holdout data. This is still underused in social science but a very useful tool now that we tend to have more data and sample sizes are not so small anymore. --> 
+## The same machinery at home
 
+The techniques of this chapter were presented as machine learning's, but the problem they solve is one the social and health sciences have met under other names. P-hacking, the garden of forking paths, fishing: all describe an analyst whose choices were shaped by the data that then judge the result, which is precisely the definition of leakage given above. The remedies developed in the two traditions are therefore two answers to one question. Preregistration fixes the analytic choices *before* the data can influence them [@nosek2018]; a holdout sample lets the data influence the choices freely and then *prices them honestly* on data they could not touch. Yarkoni and Westfall made the general case that psychology's replication problems are, in this vocabulary, overfitting, and that the machinery of this chapter, held-out evaluation and cross-validation, addresses them directly [@yarkoni2017].
+
+The transfer is practical, not just conceptual. Consider the structural equation models of @sec-theory-to-glm and @sec-identification. Software will happily report which restrictions to free when a model fits poorly, and respecifying the model on the advice of such modification indices, then reporting the improved fit on the same sample, capitalizes on chance exactly as the leakage demonstration above did: with different data, different modifications would have been suggested [@maccallum1992]. A holdout cures this. Modify the model as freely as exploration demands on one half of the sample, then fit the final specification once on the untouched half and report that test. The same design serves any analysis in which exploration and confirmation compete for the same data: explore, generate hypotheses, and adjust on the training portion, then run a single preregistered-in-spirit test on the holdout. Split-sample designs of this kind have been formalized for causal inference as well [@fafchamps2017].
+
+This tool remains underused in the social sciences, largely from a habit formed when samples were small and every observation was needed for estimation. That constraint has loosened: administrative registers, panel infrastructures like the LISS data of @sec-theory-to-glm, and routine digital measurement have made datasets of thousands to millions of rows ordinary, and at those sizes the honesty a holdout buys costs little precision. Where the sample really is small, the resampling methods of this chapter are the substitute, with their cautions attached.
 
 ## Test yourself {.unnumbered}
 
@@ -288,7 +427,6 @@ A cardiovascular risk model reports AUC 0.88; on external validation its calibra
 (d) Recalibration is a monotone transformation of the predictions, and the AUC depends only on the ordering, which is untouched. So the repair helps every decision that depends on the probability's value, which is all threshold decisions, and does nothing for any patient mis-*ranked* by the model; fixing ranking requires new information, not new arithmetic.
 :::
 
-<!-- DO: note I actually coauthored a paper about the connection between measurement theory and this specific analysis (https://doi.org/10.9781/ijimai.2021.02.007), now under literature/ijimai_6_5_1_0.pdf. -->
 ::: {.callout-tip icon="false" title="Exercise 7.C"}
 Return to the care-management algorithm of @obermeyer2019, which predicted costs as a proxy for health needs.
 
@@ -302,5 +440,5 @@ Return to the care-management algorithm of @obermeyer2019, which predicted costs
 (a) In T, the task. The intended task was "predict who needs extra care"; the specified task was "predict costs". E and P were then perfectly serviceable for the wrong T: the experience matched the label, and performance on that label was high.
 (b) It looked good on cost-prediction accuracy (say $R^2$ or calibration against realized costs) under a random holdout. The exposing design: evaluate against independent measures of health need (active chronic conditions, biomarkers) *by group*, comparing observed need at fixed risk score across Black and White patients, which is exactly the authors' analysis, a fairness audit in this chapter's vocabulary of subgroup evaluation.
 (c) Everything downstream of the label: retraining, re-tuning, and full re-evaluation of discrimination, calibration, and net benefit against the new label, plus the subgroup audit, since a new target redefines every metric. What survives is infrastructure, not verdicts: pipelines, features, and the evaluation design itself. A changed label is a new model.
-(d) A performance measure certifies a model only relative to its operationalized target, so construct validity, whether the label measures the thing you meant, is as decisive for prediction as it was for explanation.
+(d) A performance measure certifies a model only relative to its operationalized target, so construct validity, whether the label measures the thing you meant, is as decisive for prediction as it was for explanation. The connection is more than an analogy: this very case can be treated with the measurement theory of the earlier chapters, regarding cost as one error-prone indicator of the latent construct "health need" and combining several such indicators in a measurement model, which removes the unfairness that any single proxy leaves in place [@boeschoten2021].
 :::
