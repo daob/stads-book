@@ -18,6 +18,7 @@ book:
     - 05-explanation-prediction.qmd
     - 06-overfitting-bias-variance.qmd
     - 07-evaluation-resampling.qmd
+    - 08-unsupervised-clustering-mixtures.qmd
     - references.qmd
 
 bibliography: references.bib
