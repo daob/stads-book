@@ -29,8 +29,9 @@ summary, then `FAIL` lines for problems and `note` lines for things worth
 knowing, and exits non-zero only on a failure.
 
 `test-dependencies.R` is the exception: it needs R, and it is deliberately not
-part of CI, which renders the book from the frozen output in `_freeze/` and
-therefore needs no R packages. Run it locally before re-executing chunks.
+part of CI, which renders from the frozen output in `_freeze/` and therefore
+installs only `knitr` and `rmarkdown`, not the analysis packages. Run it
+locally before re-executing chunks.
 
 ## Comments that are meant to be there
 

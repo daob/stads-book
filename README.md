@@ -79,9 +79,10 @@ site, the PDF and the EPUB, and deploys them to GitHub Pages, download links
 included. Pages has to be switched on once, by hand: **Settings → Pages → Build and
 deployment → Source: GitHub Actions**. (The workflow cannot do this for you:
 the automatic token is not allowed to create a Pages site.) GitHub also only
-serves Pages from a **public** repository unless the account has a paid plan. It needs no R packages and no data: chunk output is read from the
-committed `_freeze/` directory, so a build takes minutes and cannot be broken by
-a package update. Nothing needs to be built or committed by hand. See
+serves Pages from a **public** repository unless the account has a paid plan. It installs only `knitr` and `rmarkdown` — the packages Quarto's R engine
+itself needs — and neither the analysis packages nor the LISS data, because
+chunk output is read from the committed `_freeze/` directory. A build takes
+minutes and cannot be broken by an update to `lavaan`, `mclust` or `brms`. Nothing needs to be built or committed by hand. See
 [CONTRIBUTING.md](CONTRIBUTING.md) for the details and for what to do when the
 frozen output needs refreshing.
 

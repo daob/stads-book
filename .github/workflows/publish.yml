@@ -49,6 +49,13 @@ jobs:
           r-version: release
           use-public-rspm: true
 
+      # Quarto drives the knitr engine even when every chunk comes from the
+      # freeze, so these two packages must exist. The analysis packages
+      # (lavaan, mclust, poLCA, brms, …) are NOT needed: no chunk is executed.
+      - name: Install the R packages Quarto itself needs
+        run: install.packages(c("knitr", "rmarkdown"))
+        shell: Rscript {0}
+
       - uses: quarto-dev/quarto-actions/setup@v2
         with:
           tinytex: true

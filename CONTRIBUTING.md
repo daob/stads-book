@@ -40,11 +40,12 @@ make clean     # remove build artefacts (keeps diagram PNGs)
 The analysis chunks need the LISS microdata, which cannot be redistributed, and
 a dozen R packages. To keep the book buildable by anyone — and by CI — the
 rendered output of every chunk is committed in `_freeze/`. Quarto uses it
-instead of re-running R, so `quarto render` works on a machine with no data and
-no R packages at all.
+instead of re-running the code, so `quarto render` works on a machine with no
+LISS data and none of the analysis packages installed.
 
-CI installs Quarto, TinyTeX and base R — Quarto looks for the R engine before
-it consults the freeze — but installs no R package and has no access to the
+CI installs Quarto, TinyTeX, R, and exactly two R packages, `knitr` and
+`rmarkdown`: Quarto drives its R engine even when every chunk comes from the
+freeze. It installs none of the analysis packages and has no access to the
 data.
 
 The rule that follows: **whenever you change code inside a chunk, re-render
@@ -74,7 +75,8 @@ caught before it can reach the website. See [`tests/README.md`](tests/README.md)
 | `Div at line N unclosed, closing implicitly` | a `:::` fence is missing, and the rest of the chapter is being rendered inside a callout. `make test` now fails on this — see `tests/check_divs.py`. |
 | `Resource not accessible by integration` from a Pages step | Pages has never been switched on for the repository. Settings → Pages → Source: **GitHub Actions**, then re-run the workflow. |
 | The site 404s after a successful workflow run | the repository is private and the account has no paid plan, so Pages will not serve it; make the repository public under Settings → General → Change visibility. |
-| Quarto starts R and then complains about a missing package or data file | the frozen output is stale for a document you edited. Re-render it locally and commit `_freeze/`. |
+| `there is no package called 'rmarkdown'` (or `knitr`) | Quarto's R engine needs those two even for frozen output; the workflows install them. Locally: `install.packages(c("knitr", "rmarkdown"))`. |
+| Quarto starts R and then complains about a missing *analysis* package or a data file | the frozen output is stale for a document you edited. Re-render it locally and commit `_freeze/`. |
 | `fatal: Cannot do hard reset with paths` in zsh | a `#` comment on the same line as a git command; zsh passes it to git. Put comments on their own line, or `setopt interactive_comments`. |
 
 ## Style conventions
