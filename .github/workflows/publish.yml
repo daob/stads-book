@@ -49,13 +49,6 @@ jobs:
           r-version: release
           use-public-rspm: true
 
-      # Turns GitHub Pages on for this repository the first time the workflow
-      # runs, so no one has to visit Settings → Pages by hand. It also supplies
-      # the base URL the deploy step reports back.
-      - uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
       - uses: quarto-dev/quarto-actions/setup@v2
         with:
           tinytex: true
@@ -66,6 +59,17 @@ jobs:
       # being true.
       - name: Render HTML, PDF, EPUB and the answers-in-back PDF
         run: make ci-build
+
+      - name: Show the LaTeX log if the render failed
+        if: failure()
+        run: |
+          for log in index.log _book/index.log; do
+            if [ -f "$log" ]; then
+              echo "::group::$log (last 80 lines)"
+              tail -80 "$log"
+              echo "::endgroup::"
+            fi
+          done
 
       - name: Check the expected outputs exist
         run: |

@@ -76,10 +76,10 @@ committed `_freeze/` directory.
 
 Pushing to `main` triggers `.github/workflows/publish.yml`, which renders the
 site, the PDF and the EPUB, and deploys them to GitHub Pages, download links
-included. The workflow switches Pages on by itself the first time it runs
-(`actions/configure-pages` with `enablement: true`), so there is nothing to
-configure by hand — but GitHub only serves Pages from a **public** repository
-unless the account has a paid plan. It needs no R packages and no data: chunk output is read from the
+included. Pages has to be switched on once, by hand: **Settings → Pages → Build and
+deployment → Source: GitHub Actions**. (The workflow cannot do this for you:
+the automatic token is not allowed to create a Pages site.) GitHub also only
+serves Pages from a **public** repository unless the account has a paid plan. It needs no R packages and no data: chunk output is read from the
 committed `_freeze/` directory, so a build takes minutes and cannot be broken by
 a package update. Nothing needs to be built or committed by hand. See
 [CONTRIBUTING.md](CONTRIBUTING.md) for the details and for what to do when the
