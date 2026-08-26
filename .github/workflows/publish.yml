@@ -64,7 +64,7 @@ jobs:
       # _freeze/, so rendering needs neither the R packages nor the LISS
       # microdata. tests/check_freeze.py fails the build if that ever stops
       # being true.
-      - name: Render HTML, PDF, EPUB and the answers-in-back PDF
+      - name: Render the website and all six downloadable editions
         run: make ci-build
 
       - name: Show the LaTeX log if the render failed
@@ -81,7 +81,12 @@ jobs:
       - name: Check the expected outputs exist
         run: |
           for f in index.html stads-book.pdf stads-book.epub \
-                   stads-book-answers-in-back.pdf; do
+                   stads-book-print-answers-in-back.pdf \
+                   stads-book-print-answers-inline.pdf \
+                   stads-book-screen-answers-in-back.pdf \
+                   stads-book-screen-answers-inline.pdf \
+                   stads-book-answers-in-back.epub \
+                   stads-book-answers-inline.epub; do
             test -s "_book/$f" || (echo "::error::_book/$f missing or empty" && exit 1)
           done
           du -sh _book

@@ -35,7 +35,7 @@ STASH       := .build
 .PHONY: all ci-build html pdf epub answers a4 screen editions site \
         figures-from-freeze diagrams figures test clean help
 
-## all: html + pdf + epub + the answers-in-back PDF (what CI publishes)
+## all: every edition the website offers (what CI publishes)
 all: diagrams ci-build
 
 # The .tex refers to <chapter>_files/figure-pdf/...; a fresh clone has no such
@@ -44,13 +44,32 @@ all: diagrams ci-build
 figures-from-freeze:
 	@$(PYTHON) tools/restore-freeze-figures.py
 
-## ci-build: `all` without regenerating diagrams; the exact steps CI runs
+## ci-build: every edition the website offers; the exact steps CI runs
+#
+# Each single-format render clears _book/, so the four extra editions are built
+# first and stashed, the full render (site + print PDF + EPUB) comes last, and
+# the stash is copied back over it. The defaults, stads-book.pdf and
+# stads-book.epub, are the answers-in-back editions.
 ci-build: figures-from-freeze
+	@mkdir -p $(STASH)
 	$(QUARTO) render --profile answers --to pdf
-	@mkdir -p $(STASH) && cp $(ANSWERS_PDF) $(STASH)/answers.pdf
+	@mv $(ANSWERS_PDF) $(STASH)/stads-book-print-answers-in-back.pdf
+	QUARTO_PROFILE=screen $(QUARTO) render --to pdf
+	@mv _book/stads-book-screen.pdf $(STASH)/stads-book-screen-answers-inline.pdf
+	# with two profiles the answers profile supplies the output name, so the
+	# screen-sized, answers-in-back PDF comes out as stads-book-answers-in-back
+	QUARTO_PROFILE=answers,screen $(QUARTO) render --to pdf
+	@mv $(ANSWERS_PDF) $(STASH)/stads-book-screen-answers-in-back.pdf
+	QUARTO_PROFILE=answers,epub $(QUARTO) render --to epub
+	@mv _book/stads-book-answers-in-back.epub $(STASH)/stads-book-answers-in-back.epub
 	$(QUARTO) render
-	@cp $(STASH)/answers.pdf $(ANSWERS_PDF) && rm -rf $(STASH)
-	@echo "built: _book/{index.html,stads-book.pdf,stads-book.epub}, $(ANSWERS_PDF)"
+	@mv _book/stads-book.pdf _book/stads-book-print-answers-inline.pdf
+	@mv _book/stads-book.epub _book/stads-book-answers-inline.epub
+	@cp $(STASH)/*.pdf $(STASH)/*.epub _book/
+	@cp _book/stads-book-print-answers-in-back.pdf _book/stads-book.pdf
+	@cp _book/stads-book-answers-in-back.epub _book/stads-book.epub
+	@rm -rf $(STASH)
+	@echo "built editions:" && ls -1 _book/*.pdf _book/*.epub
 
 ## html: the website into _book/
 html: diagrams figures-from-freeze

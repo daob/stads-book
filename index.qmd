@@ -2,6 +2,20 @@
 
 **Draft 0.7.** 
 
+::: {.callout-tip appearance="simple"}
+### Read it here, or take it with you
+
+The **Download** button at the top left of the sidebar offers six editions, all built from this same source:
+
+|  | answers in back | answers inline |
+|---|---|---|
+| **PDF, print** (6×9in, double-sided) | [download](stads-book.pdf) *(the default)* | [download](stads-book-print-answers-inline.pdf) |
+| **PDF, screen** (7½×10in, single-sided, coloured links) | [download](stads-book-screen-answers-in-back.pdf) | [download](stads-book-screen-answers-inline.pdf) |
+| **EPUB** (e-readers) | [download](stads-book.epub) | [download](stads-book-answers-inline.epub) |
+
+*Answers in back* keeps each exercise's answer out of sight until you turn to the appendix, which is what you want while you are still trying to solve it; *answers inline* puts each answer directly below its question, which is what you want when you are reviewing. On this website the answers are always inline but hidden behind a click, so it behaves like the first while reading and the second when you check yourself.
+:::
+
 This book was created to accompany students in the course *Statistics and Data Science: a broad perspective*, taught at Utrecht University. As one might expect nowadays, I have made heavy use of AI tooling throughout. But I am happy to take responsibility for the final text.
 
 As the title suggests, my goal in this book is to cover as much of the landscape as possible. This is of course completely impossible. Therefore I have chosen  **not** to explain any of the analysis techniques, such as GLM, SEM, random forests, neural networks, etc. in much technical depth. There are already plenty of excellent books and other resources out there that do this, which are referenced throughout the text, as well as included in some of the recommendations for further reading below. (And, for students in the MSc program, they will be encountered in your subsequent coursework.) Instead, I have tried to put all these techniques and models into a common perspective, based on a few overarching principles:
@@ -32,4 +46,4 @@ Here are a few recommendations for further study should you feel the urge. Sever
 
 **More theory, and the deep end.** *The Elements of Statistical Learning* by Hastie, Tibshirani and Friedman is the mathematical version of the machine learning chapters, freely available from [the authors' page](https://hastie.su.domains/ElemStatLearn/); it assumes more linear algebra and statistics than this book does. *Deep Learning* by Goodfellow, Bengio and Courville, free to read at [deeplearningbook.org](https://www.deeplearningbook.org/), goes where chapter 6 only gestures.
 
-The book is available as a website, as a PDF sized for printing, and as an EPUB; the download links are in the sidebar. A PDF with the answers to all exercises collected at the back rather than beside the questions is at [stads-book-answers-in-back.pdf](https://daob.github.io/stads-book/stads-book-answers-in-back.pdf), and the source, the data-preparation scripts and the issue tracker live at [github.com/daob/stads-book](https://github.com/daob/stads-book).
+The source, the data-preparation scripts and the issue tracker live at [github.com/daob/stads-book](https://github.com/daob/stads-book); corrections are welcome, and every page carries an "Edit this page" link.

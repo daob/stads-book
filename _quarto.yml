@@ -15,10 +15,25 @@ book:
   repo-url: https://github.com/daob/stads-book
   repo-branch: main
   repo-actions: [edit, source, issue]
-  downloads: [pdf, epub]
   search: true
   sidebar:
     style: docked
+    tools:
+      - icon: download
+        text: Download
+        menu:
+          - text: "PDF · print (answers in back)"
+            href: stads-book.pdf
+          - text: "PDF · print (answers inline)"
+            href: stads-book-print-answers-inline.pdf
+          - text: "PDF · screen (answers in back)"
+            href: stads-book-screen-answers-in-back.pdf
+          - text: "PDF · screen (answers inline)"
+            href: stads-book-screen-answers-inline.pdf
+          - text: "EPUB (answers in back)"
+            href: stads-book.epub
+          - text: "EPUB (answers inline)"
+            href: stads-book-answers-inline.epub
   page-footer:
     left: "© 2026 Daniel Oberski"
     center: "Text CC BY-NC-SA 4.0 · code MIT"
