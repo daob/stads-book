@@ -66,6 +66,15 @@ tree, and the chapter list matches the files on disk. CI runs the same checks on
 every push and pull request, then renders the book, so a failing render is
 caught before it can reach the website. See [`tests/README.md`](tests/README.md).
 
+## When a build fails
+
+| Symptom | Cause and fix |
+|---------|---------------|
+| `Unable to load picture or PDF file '..._files/figure-pdf/….png'` | the `<chapter>_files/` directories are missing or stale. `make figures-from-freeze` copies them back out of `_freeze/`; every render target does this first, so this should only bite a hand-run `quarto render`. |
+| `Div at line N unclosed, closing implicitly` | a `:::` fence is missing, and the rest of the chapter is being rendered inside a callout. `make test` now fails on this — see `tests/check_divs.py`. |
+| Quarto starts R and then complains about a missing package or data file | the frozen output is stale for a document you edited. Re-render it locally and commit `_freeze/`. |
+| `fatal: Cannot do hard reset with paths` in zsh | a `#` comment on the same line as a git command; zsh passes it to git. Put comments on their own line, or `setopt interactive_comments`. |
+
 ## Style conventions
 
 - **Prose**: normal academic register, no imperative openers, no metaphors that

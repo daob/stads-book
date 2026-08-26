@@ -20,9 +20,10 @@ or individually:
 | `check_crossrefs.py` | every `@sec-`, `@fig-`, `@tbl-`, `@eq-` reference resolves to a label; reports labels nothing points at |
 | `check_citations.py` | every citation key exists in `references.bib`; reports uncited entries |
 | `check_exercises.py` | every exercise has a collapsible answer with the same number, and the numbering runs 1, 2, 3 … / A, B, C … within each chapter |
+| `check_divs.py` | every `::: {.callout-…}` is closed, so a missing fence cannot silently wrap the rest of a chapter in a callout box |
 | `test-dependencies.R` | lists the R packages the chunks and scripts use, and which are missing locally |
 
-The four `check_*.py` scripts use only the Python standard library, so they run
+The `check_*.py` scripts use only the Python standard library, so they run
 on any machine and in CI without installing anything. Each prints a one-line
 summary, then `FAIL` lines for problems and `note` lines for things worth
 knowing, and exits non-zero only on a failure.

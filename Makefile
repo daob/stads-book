@@ -33,13 +33,19 @@ ANSWERS_PDF := _book/stads-book-answers-in-back.pdf
 STASH       := .build
 
 .PHONY: all ci-build html pdf epub answers a4 screen editions site \
-        diagrams figures test clean help
+        figures-from-freeze diagrams figures test clean help
 
 ## all: html + pdf + epub + the answers-in-back PDF (what CI publishes)
 all: diagrams ci-build
 
+# The .tex refers to <chapter>_files/figure-pdf/...; a fresh clone has no such
+# directory, so put the frozen figures there before any render.
+## figures-from-freeze: copy the frozen figures into the <chapter>_files/ dirs
+figures-from-freeze:
+	@$(PYTHON) tools/restore-freeze-figures.py
+
 ## ci-build: `all` without regenerating diagrams; the exact steps CI runs
-ci-build:
+ci-build: figures-from-freeze
 	$(QUARTO) render --profile answers --to pdf
 	@mkdir -p $(STASH) && cp $(ANSWERS_PDF) $(STASH)/answers.pdf
 	$(QUARTO) render
@@ -47,35 +53,35 @@ ci-build:
 	@echo "built: _book/{index.html,stads-book.pdf,stads-book.epub}, $(ANSWERS_PDF)"
 
 ## html: the website into _book/
-html: diagrams
+html: diagrams figures-from-freeze
 	$(QUARTO) render --to html
 
 ## pdf: the 6x9in print PDF
-pdf: diagrams
+pdf: diagrams figures-from-freeze
 	$(QUARTO) render --to pdf
 
 ## epub: the EPUB that accompanies the website (answers inline)
-epub: diagrams
+epub: diagrams figures-from-freeze
 	$(QUARTO) render --to epub
 
 ## answers: 6x9in PDF with the exercise answers collected at the back
-answers: diagrams
+answers: diagrams figures-from-freeze
 	$(QUARTO) render --profile answers --to pdf
 
 # ---------------------------------------------------------------- editions --
 # Alternative reading editions, each driven by a profile in _quarto-*.yml.
 
 ## a4: A4 print PDF, answers in the back
-a4: diagrams
+a4: diagrams figures-from-freeze
 	QUARTO_PROFILE=answers,a4 $(QUARTO) render --to pdf
 	mv $(ANSWERS_PDF) _book/stads-book-a4-answers-in-back.pdf
 
 ## screen: 7.5x10in one-sided PDF for tablets, answers inline
-screen: diagrams
+screen: diagrams figures-from-freeze
 	QUARTO_PROFILE=screen $(QUARTO) render --to pdf
 
 ## editions: a4 + screen + e-reader EPUB, stashed so they survive each other
-editions: diagrams
+editions: diagrams figures-from-freeze
 	QUARTO_PROFILE=answers,a4 $(QUARTO) render --to pdf
 	@mkdir -p $(STASH) && mv $(ANSWERS_PDF) $(STASH)/stads-book-a4-answers-in-back.pdf
 	QUARTO_PROFILE=answers,epub $(QUARTO) render --to epub
@@ -125,7 +131,7 @@ test:
 	@fail=0; \
 	for check in tests/check_structure.py tests/check_crossrefs.py \
 	             tests/check_citations.py tests/check_exercises.py \
-	             tests/check_freeze.py; do \
+	             tests/check_divs.py tests/check_freeze.py; do \
 	  $(PYTHON) $$check || fail=1; \
 	done; \
 	exit $$fail
