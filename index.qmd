@@ -34,8 +34,9 @@ Each chapter contains two kinds of exercises. Inline exercises appear throughout
 
 The upshot of my choice for this book is that you may sometimes like to consult other texts to get more up close and personal with a particular model. This is as things should be; my hope is that by following your own interests in this regard, it becomes possible to keep sight of the big picture and gain a "broad perspective". 
 
-Here are a few recommendations for further study should you feel the urge. Several are open access, like this book; where they are not, I say so.
+Here are a few recommendations for further study should you feel the urge.
 
+<!-- DO: I do not like how you did this in text. Keep the groupings but just give a normal academic bibliography with links and a small remark if necessary. -->
 **Closest to this book.** *An Introduction to Statistical Learning* by James, Witten, Hastie and Tibshirani ([statlearning.com](https://www.statlearning.com/), free PDF, in R and in Python editions) covers the machine learning of chapters 6 and 7 at greater length and with more worked examples, at about the same level of difficulty. Read it first if you want more practice rather than more theory.
 
 **Regression, and the models of chapters 2 and 4.** *Data Analysis Using Regression and Multilevel/Hierarchical Models* by Gelman and Hill is the standard treatment of the multilevel models this book reaches through the analysis of variance; its modern successor, *Regression and Other Stories* by Gelman, Hill and Vehtari, has free companion material at [avehtari.github.io/ROS-Examples](https://avehtari.github.io/ROS-Examples/). Neither book is free, but both are worth their price. For categorical outcomes, Agresti's *An Introduction to Categorical Data Analysis* is the accessible entry, and his *Categorical Data Analysis* the comprehensive reference behind it.
@@ -46,4 +47,4 @@ Here are a few recommendations for further study should you feel the urge. Sever
 
 **More theory, and the deep end.** *The Elements of Statistical Learning* by Hastie, Tibshirani and Friedman is the mathematical version of the machine learning chapters, freely available from [the authors' page](https://hastie.su.domains/ElemStatLearn/); it assumes more linear algebra and statistics than this book does. *Deep Learning* by Goodfellow, Bengio and Courville, free to read at [deeplearningbook.org](https://www.deeplearningbook.org/), goes where chapter 6 only gestures.
 
-The source, the data-preparation scripts and the issue tracker live at [github.com/daob/stads-book](https://github.com/daob/stads-book); corrections are welcome, and every page carries an "Edit this page" link.
+The source, the data-preparation scripts and the issue tracker live at [github.com/daob/stads-book](https://github.com/daob/stads-book); corrections are welcome.
