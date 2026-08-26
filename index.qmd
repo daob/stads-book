@@ -36,15 +36,33 @@ The upshot of my choice for this book is that you may sometimes like to consult 
 
 Here are a few recommendations for further study should you feel the urge.
 
-<!-- DO: I do not like how you did this in text. Keep the groupings but just give a normal academic bibliography with links and a small remark if necessary. -->
-**Closest to this book.** *An Introduction to Statistical Learning* by James, Witten, Hastie and Tibshirani ([statlearning.com](https://www.statlearning.com/), free PDF, in R and in Python editions) covers the machine learning of chapters 6 and 7 at greater length and with more worked examples, at about the same level of difficulty. Read it first if you want more practice rather than more theory.
+**Closest to this book.**
 
-**Regression, and the models of chapters 2 and 4.** *Data Analysis Using Regression and Multilevel/Hierarchical Models* by Gelman and Hill is the standard treatment of the multilevel models this book reaches through the analysis of variance; its modern successor, *Regression and Other Stories* by Gelman, Hill and Vehtari, has free companion material at [avehtari.github.io/ROS-Examples](https://avehtari.github.io/ROS-Examples/). Neither book is free, but both are worth their price. For categorical outcomes, Agresti's *An Introduction to Categorical Data Analysis* is the accessible entry, and his *Categorical Data Analysis* the comprehensive reference behind it.
+- James, G., Witten, D., Hastie, T., & Tibshirani, R. (2021). *An Introduction to Statistical Learning: With Applications in R* (2nd ed.). Springer. Free PDF at [statlearning.com](https://www.statlearning.com/); a Python edition followed in 2023. Covers the machine learning of chapters 6 and 7 at greater length and with more worked examples, at about the same level of difficulty. Read it first if you want more practice rather than more theory.
 
-**Latent variables and measurement.** *Latent Variable Modeling Using R: A Step-by-Step Guide* by Beaujean is a practical bridge from the equations of chapter 2 to fitted models, and the [lavaan website](https://lavaan.ugent.be/) has free tutorials for the software this book uses. For the logic of building and testing such models, Saris and Stronkhorst's *Causal Modelling in Nonexperimental Research* remains the clearest source; a revised version is in preparation and will be linked here when it is finished.
+**Regression, and the models of chapters 2 and 4.**
 
-**Design and causal inference, behind chapter 3.** *Causal Inference in Statistics: A Primer* by Pearl, Glymour and Jewell is the short introduction to graphs and identification; *Causal Inference: The Mixtape* by Cunningham is free online at [mixtape.scunning.com](https://mixtape.scunning.com/) and works through the designs with data and code; *Mostly Harmless Econometrics* by Angrist and Pischke gives the econometric view of the same designs. *Experimental and Quasi-Experimental Designs for Generalized Causal Inference* by Shadish, Cook and Campbell is the classic on validity and design, and the source of much of chapter 1's vocabulary. More challenging, and the reference for the potential-outcomes machinery: *Causal Inference: What If* by Hernán and Robins, free at [miguelhernan.org/whatifbook](https://miguelhernan.org/whatifbook).
+- Gelman, A., & Hill, J. (2007). *Data Analysis Using Regression and Multilevel/Hierarchical Models*. Cambridge University Press. The standard treatment of the multilevel models this book reaches through the analysis of variance.
+- Gelman, A., Hill, J., & Vehtari, A. (2020). *Regression and Other Stories*. Cambridge University Press. The modern successor to Gelman and Hill; free companion material at [avehtari.github.io/ROS-Examples](https://avehtari.github.io/ROS-Examples/).
+- Agresti, A. (2018). *An Introduction to Categorical Data Analysis* (3rd ed.). Wiley. The accessible entry for categorical outcomes.
+- Agresti, A. (2013). *Categorical Data Analysis* (3rd ed.). Wiley. The comprehensive reference behind it.
 
-**More theory, and the deep end.** *The Elements of Statistical Learning* by Hastie, Tibshirani and Friedman is the mathematical version of the machine learning chapters, freely available from [the authors' page](https://hastie.su.domains/ElemStatLearn/); it assumes more linear algebra and statistics than this book does. *Deep Learning* by Goodfellow, Bengio and Courville, free to read at [deeplearningbook.org](https://www.deeplearningbook.org/), goes where chapter 6 only gestures.
+**Latent variables and measurement.**
+
+- Beaujean, A. A. (2014). *Latent Variable Modeling Using R: A Step-by-Step Guide*. Routledge. A practical bridge from the equations of chapter 2 to fitted models; the [lavaan website](https://lavaan.ugent.be/) has free tutorials for the software this book uses.
+- Saris, W. E., & Stronkhorst, L. H. (1984). *Causal Modelling in Nonexperimental Research: An Introduction to the LISREL Approach*. Sociometric Research Foundation. Still the clearest source on the logic of building and testing such models; a revised version is in preparation and will be linked here when it is finished.
+
+**Design and causal inference, behind chapter 3.**
+
+- Pearl, J., Glymour, M., & Jewell, N. P. (2016). *Causal Inference in Statistics: A Primer*. Wiley. The short introduction to graphs and identification.
+- Cunningham, S. (2021). *Causal Inference: The Mixtape*. Yale University Press. Free online at [mixtape.scunning.com](https://mixtape.scunning.com/); works through the designs with data and code.
+- Angrist, J. D., & Pischke, J.-S. (2009). *Mostly Harmless Econometrics: An Empiricist's Companion*. Princeton University Press. The econometric view of the same designs.
+- Shadish, W. R., Cook, T. D., & Campbell, D. T. (2002). *Experimental and Quasi-Experimental Designs for Generalized Causal Inference*. Houghton Mifflin. The classic on validity and design, and the source of much of chapter 1's vocabulary.
+- Hernán, M. A., & Robins, J. M. (2020). *Causal Inference: What If*. Chapman & Hall/CRC. Free at [miguelhernan.org/whatifbook](https://miguelhernan.org/whatifbook). More challenging, and the reference for the potential-outcomes machinery.
+
+**More theory, and the deep end.**
+
+- Hastie, T., Tibshirani, R., & Friedman, J. (2009). *The Elements of Statistical Learning: Data Mining, Inference, and Prediction* (2nd ed.). Springer. The mathematical version of the machine learning chapters, freely available from [the authors' page](https://hastie.su.domains/ElemStatLearn/); it assumes more linear algebra and statistics than this book does.
+- Goodfellow, I., Bengio, Y., & Courville, A. (2016). *Deep Learning*. MIT Press. Free to read at [deeplearningbook.org](https://www.deeplearningbook.org/); goes where chapter 6 only gestures.
 
 The source, the data-preparation scripts and the issue tracker live at [github.com/daob/stads-book](https://github.com/daob/stads-book); corrections are welcome.
