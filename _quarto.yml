@@ -7,7 +7,7 @@ project:
 
 book:
   title: "Statistics and Data Analysis"
-  subtitle: "A broad perspective for social and health scientists — Draft 0.6"
+  subtitle: "A broad perspective for social and health scientists — Draft 0.7"
   author: "Daniel Oberski"
   date: today
   output-file: "stads-book"

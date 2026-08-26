@@ -17,7 +17,7 @@ and mediation, ANOVA and multilevel models, and on into machine learning:
 prediction versus explanation, overfitting and the bias-variance tradeoff,
 honest evaluation, and unsupervised learning.
 
-> **Draft 0.6.** Provisional throughout. The text was written with substantial
+> **Draft 0.7.** Provisional throughout. The text was written with substantial
 > help from a large language model, working from the author's outline, notes on
 > the source literature, and chapter-by-chapter comments; the git history
 > records which changes came from the author and which were generated.
@@ -104,7 +104,7 @@ licensed [MIT](LICENSE-CODE). See [LICENSE](LICENSE).
   author    = {Oberski, Daniel L.},
   title     = {Statistics and Data Analysis: A Broad Perspective for Social and Health Scientists},
   year      = {2026},
-  note      = {Draft 0.6},
+  note      = {Draft 0.7},
   url       = {https://daob.github.io/stads-book/}
 }
 ```

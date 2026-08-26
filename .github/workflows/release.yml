@@ -1,6 +1,6 @@
 name: Release
 
-# Tagging a version (git tag v0.6 && git push --tags) attaches the three
+# Tagging a version (git tag v0.7 && git push --tags) attaches the three
 # built files to a GitHub release, so that a citable version stays available
 # even after the website has moved on.
 on:
