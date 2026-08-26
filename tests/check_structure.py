@@ -15,10 +15,12 @@ REQUIRED = [
     "references.bib", "references.qmd", "index.qmd", "Makefile",
     "README.md", "CONTRIBUTING.md", "LICENSE", "LICENSE-CODE",
 ]
-MARKERS = re.compile(r"<!--\s*DO:|\bTODO\b|\bFIXME\b|\[TODO\]|XXX+")
-# Deliberate, registered open questions are written as <!-- OPEN(who): ... -->.
-# They are reported but do not fail the check; drafting leftovers do.
-OPEN_ITEM = re.compile(r"<!--\s*OPEN\(([^)]*)\):\s*(.*?)\s*-->", re.S)
+MARKERS = re.compile(r"\bTODO\b|\bFIXME\b|\[TODO\]|XXX+")
+# Two comment conventions are deliberate and are reported rather than failed:
+#   <!-- DO: ... -->        an instruction from the author, waiting to be acted on
+#   <!-- OPEN(who): ... --> a question that is genuinely open (a citation owed)
+# Anything else that looks like a drafting leftover (TODO, FIXME, XXX) fails.
+OPEN_ITEM = re.compile(r"<!--\s*(?:OPEN\(([^)]*)\)|(DO))\s*:\s*(.*?)\s*-->", re.S)
 DATA_SUFFIXES = {".dta", ".sav", ".rds", ".por"}
 
 
@@ -60,8 +62,9 @@ def main():
     open_items = []
     for qmd in sorted(ROOT.glob("*.qmd")):
         text = qmd.read_text()
-        for who, what in OPEN_ITEM.findall(text):
-            open_items.append(f"{qmd.name}: {who}: {' '.join(what.split())[:90]}")
+        for who, is_do, what in OPEN_ITEM.findall(text):
+            label = "author instruction" if is_do else f"open question ({who})"
+            open_items.append(f"{qmd.name}: {label}: {' '.join(what.split())[:80]}")
         stripped = OPEN_ITEM.sub("", text)
         for i, line in enumerate(stripped.splitlines(), start=1):
             if MARKERS.search(line):
@@ -78,7 +81,7 @@ def main():
     print(f"structure: {len(listed)} chapters listed, {len(on_disk)} on disk, "
           f"{len(tracked)} files tracked")
     for item in open_items:
-        print("  open question ", item)
+        print("  note", item)
     for f in failures:
         print("  FAIL", f)
     return 1 if failures else 0

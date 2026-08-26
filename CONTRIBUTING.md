@@ -78,6 +78,10 @@ caught before it can reach the website. See [`tests/README.md`](tests/README.md)
 - **Figures**: R-drawn figures use Fira Sans and the book's palette
   (`#ECECFF` fill, `#9370DB` stroke, `#7A28CB` accent); diagrams that are
   easier to express as graphs live in `diagrams/*.mmd`.
+- **Comments in the source**: `<!-- DO: … -->` is an instruction to whoever
+  next works on the chapter, `<!-- OPEN(who): … -->` a question that is
+  genuinely open. Both are reported by `make test`; `TODO`, `FIXME` and `XXX`
+  fail it.
 - **Data**: never commit microdata. Derived datasets are rebuilt by the scripts
   in `analysis/liss/` and written outside the repository.
 

@@ -15,24 +15,22 @@ The latter may sound somewhat mysterious to you, so here is a summary:
 
 > A research question motivates a design for collecting or organizing data; the design makes a set of assumptions plausible; those assumptions are the model; and the results of fitting the model answer the question, to the extent that the assumptions hold.
 
-The chapters work through this logic. First the logic itself (@sec-rq-to-interpretation). Then, concretely, how to build a statistical model out of a theory stated in words (@sec-theory-to-glm), and what happens when the design cannot answer the question at all (@sec-identification). Then a supposedly old-fashioned idea, the analysis of variance, is rehabilitated as the gateway to multilevel models and to meta-analysis (@sec-anova). A hinge chapter steps back to ask what prediction is for (@sec-explanation-prediction). The last two chapters cross into machine learning: what overfitting is and why the bias-variance tradeoff governs every model (@sec-overfitting), and how to evaluate predictions honestly, from cross-validation and the bootstrap to what happens when a well-scored model meets the world (@sec-evaluation).
+The chapters work through this logic. First the logic itself (@sec-rq-to-interpretation). Then, concretely, how to build a statistical model out of a theory stated in words (@sec-theory-to-glm), and what happens when the design cannot answer the question at all (@sec-identification). Then a supposedly old-fashioned idea, the analysis of variance, is rehabilitated as the gateway to multilevel models and to meta-analysis (@sec-anova). A hinge chapter steps back to ask what prediction is for (@sec-explanation-prediction). The last three chapters cross into machine learning: what overfitting is and why the bias-variance tradeoff governs every model (@sec-overfitting), how to evaluate predictions honestly, from cross-validation and the bootstrap to what happens when a well-scored model meets the world (@sec-evaluation), and what becomes of all this when there is no outcome to predict and the task is to find groups (@sec-unsupervised).
 
 Each chapter contains two kinds of exercises. Inline exercises appear throughout; do them immediately, and click to reveal the answer below each one. The "Test yourself" exercises at the end of each chapter are harder. The practical exercises use R but, everything can be done in Python too. 
 
 The upshot of my choice for this book is that you may sometimes like to consult other texts to get more up close and personal with a particular model. This is as things should be; my hope is that by following your own interests in this regard, it becomes possible to keep sight of the big picture and gain a "broad perspective". 
 
-Here are a few recommendations for further study should you feel the urge:
-<!-- DO: include ISLR here, with a link to the website and note that it is open access, like this book -->
-<!-- DO: perhaps also include Saris & Stronkhorst here with a placeholder download link for when I finish that project -->
-<!-- DO: fill in the rest from below bullets. Give links where posisble, note if the book is open access or not. Order them in a logical way given the book structure and give a few remarks with each (set of) recommendations on what it will help you add to your knowledge gained in this text. Give easier texts first and note more challenging materials -->
- * elements of stat learning (for much more theory)
- * deep learning bengio
- * Latent Variable Modeling Using R: A Step-by-Step Guide by A. Alexander Beaujean  
- * the lavaan website
- * hernan & robins (will be more challenging)
- *  Causal Inference in Statistics: A Primer by Pearl, Glymour, and Jewell i
- * https://mixtape.scunning.com/
- * Angrist & Pischke
- * Agresti for categorical data (intro and the big book)
- * Gelman & Hill
- * Shadish & Cook & Campbell
+Here are a few recommendations for further study should you feel the urge. Several are open access, like this book; where they are not, I say so.
+
+**Closest to this book.** *An Introduction to Statistical Learning* by James, Witten, Hastie and Tibshirani ([statlearning.com](https://www.statlearning.com/), free PDF, in R and in Python editions) covers the machine learning of chapters 6 and 7 at greater length and with more worked examples, at about the same level of difficulty. Read it first if you want more practice rather than more theory.
+
+**Regression, and the models of chapters 2 and 4.** *Data Analysis Using Regression and Multilevel/Hierarchical Models* by Gelman and Hill is the standard treatment of the multilevel models this book reaches through the analysis of variance; its modern successor, *Regression and Other Stories* by Gelman, Hill and Vehtari, has free companion material at [avehtari.github.io/ROS-Examples](https://avehtari.github.io/ROS-Examples/). Neither book is free, but both are worth their price. For categorical outcomes, Agresti's *An Introduction to Categorical Data Analysis* is the accessible entry, and his *Categorical Data Analysis* the comprehensive reference behind it.
+
+**Latent variables and measurement.** *Latent Variable Modeling Using R: A Step-by-Step Guide* by Beaujean is a practical bridge from the equations of chapter 2 to fitted models, and the [lavaan website](https://lavaan.ugent.be/) has free tutorials for the software this book uses. For the logic of building and testing such models, Saris and Stronkhorst's *Causal Modelling in Nonexperimental Research* remains the clearest source; a revised version is in preparation and will be linked here when it is finished.
+
+**Design and causal inference, behind chapter 3.** *Causal Inference in Statistics: A Primer* by Pearl, Glymour and Jewell is the short introduction to graphs and identification; *Causal Inference: The Mixtape* by Cunningham is free online at [mixtape.scunning.com](https://mixtape.scunning.com/) and works through the designs with data and code; *Mostly Harmless Econometrics* by Angrist and Pischke gives the econometric view of the same designs. *Experimental and Quasi-Experimental Designs for Generalized Causal Inference* by Shadish, Cook and Campbell is the classic on validity and design, and the source of much of chapter 1's vocabulary. More challenging, and the reference for the potential-outcomes machinery: *Causal Inference: What If* by Hernán and Robins, free at [miguelhernan.org/whatifbook](https://miguelhernan.org/whatifbook).
+
+**More theory, and the deep end.** *The Elements of Statistical Learning* by Hastie, Tibshirani and Friedman is the mathematical version of the machine learning chapters, freely available from [the authors' page](https://hastie.su.domains/ElemStatLearn/); it assumes more linear algebra and statistics than this book does. *Deep Learning* by Goodfellow, Bengio and Courville, free to read at [deeplearningbook.org](https://www.deeplearningbook.org/), goes where chapter 6 only gestures.
+
+The book is available as a website, as a PDF sized for printing, and as an EPUB; the download links are in the sidebar. A PDF with the answers to all exercises collected at the back rather than beside the questions is at [stads-book-answers-in-back.pdf](https://daob.github.io/stads-book/stads-book-answers-in-back.pdf), and the source, the data-preparation scripts and the issue tracker live at [github.com/daob/stads-book](https://github.com/daob/stads-book).

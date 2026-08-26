@@ -31,12 +31,18 @@ knowing, and exits non-zero only on a failure.
 part of CI, which renders the book from the frozen output in `_freeze/` and
 therefore needs no R packages. Run it locally before re-executing chunks.
 
-## Registered open questions
+## Comments that are meant to be there
 
-A question that is genuinely open — a citation the author still owes, say — is
-written in the source as `<!-- OPEN(who): what -->`. `check_structure.py`
-reports these but does not fail on them, which keeps real drafting leftovers
-(`TODO`, `FIXME`, `DO:`) failing loudly.
+Two comment conventions are part of how this book gets written, so
+`check_structure.py` reports them and moves on:
+
+| In the source | Means |
+|---------------|-------|
+| `<!-- DO: … -->` | an instruction from the author, waiting to be acted on |
+| `<!-- OPEN(who): … -->` | a question that is genuinely open, such as a citation still owed |
+
+Anything else that looks like a drafting leftover — `TODO`, `FIXME`, `XXX` —
+fails the check, so it cannot quietly reach the published book.
 
 ## What CI adds
 

@@ -52,9 +52,15 @@ make html      # website into _book/
 make pdf       # 6×9in print PDF
 make epub      # EPUB
 make answers   # PDF with all answers collected at the back
-make all       # everything, the way CI builds it
+make all       # everything the site publishes
+make editions  # A4 print, tablet-sized screen PDF, e-reader EPUB
 make test      # repository checks (see tests/README.md)
+make help      # the full target list
 ```
+
+The alternative editions are driven by the profiles in `_quarto-a4.yml`,
+`_quarto-screen.yml` and `_quarto-epub.yml`, which can be combined with the
+answers-in-back profile (`quarto render --profile answers,a4 --to pdf`).
 
 ## Data
 

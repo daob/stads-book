@@ -1,0 +1,24 @@
+name: Erratum
+description: Report an error, a typo, or something that does not follow in the text
+labels: ["erratum"]
+body:
+  - type: input
+    id: location
+    attributes:
+      label: Where
+      description: Chapter and section, or the URL of the page.
+      placeholder: "Chapter 7, 'Metrics follow the task' — https://daob.github.io/stads-book/07-evaluation-resampling.html"
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong
+      description: Quote the sentence or formula if you can.
+    validations:
+      required: true
+  - type: textarea
+    id: fix
+    attributes:
+      label: Suggested correction
+      description: Optional. An "Edit this page" pull request is welcome too.
