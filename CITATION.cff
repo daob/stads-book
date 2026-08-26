@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+title: "Statistics and Data Analysis: A Broad Perspective for Social and Health Scientists"
+message: "If you use this book, please cite it as below."
+type: book
+authors:
+  - family-names: Oberski
+    given-names: Daniel L.
+    affiliation: Utrecht University
+year: 2026
+version: "Draft 0.6"
+url: "https://daob.github.io/stads-book/"
+repository-code: "https://github.com/daob/stads-book"
+license: CC-BY-NC-SA-4.0

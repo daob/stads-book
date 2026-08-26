@@ -311,7 +311,7 @@ One question remains open, deliberately, because @sec-evaluation exists to answe
 ## Test yourself {.unnumbered}
 
 ::: {.callout-tip icon="false" title="Exercise 6.A"}
-A researcher predicts a binary health outcome from omics data, in the spirit of the examples in @rajkomar2018 and the omics prediction literature. Candidate features are ranked in advance and models using the top 1, 2, 5, ..., 100 features are fitted to the same 200 training cases; the figure shows each model's accuracy on two datasets, labelled only A and B.
+A researcher predicts a binary health outcome from omics data, in the spirit of the examples in @rajkomar2018 and the omics prediction literature. Candidate features are ranked in advance and models using the top 1, 2, 5, ..., 100 features are fitted to the same 200 training cases; @fig-features-exercise shows each model's accuracy on two datasets, labelled only A and B.
 
 ```{r}
 #| label: fig-features-exercise
@@ -355,7 +355,7 @@ legend("topleft", c("dataset A", "dataset B"), pch = c(1, 16), bty = "n")
 :::
 
 ::: {.callout-tip icon="false" title="Exercise 6.B"}
-The figure below shows a **learning curve**: one classifier, fitted to training sets of increasing size drawn from the same population, with its classification accuracy measured each time on the training data itself and on a large held-out test set.
+@fig-learning-exercise shows a **learning curve**: one classifier, fitted to training sets of increasing size drawn from the same population, with its classification accuracy measured each time on the training data itself and on a large held-out test set.
 
 ```{r}
 #| label: fig-learning-exercise

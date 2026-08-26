@@ -1,7 +1,9 @@
 project:
   type: book
+  output-dir: _book
   resources:
-    - fonts/
+    - fonts/*.woff2
+    - fonts/fonts.css
 
 book:
   title: "Statistics and Data Analysis"
@@ -9,6 +11,18 @@ book:
   author: "Daniel Oberski"
   date: today
   output-file: "stads-book"
+  site-url: https://daob.github.io/stads-book/
+  repo-url: https://github.com/daob/stads-book
+  repo-branch: main
+  repo-actions: [edit, source, issue]
+  downloads: [pdf, epub]
+  search: true
+  sidebar:
+    style: docked
+  page-footer:
+    left: "© 2026 Daniel Oberski"
+    center: "Text CC BY-NC-SA 4.0 · code MIT"
+    right: "[Source](https://github.com/daob/stads-book)"
   chapters:
     - index.qmd
     - 01-research-question-to-interpretation.qmd
@@ -75,6 +89,16 @@ format:
         \ifdefined\Shaded
           \renewenvironment{Shaded}{\begin{snugshade}\small}{\end{snugshade}}
         \fi
+  epub:
+    toc: true
+    number-sections: true
+    fig-width: 6
+    fig-height: 4
+    epub-fonts:
+      - fonts/FiraSans-Regular.woff2
+      - fonts/FiraSans-Italic.woff2
+      - fonts/FiraSans-Bold.woff2
+      - fonts/FiraSans-BoldItalic.woff2
 
 execute:
   echo: true

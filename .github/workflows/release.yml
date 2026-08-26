@@ -1,0 +1,48 @@
+name: Release
+
+# Tagging a version (git tag v0.6 && git push --tags) attaches the three
+# built files to a GitHub release, so that a citable version stays available
+# even after the website has moved on.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install the book's fonts
+        run: |
+          mkdir -p ~/.local/share/fonts
+          cp fonts/print/*.ttf ~/.local/share/fonts/
+          fc-cache -f
+
+      # Quarto detects the knitr engine before it consults the freeze, so R has
+      # to exist on the runner — but only base R: no package and no data file
+      # is read, because every chunk's output comes from _freeze/.
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: release
+          use-public-rspm: true
+
+      - uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          tinytex: true
+
+      - name: Render the book
+        run: make ci-build
+
+      - name: Attach the editions to the release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            _book/stads-book.pdf
+            _book/stads-book.epub
+            _book/stads-book-answers-in-back.pdf
+          generate_release_notes: true

@@ -1,0 +1,46 @@
+# Repository checks
+
+Fast, dependency-free checks that catch the mistakes this book is prone to:
+a chapter added to the folder but not to the book, a cross-reference to a
+figure that no longer exists, a citation key that never made it into
+`references.bib`, an exercise whose answer was lost in an edit, a drafting
+comment left in the text, or microdata about to be committed.
+
+Run them all with:
+
+```sh
+make test
+```
+
+or individually:
+
+| Check | What it verifies |
+|-------|------------------|
+| `check_structure.py` | chapter list in `_quarto.yml` matches the files on disk; required files present; no `DO:`/`TODO`/`FIXME` markers left in the text; no microdata tracked |
+| `check_crossrefs.py` | every `@sec-`, `@fig-`, `@tbl-`, `@eq-` reference resolves to a label; reports labels nothing points at |
+| `check_citations.py` | every citation key exists in `references.bib`; reports uncited entries |
+| `check_exercises.py` | every exercise has a collapsible answer with the same number, and the numbering runs 1, 2, 3 … / A, B, C … within each chapter |
+| `test-dependencies.R` | lists the R packages the chunks and scripts use, and which are missing locally |
+
+The four `check_*.py` scripts use only the Python standard library, so they run
+on any machine and in CI without installing anything. Each prints a one-line
+summary, then `FAIL` lines for problems and `note` lines for things worth
+knowing, and exits non-zero only on a failure.
+
+`test-dependencies.R` is the exception: it needs R, and it is deliberately not
+part of CI, which renders the book from the frozen output in `_freeze/` and
+therefore needs no R packages. Run it locally before re-executing chunks.
+
+## Registered open questions
+
+A question that is genuinely open — a citation the author still owes, say — is
+written in the source as `<!-- OPEN(who): what -->`. `check_structure.py`
+reports these but does not fail on them, which keeps real drafting leftovers
+(`TODO`, `FIXME`, `DO:`) failing loudly.
+
+## What CI adds
+
+The workflows in `.github/workflows/` run these checks on every push and pull
+request, and then render the whole book to HTML, PDF and EPUB. A render that
+fails, a broken reference, or a missing answer stops the change before it can
+reach the published site.

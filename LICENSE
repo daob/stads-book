@@ -1,0 +1,36 @@
+# Licenses
+
+This repository contains two kinds of material, licensed differently.
+
+## The book
+
+The text, figures, exercises and answers — everything in `index.qmd`,
+`0*.qmd`, `references.qmd`, `images/` and `diagrams/*.png` — are:
+
+  Copyright (c) 2026 Daniel L. Oberski
+
+  Licensed under the Creative Commons
+  Attribution-NonCommercial-ShareAlike 4.0 International License
+  (CC BY-NC-SA 4.0).
+
+You are free to share and adapt this material for non-commercial purposes,
+provided you give appropriate credit and license your adaptations under the
+same terms.
+
+  Human-readable summary: https://creativecommons.org/licenses/by-nc-sa/4.0/
+  Full legal code:        https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+
+## The code
+
+The R scripts, Lua filter, tests and build tooling — `analysis/`, `figures/*.R`,
+`figures/*.py`, `diagrams/*.R`, `tests/`, `answers-in-back.lua`, `Makefile` and
+`.github/` — are licensed under the MIT License; the full text is in
+[LICENSE-CODE](LICENSE-CODE).
+
+## Third-party material
+
+`fonts/` contains Fira Sans and Fira Code, by Erik Spiekermann, Ralph du
+Carrois, Anja Meiners and Nikita Prokopov, used under the SIL Open Font License
+1.1. Quoted passages and reproduced figures from the cited literature remain the
+property of their respective copyright holders and appear here under the
+customary provisions for quotation in scholarly work.

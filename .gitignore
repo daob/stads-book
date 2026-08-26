@@ -1,12 +1,43 @@
+# Build output. The site, PDF and EPUB are built by CI and published to
+# GitHub Pages; they are deliberately not committed. See CONTRIBUTING.md.
 _book/
-.quarto/
-_freeze/
-/.luarc.json
 *_files/
-.Rproj.user/
-.DS_Store
-
-/.quarto/
 *_cache/
-
 **/*.quarto_ipynb
+
+# Quarto working directories. _freeze/ is NOT ignored: it is committed on
+# purpose, so that the book can be rendered in CI without the LISS microdata
+# and without the R packages the analysis chunks need. See CONTRIBUTING.md.
+/.quarto/
+.quarto/
+/.luarc.json
+
+# LaTeX intermediates
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+
+# R
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+
+# Never commit microdata: LISS files may not be redistributed and live
+# outside this repository (see analysis/README.md).
+*.dta
+*.sav
+*.rds
+
+# Editor and OS noise
+.DS_Store
+*~
+\#*\#
+
+# Transfer and scratch artefacts
+*.bundle
+*.patch
+_to_delete/
+_patches/
