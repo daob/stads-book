@@ -49,6 +49,13 @@ jobs:
           r-version: release
           use-public-rspm: true
 
+      # Turns GitHub Pages on for this repository the first time the workflow
+      # runs, so no one has to visit Settings → Pages by hand. It also supplies
+      # the base URL the deploy step reports back.
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
       - uses: quarto-dev/quarto-actions/setup@v2
         with:
           tinytex: true
@@ -67,6 +74,9 @@ jobs:
             test -s "_book/$f" || (echo "::error::_book/$f missing or empty" && exit 1)
           done
           du -sh _book
+
+      - name: Mark the site as static (no Jekyll processing)
+        run: touch _book/.nojekyll
 
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -76,7 +76,10 @@ committed `_freeze/` directory.
 
 Pushing to `main` triggers `.github/workflows/publish.yml`, which renders the
 site, the PDF and the EPUB, and deploys them to GitHub Pages, download links
-included. It needs no R packages and no data: chunk output is read from the
+included. The workflow switches Pages on by itself the first time it runs
+(`actions/configure-pages` with `enablement: true`), so there is nothing to
+configure by hand — but GitHub only serves Pages from a **public** repository
+unless the account has a paid plan. It needs no R packages and no data: chunk output is read from the
 committed `_freeze/` directory, so a build takes minutes and cannot be broken by
 a package update. Nothing needs to be built or committed by hand. See
 [CONTRIBUTING.md](CONTRIBUTING.md) for the details and for what to do when the
