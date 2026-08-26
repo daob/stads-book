@@ -1,11 +1,10 @@
 # Preface {.unnumbered}
 
-::: {.callout-warning}
 **Draft 0.7.** 
 
 This book was created to accompany students in the course *Statistics and Data Science: a broad perspective*, taught at Utrecht University. As one might expect nowadays, I have made heavy use of AI tooling throughout. But I am happy to take responsibility for the final text.
 
-As the title suggests, my goal in this book is to cover as much of the landscape as possible. This is of course completely impossible. Therefore I have chosen  **not** to explain any of the analysis techniques, such as GLM, SEM, random forests, neural networks, etc. in much technical depth. There are already plenty of excellent books and other resources out there that do this, which are referenced throughout the text. (And, for students in the MSc program, they will be encountered in your subsequent coursework.) Instead, I have tried to put all these techniques and models into a common perspective, based on a few overarching principles:
+As the title suggests, my goal in this book is to cover as much of the landscape as possible. This is of course completely impossible. Therefore I have chosen  **not** to explain any of the analysis techniques, such as GLM, SEM, random forests, neural networks, etc. in much technical depth. There are already plenty of excellent books and other resources out there that do this, which are referenced throughout the text, as well as included in some of the recommendations for further reading below. (And, for students in the MSc program, they will be encountered in your subsequent coursework.) Instead, I have tried to put all these techniques and models into a common perspective, based on a few overarching principles:
 
  * The bias-variance tradeoff;
  * Explanation and prediction in social and health sciences;
