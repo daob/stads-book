@@ -1,17 +1,38 @@
 # Preface {.unnumbered}
 
 ::: {.callout-warning}
-**Draft 0.6.** This is an early draft, written with substantial help from a large language model working from an outline, source-literature notes, and detailed comments by the author. Everything in it is provisional, and a further chapter on measurement is not written yet. The git history records what was written by the author and what was generated.
-:::
+**Draft 0.7.** 
 
-Most statistics courses teach methods one at a time: here is the *t*-test, here is regression, here is ANOVA. You leave with a well-stocked toolbox and no manual. Which tool answers which question, and when should anyone believe the answer? This book starts from the other end. Every empirical study, from a survey to a transformer, follows the same basic logic:
+This book was created to accompany students in the course *Statistics and Data Science: a broad perspective*, taught at Utrecht University. As one might expect nowadays, I have made heavy use of AI tooling throughout. But I am happy to take responsibility for the final text.
 
-> A **research question** motivates a **design** for collecting data; the design makes a set of **assumptions** plausible; those assumptions are the **model**; and the results of fitting the model answer the question, to the extent that the assumptions hold.
+As the title suggests, my goal in this book is to cover as much of the landscape as possible. This is of course completely impossible. Therefore I have chosen  **not** to explain any of the analysis techniques, such as GLM, SEM, random forests, neural networks, etc. in much technical depth. There are already plenty of excellent books and other resources out there that do this, which are referenced throughout the text. (And, for students in the MSc program, they will be encountered in your subsequent coursework.) Instead, I have tried to put all these techniques and models into a common perspective, based on a few overarching principles:
 
-The chapters work through this logic. First the logic itself (@sec-rq-to-interpretation). Then, concretely, how to build a statistical model out of a theory stated in words (@sec-theory-to-glm), and what happens when the design cannot answer the question at all (@sec-identification). Then a supposedly old-fashioned idea, the analysis of variance, is rehabilitated as the gateway to multilevel models and to meta-analysis (@sec-anova). A hinge chapter steps back to ask what prediction is for (@sec-explanation-prediction). The last three chapters cross into machine learning: what overfitting is and why the bias-variance tradeoff governs every model (@sec-overfitting), how to evaluate predictions honestly, from cross-validation and the bootstrap to what happens when a well-scored model meets the world (@sec-evaluation), and what happens to all of this when the outcome disappears and the task is to find groups rather than to predict (@sec-unsupervised).
+ * The bias-variance tradeoff;
+ * Explanation and prediction in social and health sciences;
+ * The logic of how research questions, design, modeling, and the strength of conclusions all tie in with each other.
 
-Each chapter contains two kinds of exercises. Inline exercises appear throughout; do them immediately, and click to reveal the answer below each one. The "Test yourself" exercises at the end of each chapter are harder. They test whether you can use the ideas, not whether you can nod along to them.
+The latter may sound somewhat mysterious to you, so here is a summary:
 
-The practical exercises use R. Everything can be done in Python too; the ideas are what matter.
+> A research question motivates a design for collecting or organizing data; the design makes a set of assumptions plausible; those assumptions are the model; and the results of fitting the model answer the question, to the extent that the assumptions hold.
 
-The book is available as a website, as a PDF sized for printing, and as an EPUB; the download links are in the sidebar. A second PDF, with the answers to all exercises collected at the back rather than beside the questions, is at [stads-book-answers-in-back.pdf](https://daob.github.io/stads-book/stads-book-answers-in-back.pdf). Source, data-preparation scripts, and the issue tracker live at [github.com/daob/stads-book](https://github.com/daob/stads-book).
+The chapters work through this logic. First the logic itself (@sec-rq-to-interpretation). Then, concretely, how to build a statistical model out of a theory stated in words (@sec-theory-to-glm), and what happens when the design cannot answer the question at all (@sec-identification). Then a supposedly old-fashioned idea, the analysis of variance, is rehabilitated as the gateway to multilevel models and to meta-analysis (@sec-anova). A hinge chapter steps back to ask what prediction is for (@sec-explanation-prediction). The last two chapters cross into machine learning: what overfitting is and why the bias-variance tradeoff governs every model (@sec-overfitting), and how to evaluate predictions honestly, from cross-validation and the bootstrap to what happens when a well-scored model meets the world (@sec-evaluation).
+
+Each chapter contains two kinds of exercises. Inline exercises appear throughout; do them immediately, and click to reveal the answer below each one. The "Test yourself" exercises at the end of each chapter are harder. The practical exercises use R but, everything can be done in Python too. 
+
+The upshot of my choice for this book is that you may sometimes like to consult other texts to get more up close and personal with a particular model. This is as things should be; my hope is that by following your own interests in this regard, it becomes possible to keep sight of the big picture and gain a "broad perspective". 
+
+Here are a few recommendations for further study should you feel the urge:
+<!-- DO: include ISLR here, with a link to the website and note that it is open access, like this book -->
+<!-- DO: perhaps also include Saris & Stronkhorst here with a placeholder download link for when I finish that project -->
+<!-- DO: fill in the rest from below bullets. Give links where posisble, note if the book is open access or not. Order them in a logical way given the book structure and give a few remarks with each (set of) recommendations on what it will help you add to your knowledge gained in this text. Give easier texts first and note more challenging materials -->
+ * elements of stat learning (for much more theory)
+ * deep learning bengio
+ * Latent Variable Modeling Using R: A Step-by-Step Guide by A. Alexander Beaujean  
+ * the lavaan website
+ * hernan & robins (will be more challenging)
+ *  Causal Inference in Statistics: A Primer by Pearl, Glymour, and Jewell i
+ * https://mixtape.scunning.com/
+ * Angrist & Pischke
+ * Agresti for categorical data (intro and the big book)
+ * Gelman & Hill
+ * Shadish & Cook & Campbell

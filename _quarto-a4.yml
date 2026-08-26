@@ -1,0 +1,18 @@
+# Profile for an A4 print PDF (single-sided, generous margins).
+# Render with the answers gathered at the back:
+#   quarto render --profile answers,a4 --to pdf
+book:
+  output-file: "stads-book-a4-answers-in-back"
+
+format:
+  pdf:
+    classoption: [oneside]
+    geometry:
+      - a4paper
+      - left=3cm
+      - right=3cm
+      - top=2.8cm
+      - bottom=3.2cm
+      - marginparwidth=0in
+    fontsize: 11pt
+    linestretch: 1.2

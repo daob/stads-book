@@ -1,0 +1,10 @@
+# Profile for the EPUB (e-readers). Combine with the answers profile so the
+# exercise answers are gathered at the back, as in the print edition:
+#   quarto render --profile answers,epub --to epub
+book:
+  output-file: "stads-book-answers-in-back"
+
+format:
+  epub:
+    toc: true
+    number-sections: true

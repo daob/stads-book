@@ -1,0 +1,23 @@
+# Profile for a screen-reading PDF (tablets): 3:4 page that fills an iPad
+# screen, single-sided, no blank pages, visible link colors, answers inline.
+#   quarto render --profile screen --to pdf
+book:
+  output-file: "stads-book-screen"
+
+format:
+  pdf:
+    classoption: [oneside]
+    geometry:
+      - paperwidth=7.5in
+      - paperheight=10in
+      - left=0.7in
+      - right=0.7in
+      - top=0.75in
+      - bottom=0.9in
+      - marginparwidth=0in
+    fontsize: 11pt
+    linestretch: 1.2
+    colorlinks: true
+    linkcolor: "RoyalBlue"
+    citecolor: "RoyalBlue"
+    urlcolor: "RoyalBlue"
