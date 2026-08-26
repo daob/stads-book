@@ -1,6 +1,7 @@
 # Build output. The site, PDF and EPUB are built by CI and published to
 # GitHub Pages; they are deliberately not committed. See CONTRIBUTING.md.
 _book/
+/site_libs/
 *_files/
 *_cache/
 **/*.quarto_ipynb
@@ -41,3 +42,7 @@ _book/
 *.patch
 _to_delete/
 _patches/
+
+# Quarto book PDF intermediates left in the project root
+/index.tex
+/index.pdf
