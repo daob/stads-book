@@ -3,7 +3,7 @@
 # which of them are missing on this machine.
 #
 # This check is for local work only: continuous integration renders the book
-# from the frozen output in _freeze/ and needs no R packages at all.
+# from the frozen output in _freeze/ and needs only knitr and rmarkdown.
 #
 # Usage:  Rscript tests/test-dependencies.R [--strict]
 # With --strict the script exits non-zero when a package is missing.
