@@ -5,15 +5,15 @@
 
 That paragraph is the verbal theory behind a study by Yang and colleagues, who tested it in four American surveys spanning adolescence to old age [@yang2016]. Among adolescents, social isolation raised the odds of high inflammation about as much as physical inactivity did. Among the elderly, isolation raised the odds of hypertension more than diabetes did.
 
-How can we turn this paragraph into an inference based on data? The route is to state the theory as a set of claims about specific variables, draw the claims, turn the drawing into equations, work out what the equations imply about data not yet seen, and compare. Two things come out at the end. Estimating the model tells you something about the world *if the model is true*. Testing the model tells you something about some of the assumptions and/or the theory.
+To turn this paragraph into an inference based on data, we state the theory as a set of claims about specific variables, draw the claims, turn the drawing into equations, work out what the equations imply about data not yet seen, and compare. Two things come out at the end. Estimating the model tells you something about the world *if the model is true*. Testing the model tells you something about some of the assumptions and/or the theory.
 
 ## From words to graphical models
 
 A verbal theory contains two kinds of statement.
 
-A **covariation statement** says that two variables go together: the more social integration, the less inflammation. Turned around, the sentence says the same thing: the less inflammation, the more social integration. That symmetry is the diagnostic. If you can swap the halves and lose nothing, you have a covariation statement.
+A **covariation statement** says that two variables go together: the more social integration, the less inflammation. Turned around, the sentence says the same thing: the less inflammation, the more social integration. That symmetry is the test: if you can swap the halves and lose nothing, you have a covariation statement.
 
-A **causal hypothesis** says that one variable produces a change in another. Saris and Stronkhorst put the difference in terms of force: "a change in one variable (the cause) actually produces a change in another variable (the effect)" [@saris1984]. English marks these claims with verbs like *affect*, *influence*, *raise*, and *determine*, and the sentence does not survive being turned around. "Integration lowers inflammation" and "inflammation lowers integration" are different claims about different worlds, and only one of them justifies telling a health authority to fund community centres.
+A **causal hypothesis** says that one variable produces a change in another. Saris and Stronkhorst put the difference in terms of force: "a change in one variable (the cause) actually produces a change in another variable (the effect)" [@saris1984]. English marks these claims with verbs like *affect*, *influence*, *raise*, and *determine*, and turning the sentence around changes its meaning. "Integration lowers inflammation" and "inflammation lowers integration" are different claims, and only one of them justifies telling a health authority to fund community centres.
 
 ::: {.callout-tip icon="false" title="Exercise 2.1"}
 For each statement, say whether it is a covariation statement or a causal hypothesis, and apply the swap test.
@@ -27,8 +27,8 @@ For each statement, say whether it is a covariation statement or a causal hypoth
 ::: {.callout-note collapse="true" icon="false" title="Answer 2.1"}
 (a) Covariation. "The longer a country's people live, the higher its income per head" says the same thing, and both directions are substantively arguable.
 (b) Causal. Swapping gives "a depressive episode raises the risk of losing a job", which is a different claim, and also probably true, which is why studying this needs care about timing.
-(c) Covariation, as written. It reports a difference between groups. Most readers will supply the causal version silently.
-(d) Causal. "Children's lungs damage air pollution" is not a sentence anyone means.
+(c) Covariation, as written. It reports a difference between groups. Most readers will supply the causal version themselves.
+(d) Causal. "Children's lungs damage air pollution" is not a claim anyone would make.
 :::
 
 Once the claims are sorted, three steps produce the theory in a form you can draw [@saris1984]:
@@ -41,15 +41,15 @@ You have already seen the definition of a variable. Step 1 is also an opportunit
 
 Causal order is not always easy to determine. In some cases it is possible to establish causal order in advance, particularly when one variable comes after another in time. Longitudinal data are therefore a very useful design to rule out mistakes in this step, and that is why they are so popular^[They do not, however, automatically establish causality, nor are they required for useful causal inference.]. Another example is when one variable has known randomness to it, such as random assignment in an RCT or natural disasters; in this case we are confident that our social and health variables are not affecting these random events as well. In most other cases, the causal order forms part of the assumptions in the theory and model, to be tested insofar as that is possible with the data at hand (see following chapter).
 
-Step 3 does more than it appears to. When you say which variables affect which, you are also saying, of every pair you did not connect, that the effect between them is zero: "it is a convention that effects which are not specified are supposed to be zero" [@saris1984]. This is what makes a theory testable. It is very tempting to draw arrows between all variables because there "might" be an effect. However, a picture with an arrow between every pair of variables says nothing, forbids nothing, and cannot be wrong. Again these will remain as assumptions that should be made plausible through design, or tested with the data at hand, if possible. 
+When you say which variables affect which, you are also saying, of every pair you did not connect, that the effect between them is zero: "it is a convention that effects which are not specified are supposed to be zero" [@saris1984]. This is what makes a theory testable. It is very tempting to draw arrows between all variables because there "might" be an effect. However, a picture with an arrow between every pair of variables forbids nothing and so cannot be wrong. Again these will remain as assumptions that should be made plausible through design, or tested with the data at hand, if possible. 
 
 When you start thinking about the variables that could be important in a given context, you will quickly find that there is an almost endless list of them. In other words, you will need to choose a scope by limiting your attention to only a subset of relevant variables. Making the model sufficiently small to manage but not so small that it becomes trivial is part of the art of modeling. However, not all variables *can* be left out of the study without causing bias (i.e. a threat to validity). The rules to follow are:
 
-- A **common cause** of two variables you have connected can never be left out. Leave it out and its work is attributed to the arrow between them. Socioeconomic position causes both social integration and inflammation; drop it and integration gets the credit.
-- An **intervening variable** may be left out freely. The theory loses detail, and the effect that ran through it becomes part of the direct effect. Nothing is biased.
+- A **common cause** of two variables you have connected can never be left out. Leave it out and its effect is attributed to the arrow between them. Socioeconomic position causes both social integration and inflammation; drop it and the covariation it produces is attributed to integration.
+- An **intervening variable** may be left out freely. The theory loses detail, and the effect that ran through it becomes part of the direct effect, but nothing is biased.
 - A variable that causes only one of the two, and not the other, may be left out. You lose some explained variance and nothing else.
 
-Of these rules, the most crucial is the first one, about common causes. Ignoring it will immediately create an alternative explanation for the existence of a covariation among two variables (a threat to validity). But every common cause you add has common causes of its own, so again you need to choose a point at which to stop. This point will lead to paths among variables that covary, but about which you are not claiming any causal relationships. These are the **exogenous** variables: the model explains nothing about them, and their mutual covariation stays in the model as a curved two-headed arrow, unexplained on purpose. Everything the model does explain is **endogenous**. 
+Of these rules, the most crucial is the first one, about common causes. Ignoring it will immediately create an alternative explanation for the existence of a covariation among two variables (a threat to validity). But every common cause you add has common causes of its own, so again you need to choose a point at which to stop. This point will lead to paths among variables that covary, but about which you are not claiming any causal relationships. These are the **exogenous** variables: the model explains nothing about them, and their mutual covariation stays in the model as a curved two-headed arrow, which is deliberately left unexplained. Everything the model does explain is **endogenous**.
 
 **The key assumption of any causal modeling exercise is that all common causes of variables among which you wish to claim a causal relationship are included in the model.** This applies not just to the currently discussed causal modeling framework, but to any other one as well. 
 
@@ -76,7 +76,7 @@ $$\text{social integration} \;\rightarrow\; \{\text{inflammation, blood pressure
 
 The paragraph supplies the order itself. "Being embedded in a social network changes the body" puts integration before the three body measures. "Those physiological states are the *proximate* causes" — nearest the outcome — puts them after integration and before disease. Disease before death is what the mechanism means.
 
-Inside the trio the paragraph is silent, so they go unordered. 
+The paragraph says nothing about the order among the three physiological states, so they go unordered.
 
 For Yang and colleagues the order comes from measurement timing, four surveys running from adolescence to old age. Where it cannot come from time or from a manipulation, it is an assumption.
 
@@ -122,7 +122,7 @@ Coupled with the above equations is the key assumption: each disturbance is unco
 
 We have made two further choices in the equations above.
 
-**Linearity** says that a one-unit change in a cause produces the same change in the outcome wherever you start. For example, it fails when returns saturate: an extra thousand euros a year transforms life at the bottom of the income distribution and is invisible at the top.
+**Linearity** says that a one-unit change in a cause produces the same change in the outcome wherever you start. For example, it fails when returns saturate: an extra thousand euros a year makes a large difference at the bottom of the income distribution and almost none at the top.
 ```{r}
 #| label: fig-linearity
 #| echo: false
@@ -188,7 +188,7 @@ Which assumption does each scenario violate, linearity or additivity? Write the 
 (b) Linearity. The effect of schooling on earnings is not a constant per year, so add a nonlinear term, for example dummies for completed qualifications or a spline in years.
 (c) Additivity. Add $\beta\,(\text{loneliness} \times \text{male})$.
 (d) Linearity. Add a term such as $\log(\text{income})$ or a quadratic. Note that (b) and (d) say nothing about how the effect of one variable depends on another, and (a) and (c) say nothing about curvature. The two assumptions are independent.
-(e) A chain: $\xi \rightarrow \eta_1 \rightarrow \eta_2$, with a disturbance arrow into $\eta_1$ and another into $\eta_2$, and no equation for $\xi$. By omission it claims that $\xi$ has no direct effect on $\eta_2$, that nothing causes $\xi$ within the model, and that $\zeta_1$ and $\zeta_2$ are uncorrelated, which is to say that $\eta_1$ and $\eta_2$ share no unmeasured cause.
+(e) A chain: $\xi \rightarrow \eta_1 \rightarrow \eta_2$, with a disturbance arrow into $\eta_1$ and another into $\eta_2$, and no equation for $\xi$. By omission it claims that $\xi$ has no direct effect on $\eta_2$, that nothing causes $\xi$ within the model, and that $\zeta_1$ and $\zeta_2$ are uncorrelated, so that $\eta_1$ and $\eta_2$ share no unmeasured cause.
 :::
 
 ### Interpreting the coefficients of linear equations
@@ -205,9 +205,9 @@ round(coef(summary(fit)), 3)
 
 So: people with a hypertension diagnosis have 0.82 more diagnosed conditions on average than people of the same BMI without one; each additional BMI point goes with 0.020 more conditions, at the same hypertension status.
 
-These statements are the left-hand panels of @fig-linearity and @fig-additivity in numbers. One slope per predictor: the BMI point from 20 to 21 adds the same 0.020 conditions as the point from 39 to 40. And no product terms: the model puts the hypertension gap at 0.82 conditions whatever the BMI, which is the parallel-lines claim.
+These statements are the left-hand panels of @fig-linearity and @fig-additivity in numbers. There is one slope per predictor: the BMI point from 20 to 21 adds the same 0.020 conditions as the point from 39 to 40. And there are no product terms: the model puts the hypertension gap at 0.82 conditions whatever the BMI, which is the parallel-lines claim.
 
-It can be helpful to judge the size over a typical range rather than per unit. Two hundredths of a condition per BMI point sounds like nothing. But BMI in this sample runs from 15 to 58, so the variable spans about 0.9 conditions, roughly the size of the hypertension gap itself.
+It can be helpful to judge the size over a typical range rather than per unit. Two hundredths of a condition per BMI point seems small. But BMI in this sample runs from 15 to 58, so the variable spans about 0.9 conditions, roughly the size of the hypertension gap itself.
 
 A **standardized** coefficient does a version of that scaling for you, using the standard deviation rather than the range: it reports the change in standard deviations of the outcome per standard deviation of the predictor.
 
@@ -216,7 +216,7 @@ A **standardized** coefficient does a version of that scaling for you, using the
 coef(fit)[["bmi"]] * sd(d$bmi, na.rm = TRUE) / sd(d$disease_count, na.rm = TRUE)
 ```
 
-A standard deviation means something different in every population, so unstandardized coefficients travel between studies and standardized ones do not. Within one sample, standardized coefficients let you compare predictors measured in different units. One caution for 0/1 variables like the hypertension diagnosis: nobody changes by "a standard deviation of hypertension", so standardizing a dummy rarely clarifies anything, and its unstandardized coefficient, the gap between the two groups, is already the interpretable number.
+A standard deviation means something different in every population, so unstandardized coefficients can be compared across studies and standardized ones cannot. Within one sample, standardized coefficients let you compare predictors measured in different units. One caution for 0/1 variables like the hypertension diagnosis: nobody changes by "a standard deviation of hypertension", so standardizing a dummy rarely clarifies anything, and its unstandardized coefficient, the gap between the two groups, is already the interpretable number.
 
 A prediction follows by filling in values. For a person with a hypertension diagnosis and a BMI of 30,
 
@@ -237,27 +237,27 @@ Use the disease regression above (intercept 0.026, `hypertension` 0.823, `bmi` 0
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 2.3"}
 (a) Among people with the same hypertension status, each additional point of BMI goes with 0.020 more diagnosed chronic conditions on average. The "same hypertension status" clause is what ties the number to this equation: add or remove predictors and the comparison changes.
-(b) The sentence is wrong twice over. The 0.82 is not a number of conditions but a difference in conditions, between people with a hypertension diagnosis and people without one; and the comparison holds BMI constant. "People with a hypertension diagnosis have 0.82 more chronic conditions than people of the same BMI without one" is the sentence the coefficient supports.
+(b) The sentence is wrong in two ways. The 0.82 is not a number of conditions but a difference in conditions, between people with a hypertension diagnosis and people without one; and the comparison holds BMI constant. "People with a hypertension diagnosis have 0.82 more chronic conditions than people of the same BMI without one" is the sentence the coefficient supports.
 (c) The per-point effects are nearly identical, so the effect is nearly the same in both settings. Almost the whole difference between 0.10 and 0.04 comes from the standard deviation of BMI, which the clinic's intake has compressed to a narrow band. A standard deviation is a property of a population and a data collection, not of the effect, so standardized coefficients should not be compared across the two samples; the numbers to compare are 0.020 and 0.019.
-(d) Both, for different jobs. Conditions per BMI point is the number another researcher can carry to their own population; conditions across the range is the number that says whether the variable matters in this one. Reporting the per-unit slope alone invites judging importance by it, which is only safe when you also know the range.
+(d) Both, for different purposes. Conditions per BMI point is the number another researcher can apply to their own population; conditions across the range is the number that says whether the variable matters in this one. Reporting the per-unit slope alone invites judging importance by it, which is only safe when you also know the range.
 :::
 
 ## What the theory implies about the data
 
 So far we have turned a verbal theory into a statistical model with a set of equations. The parameters of these equations are of interest to us, since they will tell us about our theory, under the assumptions of the model, as made plausible by the design. We will obtain estimates of these parameters from data by (1) deriving the relationship between the parameters and observed data, assuming the model is true; (2) getting some observed data and working back to the most likely parameter values. 
 
-This is where our choice for linear and additive models will really help. As it turns out, linear and additive equations can really only affect the means, variances, and covariances of variables. Any other features of the data distribution have nothing to do with the parameters of interest (except through means, variances, and covariances). This remarkable fact makes our life very easy: we only need to work out how the parameters relate to the means, variances, and covariances, and everything else follows. Such is the power of simple models! 
+This is where our choice for linear and additive models helps. Linear and additive equations can only affect the means, variances, and covariances of variables. Any other features of the data distribution have nothing to do with the parameters of interest (except through means, variances, and covariances). This simplifies the task: we only need to work out how the parameters relate to the means, variances, and covariances, and everything else follows.
 
 Here we will further simplify the discussion by ignoring means and standardizing all variables; we then only have to deal with correlations.
 
-The final model in @fig-yang-final is a lot to start with. So we begin with a smaller practice model of the same form, drawn in @fig-yang, and return to the full version once the rules are in hand. It keeps social integration ($\xi$), one physiological state ($\eta_1$, inflammation), and mortality risk ($\eta_2$); a direct arrow from integration to mortality stands in for every route that bypasses inflammation. This model has three unknown parameters: the effects $\gamma_1$ and $\gamma_2$ of the exogenous variable, and the effect $\beta$ of one endogenous variable on the other. The data contain three correlations. What connects the parameters and the equations? The answer is the **decomposition rule**^[The recipe works for **recursive** models, meaning models without reciprocal effects or feedback loops. This way of computing implied correlations is classically known as the *tracing rules* [@wright1934; @saris1984].].
+The final model in @fig-yang-final is large for a first example, so we begin with a smaller practice model of the same form, drawn in @fig-yang, and return to the full version once the rules are in hand. It keeps social integration ($\xi$), one physiological state ($\eta_1$, inflammation), and mortality risk ($\eta_2$); a direct arrow from integration to mortality stands in for every route that bypasses inflammation. This model has three unknown parameters: the effects $\gamma_1$ and $\gamma_2$ of the exogenous variable, and the effect $\beta$ of one endogenous variable on the other. The data contain three correlations. The connection between the two is the **decomposition rule**^[The recipe works for **recursive** models, meaning models without reciprocal effects or feedback loops. This way of computing implied correlations is classically known as the *tracing rules* [@wright1934; @saris1984].].
 
 ![A three-variable practice model. Social integration ($\xi$) affects inflammation ($\eta_1$), inflammation affects mortality risk ($\eta_2$), and the direct arrow collects every route from integration to mortality that bypasses inflammation. The coefficients $\gamma_1$, $\beta$, $\gamma_2$ are the quantities to be learned.](diagrams/yang.png){#fig-yang width="80%" fig-align="center"}
 
 > **Decomposition rule** 
 > The correlation coefficient between two variables is equal to the sum of the direct effects, the indirect effects, the spurious relationships and the joint effects.
 
-You should be able to recite this rule if woken up in the middle of the night.
+You should know this rule by heart.
 
 Each of the direct effects, indirect effects, spurious relationships, and joint effects makes a specific contribution to the total correlation. The rules for the contribution of each relationship to the overall correlation among two variables are as follows:
 
@@ -272,7 +272,7 @@ Each of the direct effects, indirect effects, spurious relationships, and joint 
 
 ![Three possibilities for the $(X_1, X_2)$ relationship on the left-hand side, left unspecified as a joint effect on the right-hand side. Whichever of the three models is true, the implied correlations among $X_1$, $X_2$, and $Y$ are identical once $\phi = \gamma_1 = \gamma_2 = \lambda_1\lambda_2$, so the curved arrow can stand for all of them. Its contribution to the correlation between $X_1$ and $Y$ is the joint effect $\phi\beta$.](diagrams/joint-effect.png){#fig-joint width="90%" fig-align="center"}
 
-The sum in our decomposition rule runs over *every* contribution of *every* kind. Every arrow between the pair, every one-way chain, every common cause with every pair of chains running out of it, every curved arrow with every pair of chains running out of its ends; with longer chains, multiply every coefficient along the way. 
+The sum in the decomposition rule runs over every contribution of every kind: every arrow between the pair, every one-way chain, every common cause with each pair of chains running out of it, and every curved arrow with each pair of chains running out of its ends; with longer chains, multiply every coefficient along the way.
 
 Let's apply this to @fig-yang. Suppose, for the sake of arithmetic, that the true values are $\gamma_1 = -0.40$, $\beta = 0.30$, and $\gamma_2 = -0.50$, with all three variables standardized.
 
@@ -286,7 +286,7 @@ Between $\eta_1$ and $\eta_2$ there are also two: the direct effect $\beta$, and
 
 $$\rho_{\eta_1\eta_2} = \beta + \gamma_1\gamma_2 = 0.30 + (-0.40)(-0.50) = 0.50.$$
 
-Something important has happened to $\rho_{\eta_1\eta_2}$. The causal effect of inflammation on mortality risk is 0.30, and the correlation between them is 0.50: two thirds larger than the effect itself. The gap of $\gamma_1\gamma_2 = 0.20$ is confounding, manufactured by a variable that is in the model and that we know about. If social integration were not in the model, we would read 0.50 as the effect and never know that a large part of it is spurious.
+The correlation $\rho_{\eta_1\eta_2}$ overstates the causal effect it contains. The causal effect of inflammation on mortality risk is 0.30, and the correlation between them is 0.50: two thirds larger than the effect itself. The gap of $\gamma_1\gamma_2 = 0.20$ is confounding, produced by a variable that is in the model and that we know about. If social integration were not in the model, we would read 0.50 as the effect and never know that a large part of it is spurious.
 
 
 ::: {.callout-tip icon="false" title="Exercise 2.4"}
@@ -300,12 +300,12 @@ Practice applying the decomposition rule one contribution at a time, on @fig-yan
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 2.4"}
 (a) A single direct effect, the arrow itself, so $\rho_{\xi\eta_1} = \gamma_1 = -0.40$.
-(b) $\eta_2$ is a common effect of the two, and none of the four relationships contains a common effect: it is not an arrow between them, not a one-way chain, not a common cause, not a curved arrow. Common effects do not induce correlation between their causes. (They do induce one *among units selected on $\eta_2$*, a separate trap with its own name, collider bias.)
+(b) $\eta_2$ is a common effect of the two, and none of the four relationships contains a common effect: it is not an arrow between them, not a one-way chain, not a common cause, not a curved arrow. Common effects do not induce correlation between their causes. (They do induce one *among units selected on $\eta_2$*, which is the separate problem of collider bias.)
 (c) $\rho_{\eta_1\eta_2} = 0.30 + (-0.40)(0.50) = 0.10$. Flipping the sign of a path that is not on the direct route still changes the correlation, and here it moves the other way, so the observed correlation now understates the effect. A correlation is a sum of contributions from the whole model, and no part of it can be read off in isolation.
 (d) With $\gamma_2 = 0$ the spurious relationship vanishes and $\rho_{\eta_1\eta_2} = \beta = 0.30$. The correlation would then equal the effect. That is what "no confounding" means, and it rests on an assumption rather than on data.
 :::
 
-Now return to @fig-yang-final. Between inflammation ($\eta_1$) and blood pressure ($\eta_2$), two relationships can then be recognized. Social integration is a common cause, with the chains $\gamma_1$ and $\gamma_2$ running out of it: a spurious relationship of $\gamma_1 \gamma_2$. And the curved arrow joins the two variables directly, with both of its chains empty: a joint effect of $\psi_{12}$. So $\rho_{\eta_1\eta_2} = \gamma_1 \gamma_2 + \psi_{12}$: one part the model explains, one part it declines to. Between inflammation and death ($\eta_4$), three of the four kinds appear at once: the direct effect $\beta_1'$; two spurious relationships through social integration, $\gamma_1 \gamma_2 \beta_2' + \gamma_1 \gamma_3 \beta_3'$; and two joint effects through the curved arrows, $\psi_{12}\, \beta_2' + \psi_{13}\, \beta_3'$, each with an empty chain on the inflammation side and the chain into death on the other.
+Now return to @fig-yang-final. Between inflammation ($\eta_1$) and blood pressure ($\eta_2$), two relationships can then be recognized. Social integration is a common cause, with the chains $\gamma_1$ and $\gamma_2$ running out of it: a spurious relationship of $\gamma_1 \gamma_2$. And the curved arrow joins the two variables directly, with both of its chains empty: a joint effect of $\psi_{12}$. So $\rho_{\eta_1\eta_2} = \gamma_1 \gamma_2 + \psi_{12}$: one part the model explains and one part it leaves unexplained. Between inflammation and death ($\eta_4$), three of the four kinds appear at once: the direct effect $\beta_1'$; two spurious relationships through social integration, $\gamma_1 \gamma_2 \beta_2' + \gamma_1 \gamma_3 \beta_3'$; and two joint effects through the curved arrows, $\psi_{12}\, \beta_2' + \psi_{13}\, \beta_3'$, each with an empty chain on the inflammation side and the chain into death on the other.
 
 The decomposition rule does not apply only to models with observed variables (in boxes), but can also be applied to more complex models with unobserved variables in them (in circles). One example of such a model is the "ACE" model from twin studies. This is a model for data that have been collected from two groups of twins. 
 Identical twins share essentially all their genes; fraternal twins share half on average. ACE models each twin's trait as the sum of an additive genetic factor $A$, an environment $C$ shared by both twins, and an environment $E$ unique to each [@rijsdijk2002]. All three are unobserved, which is why @fig-ace draws them in circles. You can assume the variables $y_1$ and $y_2$ are standardized.
@@ -341,7 +341,7 @@ Using the ACE diagram, suppose a trait has a genetic loading of 0.6, a shared-en
 
 ## Estimating and testing
 
-In the previous section, you saw that correlations can be written in terms of parameters by using the decomposition rule. In practice, we would like to know (or estimate) the parameters, because they say something about causal effects or about the theory, under the assumptions of the model (made plausible by the design). We cannot directly observe the parameters, but we can observe (or estimate) the correlations. And each correlation gives an equation in the parameters. So if we can solve these equations for the parameters, then *under the assumptions of the model* we will have estimated the parameters. That is what fitting a structural model does, and `lavaan` does it in a few lines. It is worth doing once by hand first, because the hand version shows exactly what the software is doing.
+In the previous section, you saw that correlations can be written in terms of parameters by using the decomposition rule. In practice, we would like to know (or estimate) the parameters, because they say something about causal effects or about the theory, under the assumptions of the model (made plausible by the design). We cannot directly observe the parameters, but we can observe (or estimate) the correlations. And each correlation gives an equation in the parameters. So if we can solve these equations for the parameters, then *under the assumptions of the model* we will have estimated the parameters. That is what fitting a structural model does, and `lavaan` does it in a few lines. We first do it by hand, because the hand version shows what the software is doing.
 
 The decomposition rule gave three equations for the practice model of @fig-yang:
 
@@ -353,7 +353,7 @@ $$
 \end{aligned}
 $$
 
-Three equations, three unknowns. The first hands us $\gamma_1$ directly. Substituting it into the other two leaves two linear equations in $\beta$ and $\gamma_2$, and solving them gives
+There are three equations and three unknowns. The first gives $\gamma_1$ directly. Substituting it into the other two leaves two linear equations in $\beta$ and $\gamma_2$, and solving them gives
 
 $$
 \gamma_2 = \frac{\rho_{\xi\eta_2} - \rho_{\xi\eta_1}\,\rho_{\eta_1\eta_2}}{1 - \rho_{\xi\eta_1}^2},
@@ -361,7 +361,7 @@ $$
 \beta = \frac{\rho_{\eta_1\eta_2} - \rho_{\xi\eta_1}\,\rho_{\xi\eta_2}}{1 - \rho_{\xi\eta_1}^2}.
 $$
 
-The LISS panel does not measure inflammation, so to put these formulas to work on real data we use three variables that it does measure: age ($\xi$), the hypertension diagnosis ($\eta_1$), and the number of other chronic conditions ($\eta_2$). The structure is exactly that of the practice model: age affects the chance of a hypertension diagnosis, hypertension affects the number of other conditions, and the direct arrow collects every route from age to disease that bypasses hypertension.^[Hypertension is a 0/1 variable, which sits somewhat awkwardly in a linear model; the next section takes that problem seriously. For the moment its correlations are used like any other variable's.] The observed correlations are
+The LISS panel does not measure inflammation, so to put these formulas to work on real data we use three variables that it does measure: age ($\xi$), the hypertension diagnosis ($\eta_1$), and the number of other chronic conditions ($\eta_2$). The structure is the same as that of the practice model: age affects the chance of a hypertension diagnosis, hypertension affects the number of other conditions, and the direct arrow collects every route from age to disease that bypasses hypertension.^[Hypertension is a 0/1 variable, which sits somewhat awkwardly in a linear model; the next section addresses that problem. For the moment its correlations are used like any other variable's.] The observed correlations are
 
 ```{r}
 #| label: liss-sem-cor
@@ -383,7 +383,7 @@ beta   <- (r_12 - r_x1 * r_x2) / (1 - r_x1^2)
 round(c(gamma1 = gamma1, beta = beta, gamma2 = gamma2), 3)
 ```
 
-Note what the middle number says. The correlation between hypertension and disease count is 0.316, but the estimated effect $\hat\beta$ is 0.245. The difference is the walkthrough's confounding gap in real numbers: the spurious contribution through age is $\hat\gamma_1\hat\gamma_2 = 0.296 \times 0.237 = 0.070$, and reading the raw correlation as the effect would overstate it by about a quarter.
+The middle number shows the confounding gap of the walkthrough in real data. The correlation between hypertension and disease count is 0.316, but the estimated effect $\hat\beta$ is 0.245. The spurious contribution through age is $\hat\gamma_1\hat\gamma_2 = 0.296 \times 0.237 = 0.070$, and reading the raw correlation as the effect would overstate it by about a quarter.
 
 `lavaan` produces the same estimates from the same equations:
 
@@ -397,11 +397,11 @@ fit <- sem(model, data = liss_std)
 parameterEstimates(fit)[1:3, c("lhs", "op", "rhs", "est", "se", "z")]
 ```
 
-The estimates match the hand calculation exactly, and this is no accident: with three parameters and three correlations, the model can always reproduce the observed correlations perfectly, whatever they are. A recursive model in this state is called **saturated** or **just identified**. Its perfect fit is guaranteed in advance, so the fit itself carries no information about the theory; the information is in the estimates.
+The estimates match the hand calculation exactly, because with three parameters and three correlations the model can always reproduce the observed correlations perfectly, whatever they are. A recursive model in this state is called **saturated** or **just identified**. Its perfect fit is guaranteed in advance, so the fit itself carries no information about the theory; the information is in the estimates.
 
 A quick count tells you in advance whether a model is in this state. With $k$ observed variables there are $k(k+1)/2$ variances and covariances to fit, or $k(k-1)/2$ correlations if everything is standardized; count the free parameters and subtract. A model with more parameters than moments cannot possibly be identified, and a model with the same number can fit anything. Saris and Stronkhorst are careful to add that passing the count is necessary and not sufficient, a point @sec-identification returns to.
 
-To learn something from fit, the theory must forbid something. Suppose the claim is that age affects disease *only* through hypertension, so that $\gamma_2 = 0$. This is the practice-model version of the claim our final model makes about social integration, that it reaches death only through the body; for age the claim is almost certainly false, which is exactly what makes it a good demonstration. Under the restriction, the three equations become
+To learn something from fit, the theory must forbid something. Suppose the claim is that age affects disease *only* through hypertension, so that $\gamma_2 = 0$. This is the practice-model version of the claim our final model makes about social integration, that it reaches death only through the body; for age the claim is almost certainly false, which is what makes it a good demonstration. Under the restriction, the three equations become
 
 $$
 \rho_{\xi\eta_1} = \gamma_1, \qquad
@@ -409,7 +409,7 @@ $$
 \rho_{\eta_1\eta_2} = \beta .
 $$
 
-Three equations, but now only two unknowns: the system is overdetermined, and one equation is left over as a prediction the data can reject. Solving the first and third equations gives $\hat\gamma_1 = 0.296$ and $\hat\beta = 0.316$. The middle equation then predicts $\rho_{\xi\eta_2} = \hat\gamma_1\hat\beta = 0.094$, while the observed value is 0.310. The residual, $e = 0.310 - 0.094 = 0.217$, measures how far the data are from what the restricted model can produce. Dividing its square by its approximate variance gives a chi-square statistic with one degree of freedom, one for the one leftover equation:
+There are three equations but now only two unknowns, so the system is overdetermined, and one equation is left over as a prediction the data can reject. Solving the first and third equations gives $\hat\gamma_1 = 0.296$ and $\hat\beta = 0.316$. The middle equation then predicts $\rho_{\xi\eta_2} = \hat\gamma_1\hat\beta = 0.094$, while the observed value is 0.310. The residual, $e = 0.310 - 0.094 = 0.217$, measures how far the data are from what the restricted model can produce. Dividing its square by its approximate variance gives a chi-square statistic with one degree of freedom, one for the one leftover equation:
 
 ```{r}
 #| label: liss-sem-test-hand
@@ -453,7 +453,7 @@ round(cbind(coef = coef(fit_ht), odds_ratio = exp(coef(fit_ht))), 3)
 
 The coefficient on social integration is $-0.044$: each additional point of integration goes with lower log-odds of a hypertension diagnosis, in the protective direction the theory predicts, although this estimate is not statistically distinguishable from zero. To see how logistic coefficients are read, the BMI coefficient of 0.092 is a better example, and it can be read three ways, from most literal to most useful.
 
-*On the log-odds scale.* Each additional BMI point goes with 0.092 higher log-odds of a hypertension diagnosis, holding integration, age, and gender constant. To get some intuitive idea of what this means, the **divide-by-four rule** helps: the change in probability for a unit change in the predictor is at most the log-odds coefficient divided by 4, a maximum that is reached when the probability is near 0.5 [@gelmanhill2007]. Here $0.092/4 = 0.023$, so an extra BMI point shifts the probability of a diagnosis by at most about 2 percentage points. It is also helpful to remember a few anchor points: log-odds of 0 correspond to a probability of 0.5, and log-odds of $+3$ and $-3$ to probabilities of 0.95 and 0.05. A change of 1 on the log-odds scale is a lot. @fig-divide4 shows where the rule comes from.
+*On the log-odds scale.* Each additional BMI point goes with 0.092 higher log-odds of a hypertension diagnosis, holding integration, age, and gender constant. To get some intuitive idea of what this means, the **divide-by-four rule** helps: the change in probability for a unit change in the predictor is at most the log-odds coefficient divided by 4, a maximum that is reached when the probability is near 0.5 [@gelmanhill2007]. Here $0.092/4 = 0.023$, so an extra BMI point shifts the probability of a diagnosis by at most about 2 percentage points. It is also helpful to remember a few anchor points: log-odds of 0 correspond to a probability of 0.5, and log-odds of $+3$ and $-3$ to probabilities of 0.95 and 0.05. A change of 1 on the log-odds scale is therefore large. @fig-divide4 shows where the rule comes from.
 
 ```{r}
 #| label: fig-divide4
@@ -503,7 +503,7 @@ Using the fitted model above (intercept $-7.864$, integration $-0.044$, age 0.06
 (d) Both are defensible, and if only one, the probability difference, since it is on the scale of the decision anyone is making. The odds ratio is stable across profiles and is the right number for comparing studies. It is also routinely misread as a risk ratio, which overstates the association whenever the outcome is common; at the roughly 11 percent prevalence in this sample the two are still fairly close, but that is a fact to check rather than to assume.
 :::
 
-Published tables are less tidy than this one. Forster, Bol and van de Werfhorst asked whether vocational education helps or harms employment over a career, using the international survey of adult skills known as PIAAC, in 22 countries, with 52,677 men and 57,955 women [@forster2016]. They proposed that vocational schooling gives a head start early on, when specific skills are worth something to an employer, and becomes a liability later, when those specific skills go obsolete while general education keeps paying. Here is the heart of their table.
+Published tables are less tidy than this one. Forster, Bol and van de Werfhorst asked whether vocational education helps or harms employment over a career, using the international survey of adult skills known as PIAAC, in 22 countries, with 52,677 men and 57,955 women [@forster2016]. They proposed that vocational schooling gives a head start early on, when specific skills are worth something to an employer, and becomes a liability later, when those specific skills go obsolete while general education keeps paying. Here is the main part of their table.
 
 | Coefficient (log-odds) | Men (2) | Men (3) | Women (2) | Women (3) |
 |---|---|---|---|---|
@@ -521,13 +521,13 @@ Published tables are less tidy than this one. Forster, Bol and van de Werfhorst 
 
 : Employment as a function of education type and age, from @forster2016, models (2) and (3), with country fixed effects. Standard errors omitted here. Model (3) adds numeracy and its interaction with age. {#tbl-forster}
 
-Three features of @tbl-forster change the arithmetic and are easy to miss. Age is coded so that 16 equals zero, so the constant describes a 16-year-old rather than a newborn. Age squared has been divided by 10 to keep the printed digits readable. And three separate education variables are in play: the *type* of education (vocational, with general as the reference), the *level* the person reached (with lower secondary as the reference), and the level their parents reached (with primary as the reference).
+Three features of @tbl-forster change the arithmetic and are easy to miss. Age is coded so that 16 equals zero, so the constant describes a 16-year-old rather than a newborn. Age squared has been divided by 10 to keep the printed digits readable. And there are three separate education variables: the *type* of education (vocational, with general as the reference), the *level* the person reached (with lower secondary as the reference), and the level their parents reached (with primary as the reference).
 
 Model (3) for men illustrates. The effect of vocational education on the log-odds of employment, at age $16 + t$, is
 
 $$0.487 - 0.017\,t .$$
 
-At the start of a career the effect is positive. It shrinks by 0.017 each year, and it crosses zero when $0.487 = 0.017\,t$, that is at $t = 28.6$ years, or around age 45. The authors report the same figure. After that, vocational education goes with lower employment odds than general education. Both halves of their theory are visible in two numbers, and neither is visible in either number alone.
+At the start of a career the effect is positive. It shrinks by 0.017 each year, and it crosses zero when $0.487 = 0.017\,t$, that is at $t = 28.6$ years, or around age 45. The authors report the same figure. After that, vocational education goes with lower employment odds than general education. Both halves of their theory are visible only when the two numbers are read together.
 
 ::: {.callout-tip icon="false" title="Exercise 2.7"}
 Stay with @tbl-forster, and use the column for women, model (2), throughout.
@@ -545,33 +545,33 @@ Stay with @tbl-forster, and use the column for women, model (2), throughout.
 (d) Age squared applies to everyone at a given age regardless of which school they went to, so it enters both sides of the comparison and cancels. Only terms involving the vocational variable belong in the calculation of the vocational effect.
 :::
 
-The advantage of the logistic model is that it can never predict probabilities beyond the $[0,1]$ range. It also has disadvantages. One large disadvantage, at least for didactical purposes, is that it is not linear, so the decomposition rule does not apply. And, in fact, correlations are no longer enough to estimate the full model.
+The advantage of the logistic model is that it can never predict probabilities beyond the $[0,1]$ range. It also has disadvantages. One large disadvantage, at least for didactical purposes, is that it is not linear, so the decomposition rule does not apply. Also, correlations are no longer enough to estimate the full model.
 
-This raises a question with a long and still-active history: why not simply fit a linear model to the 0/1 outcome anyway? The result is called the **linear probability model** (LPM), and there are serious arguments on both sides.
+One might instead fit a linear model to the 0/1 outcome anyway. The result is called the **linear probability model** (LPM). The choice between the two has a long and still-active history, and there are serious arguments on both sides.
 
 The case for the LPM starts with its coefficients. An LPM coefficient is a difference in probabilities, which is usually the quantity a reader wants, and it does not change its meaning when the model changes. Logistic coefficients and odds ratios do: because the logistic model fixes the scale of its disturbance, adding a variable to the equation changes the remaining coefficients *even when the added variable is unrelated to the other predictors*, so log-odds coefficients cannot be compared across models, groups, or samples [@mood2010]. Probability differences can, and they also fit the path-analytic machinery of this chapter, which log-odds coefficients do not [@hellevik2009]. Three further points favour the linear model in specific situations. In a randomized experiment, the linear regression of a 0/1 outcome on treatment is an unbiased estimate of the average effect on the probability, and no nonlinear machinery improves on it [@gomila2021]. In models with product terms, the logit or probit interaction *coefficient* is not the interaction *effect*: the effect can differ in size and even in sign from the coefficient, and its standard software test is wrong, while in the LPM the interaction coefficient is the interaction effect [@ai2003]. And the LPM's well-known heteroskedasticity is repaired by robust standard errors, while least squares is nearly as efficient as maximum likelihood for the linear-in-probability model and far less sensitive to a few extreme observations [@battey2019].
 
-The case against is equally concrete. A linear probability model can put fitted probabilities outside $[0,1]$, and when the true linear index does leave the unit interval, least squares is biased and inconsistent, not merely inelegant [@horrace2006]. Near the boundaries the linear approximation genuinely fails: rare outcomes are logistic regression's home ground. The popular defence "my fitted values all lie between 0 and 1" turns out to be unreliable in both directions: it is neither necessary nor sufficient for the LPM to approximate the average effects implied by a nonlinear model, and with skewed predictors logit and probit average effects are clearly more accurate [@chen2023]. The classical position, that the LPM is simply not a coherent probability model [@amemiya1981], has lost some force now that software makes the nonlinear models effortless, but it has not disappeared.
+The case against is equally concrete. A linear probability model can put fitted probabilities outside $[0,1]$, and when the true linear index does leave the unit interval, least squares is biased and inconsistent [@horrace2006]. Near the boundaries the linear approximation fails, so for rare outcomes logistic regression is the better model. The popular defence "my fitted values all lie between 0 and 1" turns out to be unreliable in both directions: it is neither necessary nor sufficient for the LPM to approximate the average effects implied by a nonlinear model, and with skewed predictors logit and probit average effects are clearly more accurate [@chen2023]. The classical position, that the LPM is simply not a coherent probability model [@amemiya1981], has lost some force now that software makes the nonlinear models effortless, but it has not disappeared.
 
-In practice the two camps agree more than the debate suggests. For experimental contrasts and models built from categories, the LPM is unimpeachable and maximally interpretable. For modeling probabilities across a wide range, especially near 0 or 1, the logistic model is the safer tool. And either way, the quantity to report is on the probability scale: predicted probabilities at informative profiles, or differences in them, rather than raw odds ratios.
+In practice the two camps agree more than the debate suggests. For experimental contrasts and models built from categories, the LPM is sound and the most interpretable choice. For modeling probabilities across a wide range, especially near 0 or 1, the logistic model is the safer tool. And either way, the quantity to report is on the probability scale: predicted probabilities at informative profiles, or differences in them, rather than raw odds ratios.
 
 
 ## Nonlinear and nonadditive models
 
-We all know the world isn't really linear and additive, and there is an infinite number of ways in which it can be nonlinear and nonadditive.
-Many modeling approaches exist to account for such phenomena. Agent-based models specify no equations at all; random forests, boosted trees, Gaussian processes and neural networks fit shapes that no one writes down. All of these exist and later chapters use some of them.
+The world is not really linear and additive, and there is an infinite number of ways in which it can be nonlinear and nonadditive.
+Many modeling approaches exist to account for such phenomena. Agent-based models specify no equations at all; random forests, boosted trees, Gaussian processes and neural networks fit functional forms that are never written down explicitly. Later chapters use some of these.
 
 Even though the world is not linear, it can still be a good idea to use linear models anyway. The arguments come in four groups.
 
-The first argument is that a linear model estimates something meaningful even when it is false. When the true relationship is curved, least squares does not estimate a fiction: it estimates the *best linear approximation* to the true relationship, and inference for that approximation remains valid provided robust ("sandwich") standard errors are used [@white1980; @buja2019]. Over the range that most predictors actually cover, that approximation is often close, and transformations can extend its reach, which were Saris and Stronkhorst's own two reasons for adopting linearity. The approximation view comes with two warnings, however. The best linear approximation depends on the distribution of the predictors, so it is a property of a population as well as of a relationship [@buja2019]. And when effects differ across groups, the single linear coefficient is a weighted average of them, with weights the analyst did not choose: regression weights units by conditional variance, so the "effective sample" can differ substantially from the nominal one [@aronow2016], and in the two-group case the weights are even *inversely* related to group size [@sloczynski2022]. A linear summary of a nonlinear or heterogeneous world is legitimate, but it should be read as a summary, and checked. The checking matters more than is comfortable: in a replication of 46 published interaction effects, the assumption that the interaction is itself linear held in only about half [@hainmueller2019].
+The first argument is that a linear model estimates something meaningful even when it is false. When the true relationship is curved, least squares estimates the *best linear approximation* to the true relationship, and inference for that approximation remains valid provided robust ("sandwich") standard errors are used [@white1980; @buja2019]. Over the range that most predictors actually cover, that approximation is often close, and transformations can extend its reach, which were Saris and Stronkhorst's own two reasons for adopting linearity. The approximation view comes with two warnings, however. The best linear approximation depends on the distribution of the predictors, so it is a property of a population as well as of a relationship [@buja2019]. And when effects differ across groups, the single linear coefficient is a weighted average of them, with weights the analyst did not choose: regression weights units by conditional variance, so the "effective sample" can differ substantially from the nominal one [@aronow2016], and in the two-group case the weights are even *inversely* related to group size [@sloczynski2022]. A linear summary of a nonlinear or heterogeneous world is legitimate, but it should be read as a summary, and checked. The checking matters: in a replication of 46 published interaction effects, the assumption that the interaction is itself linear held in only about half [@hainmueller2019].
 
 The second argument is empirical: if strong nonlinearity mattered in an application, flexible models should predict better there, and on most social and health data they do not. When 160 teams competed to predict six life outcomes from thousands of variables, using any method they liked, the best machine-learning predictions were only slightly better than a linear benchmark with a handful of predictors, and not very accurate in absolute terms [@salganik2020]. In clinical prediction, a systematic review of 71 studies found no performance advantage of machine learning over logistic regression once biased comparisons were set aside; the apparent advantage lived entirely in the studies at high risk of bias [@christodoulou2019]. The picture reverses only in particular conditions. Flexible methods need far more data: roughly ten times as many events per variable as logistic regression before their performance stabilizes [@ploeg2014], and in learning-curve comparisons the linear model wins at small samples while tree-based methods overtake it only as samples grow large, with the crossing point depending on how much signal the data carry [@perlich2003]. Where the input is unstructured and the sample enormous, nonlinear models win decisively, as when a deep network trained on 128,000 retinal photographs detected diabetic retinopathy about as well as ophthalmologists [@gulshan2016]. On tabular data of ordinary size, the gain from flexibility is usually small, and it is easily swamped by problems the comparison ignores, such as changing populations and measurement error [@hand2006].
 
-The third argument explains the second: measurement error erases nonlinearity before it erases linear signal. Random error in a predictor smooths the relationship that can be observed, and it attenuates higher-order terms fastest: the reliability of a product term is roughly the product of its components' reliabilities [@busemeyer1983], one reason field studies so rarely detect the interactions that experiments find [@mcclelland1993]. In environmental epidemiology, exposure error "tends to flatten and apparently linearize" dose-response relationships that are truly curved or threshold-shaped [@rhomberg2011]. The general version is that noise attenuates a $k$-way interaction by the measurement reliability raised to the $k$-th power, while linear effects are attenuated only once; in 140 biomedical prediction tasks, adding noise closed the gap between flexible and linear models exactly as this predicts [@schulz2026]. The moral cuts both ways. For estimation and prediction with noisy measures, the linear model is close to the best that can be done with the data actually available. For theory, a failure to find nonlinearity in noisy data is weak evidence that the world is linear.
+The third argument explains the second: measurement error erases nonlinearity before it erases linear signal. Random error in a predictor smooths the relationship that can be observed, and it attenuates higher-order terms fastest: the reliability of a product term is roughly the product of its components' reliabilities [@busemeyer1983], one reason field studies so rarely detect the interactions that experiments find [@mcclelland1993]. In environmental epidemiology, exposure error "tends to flatten and apparently linearize" dose-response relationships that are truly curved or threshold-shaped [@rhomberg2011]. The general version is that noise attenuates a $k$-way interaction by the measurement reliability raised to the $k$-th power, while linear effects are attenuated only once; in 140 biomedical prediction tasks, adding noise closed the gap between flexible and linear models as this predicts [@schulz2026]. This has two implications. For estimation and prediction with noisy measures, the linear model is close to the best that can be done with the data actually available. For theory, a failure to find nonlinearity in noisy data is weak evidence that the world is linear.
 
-Taken together: a linear model is a good default when the sample is of ordinary size, the measures are noisy, the data are tabular, and the aim is interpretable estimates of effects over the range the data cover, provided its status as an approximation is kept in mind and the flexibility that matters, such as key interactions and transformations, is checked rather than assumed. Flexible nonlinear models earn their place when the data are plentiful and reliably measured, when the input is unstructured, or when prediction accuracy is the goal in a setting rich enough to reward it.
+Taken together: a linear model is a good default when the sample is of ordinary size, the measures are noisy, the data are tabular, and the aim is interpretable estimates of effects over the range the data cover, provided its status as an approximation is kept in mind and the flexibility that matters, such as key interactions and transformations, is checked rather than assumed. Flexible nonlinear models are the better choice when the data are plentiful and reliably measured, when the input is unstructured, or when prediction accuracy is the goal in a setting rich enough to reward it.
 
-A further advantage of (generalized) linear models is that every part of them is inspectable. A coefficient can be read, a path traced, and the model's implication for a correlation worked out in advance and then found false in the data. @sec-identification shows where that sequence stops working, and why no amount of data restarts it.
+A further advantage of (generalized) linear models is that every part of them is inspectable. A coefficient can be read, a path traced, and the model's implication for a correlation worked out in advance and then found false in the data. @sec-identification shows where that sequence stops working, and why more data cannot fix it.
 
 ## Models can be complex
 
@@ -598,7 +598,7 @@ I am using examples of relatively simple models for didactic purposes. Simple mo
 (b) Two contributions. The direct effect, $0.35$; and a joint effect across the curved arrow to $D$ and then forward to $V$, $(-0.30)(-0.20) = 0.06$. Total $0.41$.
 (c) Three contributions from $P$ to $Q$: the direct effect, $0.25$; the indirect effect through reading, $0.35 \times 0.50 = 0.175$; and a joint effect across the curved arrow to $D$, then to reading, then to qualifications, $(-0.30)(-0.20)(0.50) = 0.03$. Total $0.455$.
 (d) Three contributions from $D$ to $Q$: the indirect effect through reading, $(-0.20)(0.50) = -0.10$; a joint effect across the curved arrow to $P$ and then directly to $Q$, $(-0.30)(0.25) = -0.075$; and a joint effect across the curved arrow to $P$, then to reading, then to $Q$, $(-0.30)(0.35)(0.50) = -0.0525$. Total $-0.2275$.
-(e) Standardized, four variables give $4 \times 3/2 = 6$ correlations. The free parameters are the four path coefficients and the exogenous correlation, so five. One degree of freedom is left, and exactly one claim of absence is spending it: there is no direct arrow from $D$ to $Q$. The model predicts $\rho_{DQ}$ from the other five numbers, and the data can reject that prediction.
+(e) Standardized, four variables give $4 \times 3/2 = 6$ correlations. The free parameters are the four path coefficients and the exogenous correlation, so five. One degree of freedom is left, and it comes from exactly one claim of absence: there is no direct arrow from $D$ to $Q$. The model predicts $\rho_{DQ}$ from the other five numbers, and the data can reject that prediction.
 :::
 
 ::: {.callout-tip icon="false" title="Exercise 2.B"}
@@ -616,7 +616,7 @@ A logistic regression predicts whether a patient attends a scheduled outpatient 
 (b) $\ell = 0.85 + 0.012 \times 0 - 0.031 \times 10 = 0.54$, so $p = 0.63$.
 (c) $\ell = 0.85 - 0.31 - 1.10 - 0.015 \times 10 = -0.71$, so $p = 0.33$. The interaction applies only to patients with a previous no-show, and at 10 km it contributes $-0.15$.
 (d) The effect of a previous no-show at distance $d$ is $-1.10 - 0.015d$. Setting this to $-2$ gives $d = 0.90/0.015 = 60$ km.
-(e) Nothing directly. Every coefficient here describes differences between patients who differ in these characteristics, and reminders are not among them. The model can point at whom to remind, which is a prediction question, and it cannot say what a reminder would do, which is a causal question about an intervention that was never varied. @sec-explanation-prediction is about exactly this distinction.
+(e) Nothing directly. Every coefficient here describes differences between patients who differ in these characteristics, and reminders are not among them. The model can point at whom to remind, which is a prediction question, and it cannot say what a reminder would do, which is a causal question about an intervention that was never varied. @sec-explanation-prediction is about this distinction.
 :::
 
 ::: {.callout-tip icon="false" title="Exercise 2.C"}
