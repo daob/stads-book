@@ -82,9 +82,11 @@ the automatic token is not allowed to create a Pages site.) GitHub also only
 serves Pages from a **public** repository unless the account has a paid plan. It installs only `knitr` and `rmarkdown` — the packages Quarto's R engine
 itself needs — and neither the analysis packages nor the LISS data, because
 chunk output is read from the committed `_freeze/` directory. A build takes
-minutes and cannot be broken by an update to `lavaan`, `mclust` or `brms`. Nothing needs to be built or committed by hand. See
-[CONTRIBUTING.md](CONTRIBUTING.md) for the details and for what to do when the
-frozen output needs refreshing.
+minutes and cannot be broken by an update to `lavaan`, `mclust` or `brms`. The
+one thing that has to be refreshed by hand is `_freeze/` itself: after editing a
+chapter that contains code — its prose included, since the freeze is keyed to
+the whole file — run `make all` locally and commit the result. See
+[CONTRIBUTING.md](CONTRIBUTING.md) for the details.
 
 ## Contributing
 

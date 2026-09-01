@@ -48,16 +48,22 @@ CI installs Quarto, TinyTeX, R, and exactly two R packages, `knitr` and
 freeze. It installs none of the analysis packages and has no access to the
 data.
 
-The rule that follows: **whenever you change code inside a chunk, re-render
-locally and commit the resulting `_freeze/` changes along with the source.**
-`freeze: auto` re-executes only the documents whose code actually changed. Prose
-edits never touch `_freeze/`. If a chapter's figures look stale, delete that
-chapter's directory under `_freeze/` and render it again.
+The rule that follows: **whenever you change a chapter that contains code,
+re-render locally and commit the resulting `_freeze/` changes along with the
+source.** This applies to prose edits too, not only to edits inside chunks:
+each frozen result records an MD5 hash of the *whole* `.qmd` file, and
+`freeze: auto` re-executes the chapter as soon as that hash no longer matches.
+Fixing a typo in chapter 4 therefore re-runs chapter 4's models on the next
+render, and CI, which has neither the data nor the packages, fails if the
+refreshed freeze was not committed. If a chapter's figures look stale, delete
+that chapter's directory under `_freeze/` and render it again.
 
 Each output format keeps its own frozen results — `html.json`, `tex.json` and
-`epub.json` — so after changing a chunk run `make all`, not just `make html`, or
-the other editions will be built from stale output. `tests/check_freeze.py`
-fails the build when a chapter is missing one of the three.
+`epub.json` — so after any change run `make all`, not just `make html`, or the
+other editions will be built from stale output. `tests/check_freeze.py` fails
+the build when a chapter is missing one of the three or when a frozen result's
+hash no longer matches the chapter, so a stale freeze is caught in seconds
+rather than after a ten-minute build.
 
 ## Tests
 
