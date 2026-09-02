@@ -14,6 +14,16 @@ not be redistributed. No LISS file, raw or derived, belongs in this repository;
 ever been committed. The book still renders for everyone else because chunk
 output is frozen in `_freeze/` (see [CONTRIBUTING.md](../CONTRIBUTING.md)).
 
+## Synthetic stand-ins
+
+Readers without LISS access can still run the chapters' code:
+`synthetic/make-synthetic-liss.R` simulates, from the models fitted to the real
+data, a stand-in for each of the three derived datasets with the same variable
+names and types, and writes them as CSV to `../data-synthetic/`. No real row
+and no identifier is copied; every number they produce differs somewhat from
+the book's. `synthetic/check-synthetic-liss.R` runs the chapters' LISS chunks
+on the stand-ins and prints the results next to the book's numbers.
+
 ## Getting the data
 
 1. Register at <https://www.lissdata.nl/> and accept the conditions of use.
