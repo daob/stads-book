@@ -9,7 +9,7 @@ import re
 import sys
 
 ROOT = Path(__file__).resolve().parent.parent
-CROSSREF = ("sec-", "fig-", "tbl-", "eq-", "lst-")
+CROSSREF = ("sec-", "fig-", "tbl-", "eq-", "lst-", "def-", "thm-", "exm-")
 KEY = re.compile(r"(?<![A-Za-z0-9._#@/-])@([A-Za-z][A-Za-z0-9_:.+-]*[A-Za-z0-9])")
 ENTRY = re.compile(r"^@\w+\s*\{\s*([^,\s]+)\s*,", re.M)
 CODE_BLOCK = re.compile(r"^```.*?^```", re.M | re.S)

@@ -25,18 +25,18 @@ DATA_SUFFIXES = {".dta", ".sav", ".rds", ".por"}
 
 
 def listed_chapters(text):
-    """The chapters: entries of _quarto.yml, without a YAML parser."""
-    out, in_chapters = [], False
+    """The chapters: and appendices: entries of _quarto.yml, without a YAML parser."""
+    out, in_list = [], False
     for line in text.splitlines():
-        if re.match(r"^\s{2}chapters:\s*$", line):
-            in_chapters = True
+        if re.match(r"^\s{2}(chapters|appendices):\s*$", line):
+            in_list = True
             continue
-        if in_chapters:
+        if in_list:
             m = re.match(r"^\s+-\s+(\S+\.qmd)\s*$", line)
             if m:
                 out.append(m.group(1))
             elif line.strip() and not line.startswith(" " * 4):
-                break
+                in_list = False
     return out
 
 

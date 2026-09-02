@@ -9,7 +9,7 @@ import re
 import sys
 
 ROOT = Path(__file__).resolve().parent.parent
-PREFIXES = ("sec-", "fig-", "tbl-", "eq-", "lst-")
+PREFIXES = ("sec-", "fig-", "tbl-", "eq-", "lst-", "def-", "thm-", "exm-")
 USE = re.compile(r"(?<![A-Za-z0-9._#-])@((?:" + "|".join(PREFIXES) + r")[A-Za-z0-9_-]+)")
 BRACE = re.compile(r"\{#((?:" + "|".join(PREFIXES) + r")[A-Za-z0-9_-]+)")
 CHUNK = re.compile(r"^#\|\s*label:\s*((?:" + "|".join(PREFIXES) + r")[A-Za-z0-9_-]+)", re.M)
