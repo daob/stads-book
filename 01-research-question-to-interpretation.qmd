@@ -10,7 +10,7 @@ So the researchers looked for a pattern that only the law could have produced. B
 
 ## The chain from research question to interpretation {#sec-chain}
 
-Someone asks a question. Someone organizes existing data, and/or collects new data in a particular way, which is the **design**. The design makes certain assumptions plausible. Those assumptions, written down, are the **model**. Fitting the model to the data produces numbers, and the numbers answer the question *to the extent that the assumptions hold*. @fig-chain draws the sequence.
+Every empirical study follows the same sequence. A researcher starts with a question. To answer it, they collect new data or organize existing data in a particular way; this is the **design**. A good design makes certain assumptions plausible, for example that the groups being compared were alike before the treatment. Written down explicitly, those assumptions are the **model**. Fitting the model to the data produces estimates, and those estimates answer the original question *to the extent that the assumptions hold*. @fig-chain shows the sequence.
 
 ![The chain that every empirical study follows. The design's job is to make the assumptions plausible; the model's job is to turn data into an answer under those assumptions.](diagrams/chain.png){#fig-chain width="70%" fig-align="center"}
 
