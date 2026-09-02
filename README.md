@@ -17,7 +17,7 @@ and mediation, ANOVA and multilevel models, and on into machine learning:
 prediction versus explanation, overfitting and the bias-variance tradeoff,
 honest evaluation, and unsupervised learning.
 
-> **Draft 0.7.** Provisional throughout. The text was written with substantial
+> **Draft 0.8.** Provisional throughout. The text was written with substantial
 > help from a large language model, working from the author's outline, notes on
 > the source literature, and chapter-by-chapter comments; the git history
 > records which changes came from the author and which were generated.
@@ -26,12 +26,13 @@ honest evaluation, and unsupervised learning.
 
 | Path | Contents |
 |------|----------|
-| `index.qmd`, `01-…qmd` … `08-…qmd` | the book: preface and eight chapters |
+| `index.qmd`, `01-…qmd` … `08-…qmd`, `glossary.qmd` | the book: preface, eight chapters, and the glossary and notation appendix |
 | `references.qmd`, `references.bib`, `apa.csl` | bibliography and citation style |
 | `_quarto.yml`, `_quarto-answers.yml` | book configuration and the answers-in-back profile |
 | `answers-in-back.lua` | Pandoc filter that moves exercise answers to an appendix |
 | `_freeze/` | frozen chunk output, committed so CI can build without the microdata (see below) |
 | `analysis/liss/` | R scripts that build the LISS analysis datasets ([README](analysis/README.md)) |
+| `analysis/synthetic/`, `data-synthetic/` | the script that simulates synthetic stand-ins for the three LISS datasets, and the stand-ins themselves (CSV), so readers can run the LISS chunks ([README](data-synthetic/README.md)) |
 | `diagrams/` | Mermaid sources and R scripts for the path diagrams, with their PNGs |
 | `figures/` | R scripts and source data for hand-built figures |
 | `images/`, `fonts/` | static images; self-hosted Fira Sans and Fira Code |
@@ -110,7 +111,7 @@ licensed [MIT](LICENSE-CODE). See [LICENSE](LICENSE).
   author    = {Oberski, Daniel L.},
   title     = {Statistics and Data Analysis: A Broad Perspective for Social and Health Scientists},
   year      = {2026},
-  note      = {Draft 0.7},
+  note      = {Draft 0.8},
   url       = {https://daob.github.io/stads-book/}
 }
 ```

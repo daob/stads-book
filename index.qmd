@@ -1,6 +1,6 @@
 # Preface {.unnumbered}
 
-**Draft 0.7.** 
+**Draft 0.8.** 
 
 ::: {.callout-tip appearance="simple"}
 ### Read it here, or take it with you
@@ -18,7 +18,7 @@ The **Download** button at the top left of the sidebar offers six editions, all 
 
 This book was created to accompany students in the course *Statistics and Data Science: a broad perspective*, taught at Utrecht University. I have made heavy use of AI tooling throughout, and I take responsibility for the final text.
 
-As the title suggests, my goal in this book is to cover as much of the landscape as possible. Since that cannot be done in full, I have chosen  **not** to explain any of the analysis techniques, such as GLM, SEM, random forests, neural networks, etc. in much technical depth. There are already plenty of excellent books and other resources out there that do this, which are referenced throughout the text, as well as included in some of the recommendations for further reading below. (And, for students in the MSc program, they will be encountered in your subsequent coursework.) Instead, I have tried to put all these techniques and models into a common perspective, based on a few overarching principles:
+As the title suggests, my goal in this book is to cover as much of the landscape as possible. Since that cannot be done in full, I have chosen **not** to explain any of the analysis techniques, such as GLM, SEM, random forests, neural networks, etc. in much technical depth. There are already plenty of excellent books and other resources out there that do this, which are referenced throughout the text and in the "Further study" section that closes each chapter. (And, for students in the MSc program, they will be encountered in your subsequent coursework.) Instead, I have tried to put all these techniques and models into a common perspective, based on a few overarching principles:
 
  * The bias-variance tradeoff;
  * Explanation and prediction in social and health sciences;
@@ -28,13 +28,27 @@ The latter may sound somewhat mysterious to you, so here is a summary:
 
 > A research question motivates a design for collecting or organizing data; the design makes a set of assumptions plausible; those assumptions are the model; and the results of fitting the model answer the question, to the extent that the assumptions hold.
 
-The chapters work through this logic. First the logic itself (@sec-rq-to-interpretation). Then, concretely, how to build a statistical model out of a theory stated in words (@sec-theory-to-glm), and what happens when the design cannot answer the question at all (@sec-identification). Then the analysis of variance, often regarded as old-fashioned, is shown to lead to multilevel models and to meta-analysis (@sec-anova). A transitional chapter asks what prediction is for (@sec-explanation-prediction). The last three chapters cross into machine learning: what overfitting is and why the bias-variance tradeoff governs every model (@sec-overfitting), how to evaluate predictions honestly, from cross-validation and the bootstrap to what happens when a well-scored model is put to use (@sec-evaluation), and how all this changes when there is no outcome to predict and the task is to find groups (@sec-unsupervised).
+The chapters work through this logic. First the logic itself: research questions, designs, the threats to validity, and five questions to ask of any study (@sec-rq-to-interpretation). Then, concretely, how to build a statistical model out of a theory stated in words, what its parameters mean, and how a model is estimated and tested, for linear and for generalized linear models (@sec-theory-to-glm). Then identification and mediation: what the design lets the data answer, and what no amount of data can settle (@sec-identification). The analysis of variance, often regarded as old-fashioned, is shown to lead to multilevel models and to meta-analysis (@sec-anova). A transitional chapter asks what prediction is for, and how it differs from explanation (@sec-explanation-prediction). The last three chapters cross into machine learning: what overfitting is and why the bias-variance tradeoff governs every model (@sec-overfitting); how to evaluate predictions honestly, from cross-validation and the bootstrap to what happens when a well-scored model is put to use (@sec-evaluation); and how all this changes when there is no outcome to predict and the task is to find groups (@sec-unsupervised). A [glossary and notation table](glossary.qmd) at the end collects every term and symbol with the section that defines it; in an open-book exam it is the page to open first.
 
-Each chapter contains two kinds of exercises. Inline exercises appear throughout; do them immediately, and click to reveal the answer below each one. The "Test yourself" exercises at the end of each chapter are harder. The practical exercises use R but, everything can be done in Python too. 
+## What I assume you know {.unnumbered}
 
-The upshot of my choice for this book is that you may sometimes like to consult other texts to study a particular model in more depth. That is intended; my hope is that by following your own interests in this regard, you can keep sight of the big picture and gain a "broad perspective".
+I assume an introductory statistics course: means, standard deviations, correlation, simple and multiple regression, and the meaning of a standard error, a confidence interval, and a $p$-value. You should be able to read the output of `summary(lm(...))` in R, or be willing to learn to in the first week. Everything else is introduced when it is needed: structural equation notation, logistic regression, maximum likelihood, multilevel models, Bayesian estimation, cross-validation, and mixture models each get their definition where they first appear, and the glossary points back to it. Readers who arrive with more (an econometrics or statistics degree, say) will find chapters 1, 6 and 7 partly familiar; the connections to what you already know are made explicitly where I could think of them, and the optional exercises are for you.
 
-Here are a few recommendations for further study.
+## How to use this book {.unnumbered}
+
+Read one chapter per week, in order; later chapters depend on earlier ones, and each chapter ends with a section called **What to carry forward** that says which of its results the later chapters will use. Each chapter contains two kinds of exercises. Inline exercises appear throughout; do them immediately, and click to reveal the answer below each one. Several of them ask you to run R code, and the code they need is in the chapter just above them. The **Test yourself** exercises at the end of each chapter are harder and are meant for the week's homework; do at least two. Exercises marked *optional* are for readers who want to go deeper, usually a derivation or a simulation, and nothing later depends on them. A few sections are marked *optional* as well, with a one-line note saying what to take from them if you skip them; the required text of every chapter is designed to fit in a week alongside its exercises. Each chapter closes with **Further study**, a short list of where to read more.
+
+The code is in R. Every package the book uses is listed in the appendix, with one installation command. One package, `brms`, needs Stan and a C++ compiler and is used in a single section of @sec-anova that can be read without running it.
+
+## The data {.unnumbered}
+
+Most examples use data that ship with R or its packages, so the code can be run as printed. The running examples of chapters 2, 3 and 8 use the [LISS panel](https://www.lissdata.nl/), a probability sample of Dutch households surveyed online every month since 2007, run by Centerdata in Tilburg and part of [ODISSEI](https://odissei-data.nl), the Dutch national research infrastructure for the social sciences, which also gives researchers access to the population registers of Statistics Netherlands and organized the PreFer prediction challenge discussed in @sec-explanation-prediction. LISS data are free for researchers but may not be redistributed, so those chunks cannot be run from the book's repository as they stand. For each of them a synthetic stand-in is shipped, simulated from the models fitted to the real data with the same variables; a footnote at each such chunk says how to use it, and its numbers differ somewhat from the ones printed.
+
+The upshot of my choices for this book is that you may sometimes like to consult other texts to study a particular model in more depth. That is intended; my hope is that by following your own interests in this regard, you can keep sight of the big picture and gain a "broad perspective".
+
+## Further reading {.unnumbered}
+
+A few recommendations for further study, beyond the chapter-specific pointers.
 
 **Closest to this book.**
 

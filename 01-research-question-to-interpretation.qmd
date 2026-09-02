@@ -4,11 +4,11 @@ On 9 October 1967 the British police acquired a new instrument. The Road Safety 
 
 The numbers fell, but whether a question was thereby answered is a different matter, and it is the subject of this book. Deaths could also fall when the weather is mild, when petrol is expensive, and when a publicity campaign frightens people into caution, and all three of those things were happening in Britain in the autumn of 1967. To claim that the new law saved those lives is to claim that nothing else would have. Nobody observed the Britain in which the Act was never passed.
 
-So the researchers looked for a pattern that only the law could have produced. British pubs closed at half past ten. If the crackdown was doing the work, the drop should concentrate in the hours when people drive home from pubs and should be absent during the commuting hours, morning and late afternoon, when the pubs have been shut.^[Ross and colleagues added a note in press that the series would have been better labelled "closed hours", since it also covers the closed hours of Saturday and Sunday, and that the weekend-night series omits late Saturday night, which makes the contrast they report an understatement [@ross1970].] That is what the data showed (@fig-breathalyser): casualties on weekend nights fell by about a third and stayed down, while the commuting hours show no break at all [@ross1970]. Weather and petrol prices do not vary with the hours the pubs are open.
+So the researchers looked for a pattern that only the law could have produced. British pubs closed at half past ten. If the crackdown was doing the work, the drop should concentrate in the hours when people drive home from pubs and should be absent during the commuting hours, morning and late afternoon, when the pubs have been shut.^[Ross and colleagues added a note in press that the series would have been better labelled "closed hours", since it also covers the closed hours of Saturday and Sunday, and that the weekend-night series omits late Saturday night, which makes the contrast they report an understatement [@ross1970].] That is what the data showed (@fig-breathalyser): casualties on weekend nights fell by about a third and stayed down, while the commuting hours show no break at all [@ross1970]. Weather and petrol prices do not vary with the hours the pubs are open. In the vocabulary of this chapter, the study is an *interrupted time series* with a *control series*: one monthly series that the law should have broken, and a second series, counted by the same police forces in the same months, that it should have left alone.
 
 ![British road casualties either side of the 1967 Breathalyser law. The two series are counted by the same police forces in the same months and differ only in the hours they cover. Monthly values digitized from the figure in @ross1970, which draws both series on one scale; the weekend-night series stops at November 1968 in the original.](images/ross-1970-breathalyser.png){#fig-breathalyser width="100%" fig-align="center"}
 
-## The chain from research question to interpretation
+## The chain from research question to interpretation {#sec-chain}
 
 Someone asks a question. Someone organizes existing data, and/or collects new data in a particular way, which is the **design**. The design makes certain assumptions plausible. Those assumptions, written down, are the **model**. Fitting the model to the data produces numbers, and the numbers answer the question *to the extent that the assumptions hold*. @fig-chain draws the sequence.
 
@@ -22,13 +22,13 @@ Every design is an argument, and arguments can be strong or weak. What a randomi
 
 Two researchers who disagree about a finding are usually disagreeing about one link. Does the question mean what you think it means? Did the design produce data that could speak to it? Are the assumptions both the ones the design makes plausible and the ones the model requires?
 
-## What is the question?
+## What is the question? {#sec-question-types}
 
 Research questions can be classified in many ways. Broadly, we might distinguish descriptive, causal ("explanatory"), and predictive questions [@hernan2019; @leek2015].^[Hernán, Hsu and Healy call causal inference *counterfactual prediction*, which makes causal questions a species of prediction rather than a kind of their own. Nothing below turns on that choice.]
 
 A **descriptive** question asks what is the case. How many adults in the Netherlands have never used a general practitioner's out-of-hours service? Is loneliness more common among the retired than among students? Descriptive questions look simple but can be hard to answer. Generalization to the target population is often a challenge, since true random samples and whole populations are difficult to obtain. Measurement of the intended variable is usually a challenge too, especially in the social and health sciences, which must often rely on self-reports or on administrative register data that are error-prone, or at least idiosyncratic. Survey methodologists gather these problems under the heading of **total survey error**, which separates errors of nonobservation, such as coverage and nonresponse, from errors of observation, such as measurement [@groves2010]. Register data are not exempt: because they are official they are often treated as exact, but their error rates can be estimated, and when they are estimated they are not zero [@oberski2017].
 
-A **causal** question asks what would happen if something were changed. Would raising the school leaving age reduce teenage births? Does this drug lower blood pressure more than that one? An effect is a comparison between what happened and what would have happened otherwise. Note that the question and its estimate are subtly different: the causal question is typically about the future, whereas causal effect estimation deals with a historical (quasi)experiment. Shadish, Cook and Campbell define an effect in these terms: "the difference between what did happen and what would have happened" [@shadish2002]. The second half of that comparison, the counterfactual, is never observed for anybody. Design entails constructing a substitute for it, an argument econometricians call the **identification strategy** [@angrist2009].
+A **causal** question asks what would happen if something were changed. Would raising the school leaving age reduce teenage births? Does this drug lower blood pressure more than that one? An effect is a comparison between what happened and what would have happened otherwise. Note that the question and its estimate are subtly different: the causal question is typically about the future, whereas causal effect estimation deals with a historical (quasi)experiment. Shadish, Cook and Campbell define an effect in these terms: "the difference between what did happen and what would have happened" [@shadish2002]. The second half of that comparison, the counterfactual, is never observed for anybody. Design entails constructing a substitute for it, an argument econometricians call the **identification strategy** [@angrist2009]; @sec-identification gives the word *identification* a precise meaning.
 
 Not every causal question is stated as one. Authors of nonexperimental work often report that X "predicts" or "is associated with" Y, and then, in the discussion, recommend an intervention, which makes sense only if the association is causal. Grosz, Rohrer and Thoemmes call this the taboo against explicit causal inference: the causal claim is still made, but implicitly, so the assumptions it needs are never stated and never defended [@grosz2020]. Hernán makes the same complaint about epidemiology, where the euphemism changes the wording and not the purpose of the study [@hernan2018]. Antonakis and colleagues put numbers on the consequences: reviewing 110 papers in leadership research, they found that between 66 and 90 percent of the conditions required for a causal reading went unaddressed [@antonakis2010]. So you should be aware that sometimes causal claims are made implicitly.
 
@@ -36,7 +36,7 @@ A **predictive** question asks what *will* happen, for a unit whose outcome you 
 
 &nbsp;
 
-This text focuses on causal questions ("explanation", part 1) and on prediction (part 2). The rest of this chapter sets out a systematic approach to explanatory research, drawn from two classic textbooks [@saris1984; @shadish2002].
+This text focuses on causal questions ("explanation", chapters 1–4) and on prediction (chapters 5–8). The rest of this chapter sets out a systematic approach to explanatory research, drawn from two classic textbooks [@saris1984; @shadish2002].
 
 
 ::: {.callout-tip icon="false" title="Exercise 1.1"}
@@ -55,7 +55,7 @@ Classify each question as descriptive, causal, or predictive, and say in one sen
 (d) As written, descriptive: it asks about a pattern. Almost everyone who asks it means the causal version, "would adding green space make people healthier", and that version needs a design that separates the greenery from the wealth of the people who live near it. The slide from one to the other inside a single sentence is the taboo against explicit causal inference at work [@grosz2020].
 :::
 
-## Plausibility of assumptions behind an answer: threats to validity
+## Plausibility of assumptions behind an answer: threats to validity {#sec-validity}
 
 We have seen that results only answer a question *given the assumptions*. For example, if we are comparing road deaths before and after an intervention, we need to assume nothing else was simultaneously influencing road deaths. **The plausibility of all such assumptions taken together is what we will call "validity"**. Shadish, Cook and Campbell put it in terms of the conclusion rather than of the assumptions, defining validity as the approximate truth of an inference, but the point that follows is theirs either way: validity is a property of a claim, not of a design or a model [@shadish2002]. A randomized trial can support an invalid inference, and an observational study can support a valid one.
 
@@ -86,7 +86,7 @@ Construct validity applies to both outcomes and treatment variables. For example
 
 **Statistical conclusion validity** covers assumptions about statistical inference. The classical models of statistical testing developed by Neyman and Fisher assume that researchers predefine their analysis strategy and perform it once on newly collected data. That assumption is violated when the researcher picks a strategy after observing the data, or performs multiple tests without accounting for these choices: **fishing**, **p-hacking**, and, when the hypothesis is written up afterwards as though it had come first, **HARKing**. Other assumptions in this basket include large-sample approximations, distributional assumptions for small samples, priors in Bayesian inference, and so on.
 
-In the chapters on explanatory research we focus on internal validity. Prediction brings external validity with it, under the name out-of-domain generalization. The chapter on measurement will touch on some aspects of construct validity. Statistical conclusion validity is not the focus of this text, though it returns in part 2, in the descriptive goal of quantifying how well a prediction model can be expected to perform on new data.
+In the chapters on explanatory research (chapters 1–4) we focus on internal validity. Prediction brings external validity with it, under the name out-of-domain generalization. Construct validity returns in @sec-evaluation, where a prediction model's target variable (cost) turns out to be a proxy for the thing that mattered (need for care), and in @sec-unsupervised, where the question is where the indicators that define a cluster came from. Statistical conclusion validity is not the focus of this text, though it returns in chapters 5–8, in the descriptive goal of quantifying how well a prediction model can be expected to perform on new data.
 
 ::: {.callout-tip icon="false" title="Exercise 1.2"}
 Say which validity, if any, is threatened, and name the threat where the chapter has given it a name.
@@ -98,7 +98,7 @@ Say which validity, if any, is threatened, and name the threat where the chapter
 (e) A study finds that its therapy improves scores on a questionnaire the therapists themselves designed.
 (f) A smartphone app for depression is trialled on users recruited through advertisements inside the app, and works well. A health service proposes to offer it to everyone on its waiting list.
 (g) A team measures six symptom scales at three time points, tests each against treatment, and reports the one result that reached significance as the study's primary outcome.
-(h) A circus owner wants to know the total weight $T$ of his 50 elephants, so that he can ship them, but will pay for only one weighing. There is one perfectly average elephant (Norm) and one humongous one (Jumbo). The owner proposes to weigh Norm, but his highly trained statistician prevents this "lethal design mistake" and draws one elephant at random instead. Jumbo happens to be drawn, with weight $y_{\text{Jumbo}}$, so the estimate of the total is $\hat{T} = 50\, y_{\text{Jumbo}}$.
+(h) This last item is a trap: it is not clear that any threat from the chapter applies, and the point of the item is to say why. A circus owner wants to know the total weight $T$ of his 50 elephants, so that he can ship them, but will pay for only one weighing. There is one perfectly average elephant (Norm) and one humongous one (Jumbo). The owner proposes to weigh Norm, but his highly trained statistician prevents this "lethal design mistake" and draws one elephant at random instead. Jumbo happens to be drawn, with weight $y_{\text{Jumbo}}$, so the estimate of the total is $\hat{T} = 50\, y_{\text{Jumbo}}$.
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 1.2"}
@@ -109,16 +109,16 @@ Say which validity, if any, is threatened, and name the threat where the chapter
 (e) Construct validity. The outcome is measured one way only, by people with a stake in the answer, and the instrument may encode the therapy's own vocabulary. The inference in trouble concerns what the outcome measure stands for.
 (f) External validity. People who answered an advertisement inside the app are more motivated and more able to use it than people waiting for care, so the effect measured is not the effect the service would obtain. Nothing here says the trial's own estimate is wrong.
 (g) Fishing; statistical conclusion validity. Eighteen tests at the 5 percent level give a $1 - 0.95^{18} = 0.60$ chance of at least one false positive when the treatment does nothing and the tests are independent. Six scales on the same people at three occasions are heavily correlated, which makes the real number smaller, though still substantial. Declaring the winner the primary outcome afterwards is HARKing, and the claim is credible only with a protocol dated before the analysis.
-(h) This one is a trap, adapted from @basu1971: on the usual account nothing is wrong. The sample is drawn at random, the estimator is unbiased, and the arithmetic is correct. Yet the answer is absurd, because an unbiased estimator with enormous variance tells you nothing from a sample of one, and the owner's disallowed plan of weighing the average elephant would have done far better. If a threat has to be named it is statistical conclusion validity, but Basu's point was larger: he used the story to argue against the whole frequentist abstraction of repeated sampling, in which an estimator is judged by its behaviour over samples that were never drawn rather than by what the sample in hand actually says.
+(h) The story is adapted from @basu1971, and on the usual account nothing is wrong. The sample is drawn at random, the estimator is unbiased, and the arithmetic is correct. An estimator is *unbiased* if, averaged over all the samples that could have been drawn, it hits the truth; its *variance* is how much it swings from one sample to the next. Yet the answer is absurd, because an unbiased estimator with enormous variance tells you nothing from a sample of one, and the owner's disallowed plan of weighing the average elephant would have done far better. The one thing to take from the item is that "unbiased" is not a certificate of statistical conclusion validity, which is the validity at stake if a threat has to be named. Basu's own point was larger: he used the story to argue against the whole frequentist abstraction of repeated sampling, in which an estimator is judged by its behaviour over samples that were never drawn rather than by what the sample in hand actually says.
 :::
 
-## Designs remove threats to validity
+## Designs remove threats to validity {#sec-designs}
 
-Methodology should be mostly about how to get things right, and we have seen that this means removing threats to validity. That is what research designs are for. Each design below makes particular alternative explanations implausible, and so improves validity. A design and a model are two views of one list of assumptions: the design argues that the assumptions are plausible, and the model writes them down. So a design points to a particular model directly. In the examples below those models are linear regression equations; in general they need not be, as the next chapter shows.
+Methodology should be mostly about how to get things right, and we have seen that this means removing threats to validity. That is what research designs are for. Each design below makes particular alternative explanations implausible, and so improves validity. A design and a model are two views of one list of assumptions: the design argues that the assumptions are plausible, and the model writes them down. So a design points to a particular model directly. In the examples below those models are linear regression equations; in general they need not be, and the models of @sec-overfitting and @sec-unsupervised are not.
 
-Campbell and Stanley introduced a convenient way of depicting some designs in a small table, which Shadish, Cook and Campbell carry forward [@campbell1963]. It does not encompass every possible research design, but it is useful in many specific cases. Read the tables like a timetable: columns run left to right in time, $O$ marks a measurement, $X$ marks the treatment, and $R$ means that the row was formed by a random device. Each design below is given with the model typically used to estimate effects from it.
+Campbell and Stanley introduced a convenient way of depicting some designs in a small table, which Shadish, Cook and Campbell carry forward [@campbell1963]. It does not encompass every possible research design, but it is useful in many specific cases. Read the tables like a timetable: columns run left to right in time, $O$ marks a measurement, $X$ marks the treatment, and $R$ means that the row was formed by a random device. A row is a group, so the group indicator $T_i$ in the equations below says which row a unit sits in; a column is a time, so a period indicator such as $\text{Post}_t$ says which column an observation sits in. Each design below is given with the model typically used to estimate effects from it.
 
-The equations share a notation. The subscript $i$ indexes units, whatever the units of the study are: people, restaurants, municipalities. The subscript $t$ indexes time, and $p$ indexes the two periods of a crossover. Throughout, $y$ is the outcome, $\beta_0$ is the intercept, and $\varepsilon$ is the disturbance, which stands for everything about the outcome the equation does not model. $T_i = 1$ if unit $i$ belongs to the treated group and 0 otherwise, and $X_{ip} = 1$ when unit $i$ is actually receiving treatment in period $p$. Remaining symbols are defined where they appear.
+The equations share a notation. The subscript $i$ indexes units, whatever the units of the study are: people, restaurants, municipalities. The subscript $t$ indexes time, and $p$ indexes the two periods of a crossover. Throughout, $y$ is the outcome, $\beta_0$ is the intercept, and $\varepsilon$ is the **disturbance**, which stands for everything about the outcome the equation does not model. Later chapters also call this term the *error* or the *noise*, and its estimated counterpart in a fitted model the *residual*; the four words will alternate. $T_i = 1$ if unit $i$ belongs to the treated group and 0 otherwise, and $X_{ip} = 1$ when unit $i$ is actually receiving treatment in period $p$. Remaining symbols are defined where they appear.
 
 **Randomized experiment, posttest only.**
 
@@ -140,9 +140,9 @@ with $T_i = 1$ for the treated, so $\beta_1$ is the effect. Randomization remove
 
 $$y_{it} = \beta_0 + \beta_1 T_i + \beta_2 \text{Post}_t + \beta_3\,(T_i \times \text{Post}_t) + \varepsilon_{it}$$
 
-The interaction $\beta_3$ estimates the effect. The pretest lets the two groups start at different levels, so stable differences between them do not contaminate the estimate, and the control group absorbs whatever happened to everyone during the period. The assumption is that the two groups would have *changed* in parallel without the treatment. Selection combined with maturation breaks it. Two time points cannot reveal the break; more pre-treatment periods can, which is why careful difference-in-differences studies plot the trends for many periods before the treatment.
+The product term $T_i \times \text{Post}_t$ is an **interaction**, a term whose coefficient says how much the effect of one variable changes with the value of another; here $\beta_3$ is how much the before–after change differs between the treated group and the control group, so $\beta_3$ estimates the effect. @sec-theory-to-glm treats interactions in general. The pretest lets the two groups start at different levels, so stable differences between them do not contaminate the estimate, and the control group absorbs whatever happened to everyone during the period. The assumption is that the two groups would have *changed* in parallel without the treatment. Selection combined with maturation breaks it. Two time points cannot reveal the break; more pre-treatment periods can, which is why careful difference-in-differences studies plot the trends for many periods before the treatment.
 
-The famous instance is Card and Krueger's study of the minimum wage [@card1994]. New Jersey raised its minimum from \$4.25 to \$5.05 an hour in April 1992 and Pennsylvania did not, so they surveyed 410 fast-food restaurants on both sides of the border before and after. Employment in New Jersey rose relative to Pennsylvania by 2.76 full-time-equivalent workers per restaurant, against the textbook prediction that it would fall. The finding was contested for years on the ground that telephone surveys measure employment badly, which is a dispute about construct validity [@neumark2000; @card2000].
+The famous instance is Card and Krueger's study of the minimum wage [@card1994]. New Jersey raised its minimum from \$4.25 to \$5.05 an hour in April 1992 and Pennsylvania did not, so they surveyed 410 fast-food restaurants on both sides of the border before and after. Employment in New Jersey rose relative to Pennsylvania by 2.76 full-time-equivalent workers per restaurant, against the prediction of the standard competitive model that it would fall. The finding was contested for years on the ground that telephone surveys measure employment badly, which is a dispute about construct validity [@neumark2000; @card2000].
 
 **Crossover.**
 
@@ -153,13 +153,13 @@ The famous instance is Card and Krueger's study of the minimum wage [@card1994].
 
 $$y_{ip} = \beta_0 + \beta_1 X_{ip} + \alpha_i + \varepsilon_{ip}$$
 
-Everyone receives both conditions in a randomized order. The person-specific term $\alpha_i$ absorbs everything stable about person $i$, so $\beta_1$ compares each person with themselves, and every stable difference between people disappears at once. Anything that changes between the two periods for everyone alike needs a term of its own, which is why the analysis usually carries a period effect as well. The price is a new assumption: no carryover. If the first treatment is still working when the second begins, the within-person contrast is contaminated. The design fits treatments that wash out quickly, and chronic conditions that return when treatment stops.
+Everyone receives both conditions in a randomized order. The person-specific term $\alpha_i$ is a separate intercept for each person, a **fixed effect** for persons in the vocabulary of panel data; @sec-anova returns to this term and to the choice between treating it as fixed or as random. It absorbs everything stable about person $i$, so $\beta_1$ compares each person with themselves, and every stable difference between people disappears at once. Anything that changes between the two periods for everyone alike needs a term of its own, which is why the analysis usually carries a period effect as well. The price is a new assumption: no carryover. If the first treatment is still working when the second begins, the within-person contrast is contaminated. The design fits treatments that wash out quickly, and chronic conditions that return when treatment stops.
 
 **Matched case–control.** Here units are sampled *on the outcome*: people with the disease, and people without it chosen to resemble them on age, sex, and neighbourhood. There is no time axis to draw, because exposure is reconstructed backwards. The analysis is a *conditional* logistic regression of case status on exposure, with one stratum per matched set,
 
 $$\log\frac{P(\text{case}_i)}{1 - P(\text{case}_i)} = \alpha_{s(i)} + \beta_1 E_i,$$
 
-where $E_i = 1$ if person $i$ was exposed, and $s(i)$ is the matched set that person $i$ belongs to; $\exp(\beta_1)$ estimates the odds ratio, the factor by which exposure multiplies the odds of being a case. Matching that is not carried into the analysis biases the estimate toward zero, so design and model have to agree. This is the weakest member of the catalogue, because matching handles only the variables you matched on, and only if you measured them well. It also has a measurement problem of its own, called **recall bias**. Exposure is reported after the disease is known, and someone who has spent a year wondering what caused their illness searches their memory harder than a healthy control does. If cases report past exposures more completely than controls, that difference in reporting is enough to produce an association on its own.
+where $E_i = 1$ if person $i$ was exposed, and $s(i)$ is the matched set that person $i$ belongs to. The left-hand side is the log-odds of being a case, the scale on which logistic regression works; @sec-theory-to-glm explains that scale and the odds ratio. Each matched set has its own intercept $\alpha_{s(i)}$, so the comparison of exposed with unexposed is made only within sets; $\exp(\beta_1)$ estimates the odds ratio, the factor by which exposure multiplies the odds of being a case. Matching that is not carried into the analysis biases the estimate toward zero, because the controls were chosen to resemble the cases and so look more like them than a random sample would; design and model have to agree. This is the weakest member of the catalogue, because matching handles only the variables you matched on, and only if you measured them well. It also has a measurement problem of its own, called **recall bias**. Exposure is reported after the disease is known, and someone who has spent a year wondering what caused their illness searches their memory harder than a healthy control does. If cases report past exposures more completely than controls, that difference in reporting is enough to produce an association on its own.
 
 **Interrupted time series.**
 
@@ -169,15 +169,26 @@ where $E_i = 1$ if person $i$ was exposed, and $s(i)$ is the matched set that pe
 
 $$y_t = \beta_0 + \beta_1 t + \beta_2 \text{After}_t + \beta_3\,(t - t_0)\,\text{After}_t + \varepsilon_t,$$
 
-where $t_0$ is the period in which the intervention arrives and $\text{After}_t = 1$ from then on. So $\beta_2$ is the jump in level at the intervention and $\beta_3$ the change in slope afterwards. Many observations before the interruption make maturation and regression to the mean visible rather than merely possible, since you can see the trend. The main remaining threat is history, with instrumentation second, and there is a technical problem as well: consecutive observations of the same series are correlated, so the ordinary standard errors are too small and the model needs a term for that correlation. Ruling out history is why the Breathalyser analysis looked for a pattern that only the law could produce, leading to what we would now call a difference-in-differences design.
+where $t_0$ is the period in which the intervention arrives and $\text{After}_t = 1$ from then on. So $\beta_2$ is the jump in level at the intervention and $\beta_3$ the change in slope afterwards. Many observations before the interruption make maturation and regression to the mean visible rather than merely possible, since you can see the trend. The main remaining threat is history, with instrumentation second, and there is a technical problem as well: consecutive observations of the same series are correlated, usually positively, so the ordinary standard errors are too small and the model needs a term for that correlation. Ruling out history is why the Breathalyser analysis added a control series and looked for a pattern that only the law could produce, leading to what we would now call a difference-in-differences design.
 
 **Regression discontinuity** turns a sharp administrative rule into an experiment. Scholarships, remedial classes, and reimbursement for a drug are routinely allocated by a threshold on a measured score, and such a rule is the opposite of random: it assigns treatment according to a variable that is itself related to the outcome, which would ordinarily be the worst case for selection bias. Here it is the basis of the design, because the rule is known exactly. Units a little below and a little above the cutoff are alike in everything except which side of the line they landed on. So compare them, writing $c_i$ for the score and $c_0$ for the cutoff:
 
 $$y_i = \beta_0 + \beta_1 (c_i - c_0) + \beta_2 D_i + \beta_3 (c_i - c_0) D_i + \varepsilon_i, \qquad D_i = \mathbb{1}[c_i \ge c_0],$$
 
-where $D_i = 1$ for units on the treated side of the cutoff, so $\beta_2$ is the effect at the cutoff [@shadish2002]. Britain raised its school leaving age twice, in 1947 and in 1972, and each change took effect sharply at one birth month, which let Clark and Royer compare cohorts either side of the cutoff: schooling and wages moved, and adult mortality did not [@clark2013]. Three things have to be granted. Nothing else may change at the cutoff. Nobody may manipulate their score to cross it. And the curve has to be right: a bend mistaken for a straight line will manufacture a jump that is not there, which is why the equation lets the slope differ on each side, and why in practice the comparison is restricted to a window around the cutoff rather than fitted to units at any distance from it.
+where the bracket $\mathbb{1}[\cdot]$ is an *indicator*, equal to 1 when the condition inside it holds and 0 otherwise, so that $D_i = 1$ for units on the treated side of the cutoff, and $\beta_2$ is the effect at the cutoff [@shadish2002]. Britain raised its school leaving age twice, in 1947 and in 1972, and each change took effect sharply at one birth month, which let Clark and Royer compare cohorts either side of the cutoff: schooling and wages moved, and adult mortality did not [@clark2013]. Three things have to be granted. Nothing else may change at the cutoff. Nobody may manipulate their score to cross it. And the curve has to be right: a bend mistaken for a straight line will manufacture a jump that is not there, which is why the equation lets the slope differ on each side, and why in practice the comparison is restricted to a window around the cutoff rather than fitted to units at any distance from it.
 
-This catalogue is not general, but the approach behind it is: for a given design, ask which alternative explanations it removes by construction, which it leaves standing, and which assumption you are being asked to grant.
+This catalogue is not general, but the approach behind it is: for a given design, ask which alternative explanations it removes by construction, which it leaves standing, and which assumption you are being asked to grant. @tbl-designs answers those questions for the six designs above.
+
+| Design | Assumption the design makes plausible | Threats left standing |
+|---|---|---|
+| Randomized experiment | The groups differ only by chance | Attrition; noncompliance; construct validity; external validity |
+| Difference-in-differences | The groups would have changed in parallel without the treatment | Selection combined with maturation (different trajectories); history that affects one group only |
+| Crossover | Each person is their own control, so stable differences between people cancel | Carryover; anything that changes between periods, unless a period term is included |
+| Matched case–control | The matched variables account for selection | Confounders not matched on, or matched on badly; recall bias |
+| Interrupted time series | The pre-intervention trend would have continued | History; instrumentation; serial correlation in the standard errors |
+| Regression discontinuity | Units just either side of the cutoff are alike except in treatment | Something else changing at the cutoff; manipulation of the score; a wrong curve |
+
+: The six designs of this section: what each one makes plausible, and what it leaves for argument. {#tbl-designs}
 
 ::: {.callout-tip icon="false" title="Exercise 1.3"}
 A regional government offers free flu vaccination in half of its municipalities and not in the other half; municipalities were not randomized. Hospital admissions for respiratory illness are recorded in both, in the year before and the year after.
@@ -195,7 +206,21 @@ A regional government offers free flu vaccination in half of its municipalities 
 (d) A constant rural–urban difference in the level of admissions is what the design tolerates: $\beta_1$ absorbs it. The design breaks if rural and urban areas were on different *trajectories*, for example because rural populations were ageing faster, or if a flu strain happened to hit cities harder that winter.
 :::
 
-## Elements of a verbal theory
+::: {.callout-tip icon="false" title="Exercise 1.4"}
+An interrupted time series has 24 monthly counts, and the intervention arrives at $t_0 = 12$.
+
+(a) Using the interrupted time series equation, write the fitted value at $t = 11$ and at $t = 13$, and simplify their difference.
+(b) A fit gives $\beta_1 = -0.5$, $\beta_2 = -15$ and $\beta_3 = 0$. Say in words what happened.
+(c) Which threat does a nonzero $\beta_1$ make *visible*, and which threat does the design still leave standing?
+:::
+
+::: {.callout-note collapse="true" icon="false" title="Answer 1.4"}
+(a) At $t = 11$, $\text{After}_t = 0$, so $\hat y_{11} = \beta_0 + 11\beta_1$. At $t = 13$, $\text{After}_t = 1$ and $t - t_0 = 1$, so $\hat y_{13} = \beta_0 + 13\beta_1 + \beta_2 + \beta_3$. The difference is $2\beta_1 + \beta_2 + \beta_3$: two months of the old trend, the jump, and one month of the change in slope.
+(b) The counts were already falling by 0.5 a month before the intervention. At the intervention the level dropped by 15, and the trend afterwards was the same as before.
+(c) Maturation, in the form of a trend that was under way before the intervention, becomes visible and is taken out by $\beta_1$. History, something else happening at $t_0$, is untouched by the design, which is why the Breathalyser analysis needed the commuting-hours control series.
+:::
+
+## Elements of a verbal theory {#sec-verbal-theory}
 
 The approach of @shadish2002 is useful because it encourages design-first thinking and lets you identify some of the potential problems with a proposed design. It is, however, quite limited in the types of question and design it can easily accommodate, and it does not systematically identify which threats to internal validity matter most in a given study. So this chapter and the next turn to a more systematic approach: identifying a research question, formulating a design that suits it, building and analysing a model that the design motivates, stating the assumptions explicitly, checking the ones that can be checked, and drawing careful conclusions. This approach comes from the classic text by @saris1984.^[It resembles the now more popular framework of *structural causal modeling* (SCM) [@pearl2009], in that it builds up a path diagram that can answer causal questions. It differs in emphasis: Saris and Stronkhorst spend most of their effort on how the diagram should be arrived at, whereas Pearl usually takes the diagram as given and analyses its properties nonparametrically.]
 
@@ -205,10 +230,11 @@ Saris and Stronkhorst start from the idea that there is a "verbal theory". They 
 
 **Variables.** A variable is a property of a unit that varies across units. "Poverty" can be a variable; "poor" cannot, because it is a value of one. A constant explains nothing. Nor can a whole social process be treated as a single variable and called a cause: "discrimination" is a phenomenon with many measurable components, not a column in a spreadsheet.
 
-**Relationships.** An **association** says that units high on one variable tend to be high on the other, or low, for a negative association. It is symmetric: reading it backwards changes nothing. An **effect** says that changing one variable would change the other. It is asymmetric, and it is a claim about a world we do not observe.
-**Spurious relationships** are relationships due to common causes, like drownings and ice cream sales.
+**Relationships.** An **association** says that units high on one variable tend to be high on the other, or low, for a negative association. It is symmetric: reading it backwards changes nothing. An **effect** says that changing one variable would change the other. It is asymmetric, and it is a claim about a world we do not observe. An association without an effect behind it is a **spurious relationship**, one due to a common cause of both variables, like drownings and ice cream sales, which rise together because both rise with the temperature; @sec-theory-to-glm gives spurious relationships a precise place in the decomposition rule, which splits an association into the effects and common causes that produce it.
 
 Effects come in a few kinds, drawn in @fig-relationships, and the rest of the book uses this vocabulary constantly. A **direct** effect runs straight from cause to outcome. An **indirect** effect runs through an intervening variable. **Reciprocal** effects run both ways. A **conditional** effect is an effect whose size depends on a third variable.
+
+Two further words describe the shape of an effect, and Exercise 1.A asks about both. An effect is **linear** when a one-unit change in the cause produces the same change in the outcome wherever you start, so that the relationship is a straight line. Effects are **additive** when the effect of one cause does not depend on the value of another, so that the two contributions can be added; a conditional effect is the non-additive case. @sec-theory-to-glm shows how both properties are written into a model and what happens when a theory denies one of them.
 
 ![The vocabulary of relationships. An association is drawn with a two-headed arrow, an effect with a single-headed one. A conditional effect is drawn as an arrow pointing at an arrow: the size of the effect of x on y depends on the value of z.](diagrams/relationships.png){#fig-relationships width="95%" fig-align="center"}
 
@@ -225,7 +251,7 @@ Read as a set of claims, the theory has these elements.
 - **Effects.** Perceived control on intention; intention on behaviour; perceived control on behaviour.
 - **A conditional effect.** Actual control governs how far an intention converts into behaviour. Ajzen draws the implication explicitly: "intentions and perceptions of behavioral control should interact in the prediction of behaviour" [@ajzen1991].
 
-::: {.callout-tip icon="false" title="Exercise 1.4"}
+::: {.callout-tip icon="false" title="Exercise 1.5"}
 A researcher writes: "Students who feel more in control of their studies plan to study more, and those plans translate into hours at the desk, particularly for students who live alone and can organize their own time."
 
 (a) What are the units of analysis?
@@ -234,14 +260,14 @@ A researcher writes: "Students who feel more in control of their studies plan to
 (d) Are there any conditional effects?
 :::
 
-::: {.callout-note collapse="true" icon="false" title="Answer 1.4"}
+::: {.callout-note collapse="true" icon="false" title="Answer 1.5"}
 (a) Individual students.
 (b) Perceived control over studying, intention to study, hours studied, and living alone.
 (c) Perceived control → intention (direct effect); intention → hours (direct effect); perceived control → hours through intention (indirect effect).
 (d) Yes, one. Living alone does not act on hours by itself in this sentence: "particularly for students who live alone" says that the size of the intention → hours effect depends on it. That is a conditional effect, drawn as an arrow into the intention → hours arrow.
 :::
 
-## Five questions
+## Five questions to ask of any study {#sec-five-questions}
 
 Here are five questions you can use to think about applications of statistics and data science.
 
@@ -252,6 +278,18 @@ Here are five questions you can use to think about applications of statistics an
 5. **What in the design makes those assumptions plausible, and what happens if they fail?** Which alternative explanations does the design remove by construction, and which are left to argument?
 
 Question 5 is the one this book keeps coming back to. In @sec-theory-to-glm a theory becomes a model whose numbers mean something only if the model is true. In @sec-identification the question takes its most difficult form: some questions cannot be answered by any amount of data, because the design produced no information about the answer.
+
+## What to carry forward {.unnumbered}
+
+Every empirical study follows the chain question → design → assumptions → model → answer, and the numbers answer the question only to the extent that the assumptions hold (@sec-chain). Questions are descriptive, causal or predictive, and a causal question always compares what happened with a counterfactual that nobody observed (@sec-question-types). Validity is the plausibility of the assumptions behind a claim, sorted into internal, external, construct and statistical conclusion validity, and the named threats to internal validity are the alternative explanations a design has to remove (@sec-validity). Each design removes some threats by construction and leaves others for argument, and it points to a model that writes its assumptions down; the randomized experiment, difference-in-differences and the rest are summarized in @tbl-designs (@sec-designs). A verbal theory has units, variables and relationships, and the vocabulary of associations and direct, indirect, reciprocal and conditional effects, with the theory of planned behaviour as the example, is what @sec-theory-to-glm turns into path diagrams and equations (@sec-verbal-theory). The five questions of @sec-five-questions return at the end of @sec-identification, @sec-explanation-prediction and @sec-evaluation; the fishing of @sec-validity returns in @sec-evaluation as leakage; and the Oregon lottery of Exercise 1.B returns in @sec-identification as an instrumental variable.
+
+**Terms and symbols introduced.** design; model; descriptive, causal and predictive questions; total survey error; identification strategy; validity (internal, external, construct, statistical conclusion); threat to validity, with the eight named threats; fishing, p-hacking, HARKing; disturbance; interaction; fixed effect; recall bias; ecological bias; association; effect (direct, indirect, reciprocal, conditional); spurious relationship; linear; additive; exogenous; perceived behavioral control and actual control; $y$ the outcome, $\beta_0$ the intercept, $\varepsilon$ the disturbance, $T_i$ the group indicator, $\text{Post}_t$ and $\text{After}_t$ period indicators, $X_{ip}$ treatment received in period $p$, $\alpha_i$ a person's fixed effect, $\mathbb{1}[\cdot]$ the indicator function; in the design tables, $O$ a measurement, $X$ the treatment, $R$ random assignment.
+
+**Exercises that use R.** 1.D (a simulation of confounding); 1.F, optional, uses R for one integral.
+
+## Further study {.unnumbered}
+
+@shadish2002 is the full statement of the validity framework, with a longer catalogue of threats and of the designs that block them than this chapter could give, and is the book to open when planning a quasi-experiment. @saris1984 is the source of the verbal-theory approach of this chapter and of the path-model treatment of @sec-theory-to-glm, and remains the most careful account of how to get from a theory in words to a diagram. @angrist2014 covers the randomized experiment, regression, instrumental variables, regression discontinuity and difference-in-differences with worked examples and no more mathematics than this chapter, and is the natural companion for the design catalogue. @rohrer2018 introduces the graphical language for confounding that @sec-theory-to-glm and @sec-identification use, written for psychologists and at the level of this chapter. @hernan2019 is the source of the descriptive–causal–predictive taxonomy and argues, in a few pages, for stating which kind of question a study answers. @groves2010 is the reference for total survey error, the framework for the descriptive questions this book treats only briefly.
 
 ## Test yourself {.unnumbered}
 
@@ -286,11 +324,11 @@ In 2008 the state of Oregon had money to add about 10,000 adults to its Medicaid
 (a) Units are individual adults, drawn as households. The treatment is the right to apply for Medicaid coverage; coverage itself is what people did with that right.
 (b) The lottery makes selection implausible: drawn and undrawn people differ only by chance, so no common cause explains any difference in outcomes. It leaves attrition and non-response, since people who agree to be interviewed two years later may differ by arm; construct validity, since "Medicaid" is a package of coverage, cost, and access to particular providers; and external validity, since these were low-income adults in one state who had actively signed up.
 (c) Comparing everyone drawn with everyone not drawn estimates the effect of winning the lottery, the intention-to-treat effect, and that is what the lottery speaks to unaided. Coverage rose by only about 25 percentage points, so the effect of coverage itself must be roughly four times larger, and recovering it requires the extra assumption that being drawn changed health only by way of coverage. Dividing an effect on those offered a treatment by the shift in how many took it up is a standard procedure with assumptions of its own; @sec-identification describes the procedure and its assumptions.
-(d) First, "no detectable effect" is a statement about power, and the intervals around the blood-pressure effect comfortably include changes that would matter clinically. Second, two years is a short window for cholesterol and blood sugar, and the treatment was insurance rather than care, so it can only work through the care people then seek.
+(d) First, "no detectable effect" is a statement about power, the probability that a study of this size would detect an effect of a given size if it were there, and the intervals around the blood-pressure effect comfortably include changes that would matter clinically. Second, two years is a short window for cholesterol and blood sugar, and the treatment was insurance rather than care, so it can only work through the care people then seek.
 :::
 
 ::: {.callout-tip icon="false" title="Exercise 1.C"}
-Through the 1980s and 1990s, large observational cohorts reported that women taking hormone replacement therapy after menopause had much less coronary heart disease than women who did not; in the Nurses' Health Study the relative risk for combined oestrogen and progestin was 0.39, meaning about 60 percent fewer events among users [@grodstein1996]. Hormone therapy was widely prescribed for heart protection. In 2002 the Women's Health Initiative, a randomized trial in 16,608 women, was stopped early: the treated group had *more* coronary heart disease, with a hazard ratio of 1.29, and more strokes and invasive breast cancer as well [@whi2002].
+Through the 1980s and 1990s, large observational cohorts reported that women taking hormone replacement therapy after menopause had much less coronary heart disease than women who did not; in the Nurses' Health Study the relative risk for combined oestrogen and progestin was 0.39, meaning about 60 percent fewer events among users [@grodstein1996]. Hormone therapy was widely prescribed for heart protection. In 2002 the Women's Health Initiative, a randomized trial in 16,608 women, was stopped early: the treated group had *more* coronary heart disease, with a hazard ratio of 1.29 (a relative risk computed over the follow-up time), and more strokes and invasive breast cancer as well [@whi2002].
 
 (a) Which threat to internal validity is the leading candidate, and in which direction would it bias the observational estimate?
 (b) The cohort studies adjusted for age, smoking, blood pressure, cholesterol, and body mass index. Why did that not solve the problem?
@@ -312,9 +350,9 @@ Confounding is easier to believe once you have simulated it in a world where you
 (a) Write a function `sim_study(randomize, n = 200)` that draws `motivation` from a standard normal distribution; sets `exercise` to `rbinom(n, 1, 0.5)` when `randomize` is `TRUE` and to `rbinom(n, 1, plogis(motivation))` otherwise; sets `symptoms` to `10 - 1.5 * motivation + 0 * exercise` plus standard normal noise; and returns the coefficient of `exercise` from `lm(symptoms ~ exercise)`. Which piece of that function states that exercise does nothing, and which states that people who exercise are different to begin with?
 (b) Run the function 1,000 times with `randomize = FALSE` and 1,000 times with `randomize = TRUE`. Draw the two sets of estimates as histograms on a common horizontal axis, and mark the truth. What is the average estimate in each set?
 (c) Compare the standard deviations of the two sets. Does confounding show up as extra noise?
-(d) Each of those studies would report a confidence interval. Count how many of the thousand observational intervals exclude zero. What does the count say about the relationship between precision and correctness?
-(e) Raise the sample size to 10,000 and rerun the observational arm. What happens to the average estimate, and what happens to the spread?
-(f) Back at $n = 200$, suppose motivation had been measured, and fit `lm(symptoms ~ exercise + motivation)` instead. What happens?
+(d) Each of those studies would report a confidence interval, a range of values consistent with the data, computed so that it covers the true value in 95 percent of repeated samples (`confint()` gives it). Count how many of the thousand observational intervals exclude zero. What does the count say about the relationship between precision and correctness?
+(e) Raise the sample size to 10,000 and rerun the observational arm (call `sim_study(FALSE, n = 10000)` inside `replicate`). What happens to the average estimate, and what happens to the spread?
+(f) Back at $n = 200$, suppose motivation had been measured, and fit `lm(symptoms ~ exercise + motivation)` instead (copy `sim_study` and change the `lm` formula). What happens?
 (g) In a real study of exercise and symptoms, why is (f) less reassuring than it looks?
 :::
 
@@ -366,9 +404,48 @@ sum(replicate(1000, ci_excludes_zero()))
 
 Averaged over the thousand observational studies the estimated effect is $-1.24$; the truth is zero. Averaged over the randomized studies it is $0.00$. The two histograms in @fig-confounding are equally wide, with standard deviations of 0.235 and 0.245, so confounding is not noise and does not show up as instability. And 998 of the thousand observational confidence intervals exclude zero, so precision is no guarantee of correctness.
 
-(e) The spread collapses, from about 0.24 to about 0.03, and the average estimate stays at about $-1.24$. Bias does not shrink as the sample grows; this is the most useful thing to know about confounding.
+(e) The spread collapses, from about 0.24 to about 0.03, and the average estimate stays at about $-1.24$. The two parts of the error now have names. The part that shrinks with the sample is the **variance** of the estimator, the noise of sampling; the part that stays, the gap of $-1.24$ between the average estimate and the truth, is its **bias**, a systematic error that survives any sample size. Bias does not shrink as the sample grows; this is the most useful thing to know about confounding. This sense of bias, a systematic error caused here by confounding, is the one chapters 1–3 use; @sec-overfitting uses the word for the related but distinct idea of a model that is too simple for the truth, and says there how the two are connected.
 
 (f) The estimates centre on zero, with a standard deviation of about 0.15. Adjusting for a confounder you have measured works.
 
 (g) In a real study you adjust for the confounders you thought of and measured well, and the assumption that this is all of them cannot be checked from the data. Randomization handles the ones you never thought of; regression cannot. The next chapters keep returning to this asymmetry.
+:::
+
+::: {.callout-tip icon="false" title="Exercise 1.E"}
+Apply the five questions of @sec-five-questions to the Breathalyser study of the opening pages. For question 5, list the alternative explanations that the comparison of weekend nights with commuting hours removes, and the one it does not.
+:::
+
+::: {.callout-note collapse="true" icon="false" title="Answer 1.E"}
+1. The question is causal: did the Road Safety Act reduce road casualties? The counterfactual is the Britain in which the Act was never passed.
+2. The units are blocks of hours within a month (weekend nights, commuting hours), observed month by month. The variables are the casualty count, which series the block belongs to, and whether the month is before or after October 1967. The claimed relationship is an effect of the law on casualties that is conditional on the series: present on weekend nights and absent during commuting hours.
+3. The data are police records of casualties, aggregated by month and by hour of the day. The question to ask is whether recording practice changed in October 1967, which would be an instrumentation threat.
+4. The assumption is that, without the law, the two series would have moved in parallel, so that the commuting-hours series shows what the weekend-night series would have done. The design is an interrupted time series with a control series, and the model is the difference-in-differences equation of @sec-designs.
+5. Because both series are counted by the same police forces in the same months, the comparison removes anything that moves both alike: the weather, petrol prices, a general improvement in road safety, and any change in how a casualty is defined or recorded. It does not remove anything that affected late-night driving alone at the same moment, such as the publicity campaign that accompanied the Act, mentioned in the opening pages. That explanation is left to argument rather than removed by construction.
+:::
+
+::: {.callout-tip icon="false" title="Exercise 1.F (optional)"}
+This last exercise is optional and harder than the others: it derives, in algebra, the number the observational estimator of Exercise 1.D converges to. Nothing later in the book depends on it.
+
+Write $m$ for motivation and $e$ for exercise, so that in the world of Exercise 1.D, $m$ is standard normal, $P(e = 1 \mid m) = \text{plogis}(m)$, and symptoms are $s = 10 - 1.5\,m + \varepsilon$ with $\varepsilon$ independent of everything else.
+
+(a) Show that the least-squares slope of $s$ on $e$ converges, as $n$ grows, to $-1.5\,\mathrm{Cov}(m, e)/\mathrm{Var}(e)$.
+(b) By symmetry $P(e = 1) = 0.5$, so $\mathrm{Var}(e) = 0.25$. Compute $\mathrm{Cov}(m, e) = E[m \cdot \text{plogis}(m)]$ numerically, either with `integrate(function(m) m * plogis(m) * dnorm(m), -Inf, Inf)` or from a draw of a million values, and give the limit.
+(c) Why does $n$ not appear in the answer?
+:::
+
+::: {.callout-note collapse="true" icon="false" title="Answer 1.F"}
+(a) The least-squares slope of $s$ on $e$ is the sample covariance of $s$ and $e$ divided by the sample variance of $e$, and as $n$ grows these converge to the population quantities $\mathrm{Cov}(s, e)/\mathrm{Var}(e)$. Since $s = 10 - 1.5\,m + \varepsilon$ and $\varepsilon$ is independent of $e$, $\mathrm{Cov}(s, e) = -1.5\,\mathrm{Cov}(m, e)$, which gives the expression.
+
+(b) Because $E(m) = 0$, $\mathrm{Cov}(m, e) = E(m e) = E[m \cdot P(e = 1 \mid m)] = E[m \cdot \text{plogis}(m)]$.
+
+```{r}
+#| label: limit-of-confounded-estimator
+cov_me <- integrate(function(m) m * plogis(m) * dnorm(m),
+                    -Inf, Inf)$value
+round(c(cov_me = cov_me, limit = -1.5 * cov_me / 0.25), 3)
+```
+
+So $\mathrm{Cov}(m, e) = 0.207$ and the limit is $-1.5 \times 0.207/0.25 = -1.24$, the average that the simulation in Exercise 1.D found at $n = 200$ and again at $n = 10{,}000$.
+
+(c) The limit is a property of the population: of how strongly motivation drives exercise and how strongly it drives symptoms. Sampling only adds noise around it, which shrinks with $n$; the limit itself does not move. This is part (e) of Exercise 1.D in algebra: the variance of the estimator goes to zero and the bias stays.
 :::

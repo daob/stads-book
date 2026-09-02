@@ -7,7 +7,7 @@ project:
 
 book:
   title: "Statistics and Data Analysis"
-  subtitle: "A broad perspective for social and health scientists — Draft 0.7"
+  subtitle: "A broad perspective for social and health scientists — Draft 0.8"
   author: "Daniel Oberski"
   date: today
   output-file: "stads-book"
@@ -49,6 +49,8 @@ book:
     - 07-evaluation-resampling.qmd
     - 08-unsupervised-clustering-mixtures.qmd
     - references.qmd
+  appendices:
+    - glossary.qmd
 
 bibliography: references.bib
 csl: apa.csl
