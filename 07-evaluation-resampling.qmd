@@ -8,6 +8,10 @@ Between 2015 and 2020 the American Food and Drug Administration cleared 130 medi
 Decision curve analysis (net benefit compared with treating everyone and treating no one across a range of thresholds; the definition of net benefit that precedes it is required, because Exercise 7.3 uses it); the footnote on the jackknife and the out-of-bag error in "Resampling: cross-validation, bootstrap, jackknife". Everything else is required, as are all inline exercises.
 :::
 
+::: {.callout-note appearance="simple" icon="false" title="Before you start"}
+This chapter builds on @sec-overfitting throughout: the training-versus-test distinction, the bias–variance decomposition, and the idea that a modelling choice is a hyperparameter settled by held-out performance. It also uses precision, recall and F1 as introduced with PreFer in @sec-explanation-prediction, and the logistic regression of @sec-logistic, whose predicted probabilities are what calibration is about.
+:::
+
 ## Performance metrics for continuous and binary outcomes
 
 In machine learning, defining the performance metric is defining success, so the metric should be chosen with care to fit the task. Many metrics exist, but in practice a modest number account for most use, and this section defines those, first for continuous outcomes and then for binary ones.
@@ -171,13 +175,13 @@ Choose the primary performance measure, and defend it in a sentence, for each ta
 
 (a) Flagging one in a thousand transactions as fraud for human review, where a review costs little and a missed fraud costs much.
 (b) Giving women an individual probability of successful vaginal birth after a previous caesarean, to support their choice.
-(c) PreFer once more, from @sec-explanation-prediction: predicting which residents will have a child within three years, base rate about one in five.
+(c) PreFer once more, from @sec-explanation-prediction: predicting which survey respondents will have a child within three years, where 22 percent did. Compute the accuracy and the F1 of a model that predicts no births at all, and use the two numbers to say what the organizers' choice of metric did that accuracy would not have done.
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 7.2"}
 (a) Sensitivity at a fixed, defensible review budget (equivalently precision among the flagged): the threshold is set by review capacity, and accuracy is worthless at a 0.1 percent base rate.
 (b) Calibration, above all: the number is handed to a person as a probability, so it must mean what it says; discrimination matters but a well-ranked, miscalibrated probability actively misleads the choice.
-(c) F1 was their choice, balancing precision and recall (sensitivity) against the one-in-five base rate; note the STRATOS caution that F1 is improper, which matters when the probabilities themselves, rather than a flag, are the product. For a leaderboard with a fixed flagging rule it is a defensible tournament metric.
+(c) The no-births model has accuracy $0.78$, since it is right about the 78 percent who had no child, and F1 of zero, since its recall is zero. On accuracy it would have been a respectable entry; on F1 it scores below every real submission, and the intentions-only baseline (0.64) and the best model (0.76) are separated on a scale that starts at doing nothing. F1 balances precision and recall (sensitivity) against the base rate; note the STRATOS caution that F1 is improper, which matters when the probabilities themselves, rather than a flag, are the product. For a leaderboard with a fixed flagging rule it is a defensible tournament metric.
 :::
 
 Discrimination and calibration are the two components of a single overall error. Score each predicted probability $\hat p_i$ against its 0/1 outcome by squared error, giving the mean squared error on the probability scale, known as the **Brier score**. Group the test cases into $K$ bins by their predicted probability, with $w_k$ the fraction of cases in bin $k$, $\bar p_k$ the bin's mean prediction, $\bar y_k$ its observed event rate, and $\bar y$ the overall event rate. The Brier score then decomposes, approximately, as [@murphy1973]
@@ -566,6 +570,8 @@ The techniques of this chapter were presented as machine learning's, but the pro
 The transfer is practical, not just conceptual. Consider the structural equation models of @sec-theory-to-glm and @sec-identification. When a model fits poorly, software will report which restrictions to free. **Modification indices** are these reports: for every parameter the model fixes at zero, an arrow not drawn or a covariance assumed absent, the software estimates how much the chi-square would fall if that parameter were freed, and prints the list sorted from largest to smallest (`modindices(fit)` in `lavaan`). Respecifying the model on the advice of that list, then reporting the improved fit on the same sample, capitalizes on chance just as the leakage demonstration above did: the list was computed from the same data that will judge the modified model, and with different data, different modifications would have been suggested [@maccallum1992]. A holdout cures this: modify the model as freely as exploration demands on one half of the sample, then fit the final specification once on the untouched half and report that test. The same design serves any analysis in which exploration and confirmation compete for the same data: explore, generate hypotheses, and adjust on the training portion, then run a single preregistered-in-spirit test on the holdout. Split-sample designs of this kind have been formalized for causal inference as well [@fafchamps2017].
 
 This tool remains underused in the social sciences, largely from a habit formed when samples were small and every observation was needed for estimation. That constraint has loosened: administrative registers, panel infrastructures like the LISS data of @sec-theory-to-glm, and routine digital measurement have made datasets of thousands to millions of rows ordinary, and at those sizes a holdout costs little precision. Where the sample really is small, the resampling methods of this chapter are the substitute, with their cautions attached.
+
+A holdout also shows *where* a model fails, which no fit statistic on the training data can. In PreFer, 21 percent of the people who had a child were missed by all five best register models, and the Fragile Families Challenge found the same concentration of error in particular families rather than particular methods [@sivak2026; @salganik2020]. Errors that every method shares are information about the phenomenon, not about the modelling, and they are the first place to look for what the data do not contain.
 
 ## What to carry forward {.unnumbered}
 

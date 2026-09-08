@@ -28,7 +28,12 @@ flowchart TB
       P5 --> Y5[y]
       Z5[z] -.-> P5
     end
-    r ~~~ c
+    subgraph sp[" spurious relationship "]
+      direction LR
+      Z6[z] --> X6[x]
+      Z6 --> Y6[y]
+    end
+    r ~~~ c ~~~ sp
   end
   top ~~~ bottom
   style top fill:none,stroke:none
