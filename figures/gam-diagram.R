@@ -44,8 +44,8 @@ N <- rbind(
   node("A",  3.45, 2.05, "Affect",                           w = 0.52, h = 0.28),
   node("C",  5.05, 3.15, "Cognition",                        w = 0.60, h = 0.28),
   node("R",  5.05, 0.95, "Arousal",                          w = 0.60, h = 0.28),
-  node("AP", 7.40, 2.05, "Appraisal and\ndecision processes", w = 1.25, h = 0.44),
-  node("O", 10.40, 2.05, "Aggressive or\nnon-aggressive action", w = 1.45, h = 0.44)
+  node("AP", 7.40, 2.05, "Aggressiveness\nof the decision", w = 1.25, h = 0.44),
+  node("O", 10.40, 2.05, "Aggressiveness\nof the action", w = 1.25, h = 0.44)
 )
 rownames(N) <- N$id
 
