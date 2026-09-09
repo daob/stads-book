@@ -285,7 +285,7 @@ Every empirical study follows the chain question → design → assumptions → 
 
 **Terms and symbols introduced.** design; model; descriptive, causal and predictive questions; total survey error; identification strategy; validity (internal, external, construct, statistical conclusion); threat to validity, with the eight named threats; fishing, p-hacking, HARKing; disturbance; interaction; fixed effect; recall bias; ecological bias; association; effect (direct, indirect, reciprocal, conditional); spurious relationship; linear; additive; exogenous; perceived behavioral control and actual control; $y$ the outcome, $\beta_0$ the intercept, $\varepsilon$ the disturbance, $T_i$ the group indicator, $\text{Post}_t$ and $\text{After}_t$ period indicators, $X_{ip}$ treatment received in period $p$, $\alpha_i$ a person's fixed effect, $\mathbb{1}[\cdot]$ the indicator function; in the design tables, $O$ a measurement, $X$ the treatment, $R$ random assignment.
 
-**Exercises that use R.** 1.D (a simulation of confounding); 1.F, optional, uses R for one integral.
+**Exercises that use R.** 1.D (optional, a simulation of confounding).
 
 ## Further study {.unnumbered}
 
@@ -344,7 +344,9 @@ Through the 1980s and 1990s, large observational cohorts reported that women tak
 (d) The way to arrive at a design is to read the threats table as a checklist and match one feature of the study to each threat you can name. Doing that here gives a randomized, masked, placebo-controlled trial in women recruited at menopause, with coronary events as the primary outcome, sized for the event rate in that age group and run long enough to see them, with intention-to-treat analysis and tracking of everyone who stops. Randomization removes selection by construction; masking and a placebo control remove differential care and reporting; intention-to-treat protects against selection creeping back in through who stays on treatment. The design has costs: many years, many women, and a population healthy enough to consent, which trades external validity for internal validity.
 (e) That the cohorts were right about many other things, that a trial is impossible for most exposures anyone cares about, and that this failure was diagnosable in advance: the exposure was chosen by people, was strongly related to social position, and the outcome was strongly related to social position too. The lesson is to ask what a design does about selection, and to treat "we adjusted for covariates" as a claim requiring an argument.
 :::
-::: {.callout-tip icon="false" title="Exercise 1.D"}
+::: {.callout-tip icon="false" title="Exercise 1.D (optional)"}
+*Optional, and harder than the others. If you skip it, take with you that confounding is bias, not noise: it shifts every estimate in the same direction and does not shrink as the sample grows, so an estimate can be precise and wrong at once.*
+
 Confounding is easier to believe once you have simulated it in a world where you set the truth yourself. In this world, motivated people exercise more, and motivated people have fewer symptoms for reasons of their own. Exercise itself does nothing at all. Work in `R`.
 
 (a) Write a function `sim_study(randomize, n = 200)` that draws `motivation` from a standard normal distribution; sets `exercise` to `rbinom(n, 1, 0.5)` when `randomize` is `TRUE` and to `rbinom(n, 1, plogis(motivation))` otherwise; sets `symptoms` to `10 - 1.5 * motivation + 0 * exercise` plus standard normal noise; and returns the coefficient of `exercise` from `lm(symptoms ~ exercise)`. Which piece of that function states that exercise does nothing, and which states that people who exercise are different to begin with?
@@ -421,31 +423,4 @@ Apply the five questions of @sec-five-questions to the Breathalyser study of the
 3. The data are police records of casualties, aggregated by month and by hour of the day. The question to ask is whether recording practice changed in October 1967, which would be an instrumentation threat.
 4. The assumption is that, without the law, the two series would have moved in parallel, so that the commuting-hours series shows what the weekend-night series would have done. The design is an interrupted time series with a control series, and the model is the difference-in-differences equation of @sec-designs.
 5. Because both series are counted by the same police forces in the same months, the comparison removes anything that moves both alike: the weather, petrol prices, a general improvement in road safety, and any change in how a casualty is defined or recorded. It does not remove anything that affected late-night driving alone at the same moment, such as the publicity campaign that accompanied the Act, mentioned in the opening pages. That explanation is left to argument rather than removed by construction.
-:::
-
-::: {.callout-tip icon="false" title="Exercise 1.F (optional)"}
-This last exercise is optional and harder than the others: it derives, in algebra, the number the observational estimator of Exercise 1.D converges to. Nothing later in the book depends on it.
-
-Write $m$ for motivation and $e$ for exercise, so that in the world of Exercise 1.D, $m$ is standard normal, $P(e = 1 \mid m) = \text{plogis}(m)$, and symptoms are $s = 10 - 1.5\,m + \varepsilon$ with $\varepsilon$ independent of everything else.
-
-(a) Show that the least-squares slope of $s$ on $e$ converges, as $n$ grows, to $-1.5\,\mathrm{Cov}(m, e)/\mathrm{Var}(e)$.
-(b) By symmetry $P(e = 1) = 0.5$, so $\mathrm{Var}(e) = 0.25$. Compute $\mathrm{Cov}(m, e) = E[m \cdot \text{plogis}(m)]$ numerically, either with `integrate(function(m) m * plogis(m) * dnorm(m), -Inf, Inf)` or from a draw of a million values, and give the limit.
-(c) Why does $n$ not appear in the answer?
-:::
-
-::: {.callout-note collapse="true" icon="false" title="Answer 1.F"}
-(a) The least-squares slope of $s$ on $e$ is the sample covariance of $s$ and $e$ divided by the sample variance of $e$, and as $n$ grows these converge to the population quantities $\mathrm{Cov}(s, e)/\mathrm{Var}(e)$. Since $s = 10 - 1.5\,m + \varepsilon$ and $\varepsilon$ is independent of $e$, $\mathrm{Cov}(s, e) = -1.5\,\mathrm{Cov}(m, e)$, which gives the expression.
-
-(b) Because $E(m) = 0$, $\mathrm{Cov}(m, e) = E(m e) = E[m \cdot P(e = 1 \mid m)] = E[m \cdot \text{plogis}(m)]$.
-
-```{r}
-#| label: limit-of-confounded-estimator
-cov_me <- integrate(function(m) m * plogis(m) * dnorm(m),
-                    -Inf, Inf)$value
-round(c(cov_me = cov_me, limit = -1.5 * cov_me / 0.25), 3)
-```
-
-So $\mathrm{Cov}(m, e) = 0.207$ and the limit is $-1.5 \times 0.207/0.25 = -1.24$, the average that the simulation in Exercise 1.D found at $n = 200$ and again at $n = 10{,}000$.
-
-(c) The limit is a property of the population: of how strongly motivation drives exercise and how strongly it drives symptoms. Sampling only adds noise around it, which shrinks with $n$; the limit itself does not move. This is part (e) of Exercise 1.D in algebra: the variance of the estimator goes to zero and the bias stays.
 :::
