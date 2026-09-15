@@ -267,7 +267,7 @@ So far we have turned a verbal theory into a statistical model with a set of equ
 
 This is where our choice for linear and additive models helps. In a linear and additive model every parameter can be written as a function of means, variances, and covariances alone, so those are the only features of the data we need to look at. A **covariance** is a correlation before dividing by the two standard deviations, $\operatorname{cov}(x, y) = \rho_{xy}\, \operatorname{sd}_x \operatorname{sd}_y$; it measures how two variables go together in their original units, and the correlation is the same quantity rescaled to lie between $-1$ and $1$. Means, variances, and covariances are collectively called **moments**. This simplifies the task: we only need to work out how the parameters relate to the moments, and everything else follows.
 
-Here we will further simplify the discussion by ignoring means and **standardizing** all variables, that is, subtracting each variable's mean and dividing by its standard deviation. This does two things to the equations: every intercept becomes zero, so the means drop out, and every variance becomes 1, so every covariance is a correlation. We then only have to deal with correlations.
+Here we will further simplify the discussion by ignoring means and **standardizing** all variables, that is, subtracting each variable's mean and dividing by its standard deviation. This does two things to the equations: every intercept becomes zero, so the means drop out, and every variance becomes 1, so every covariance is a correlation. We then only have to deal with correlations. Standardizing an endogenous variable also fixes the variance of its disturbance: whatever the predictors do not explain, the disturbance must supply, so that the total comes to 1.
 
 The final model in @fig-yang-final is large for a first example, so we begin with a smaller practice model of the same form, drawn in @fig-yang, and return to the full version once the rules are in hand. It keeps social integration ($\xi$), one physiological state ($\eta_1$, inflammation), and mortality risk ($\eta_2$); a direct arrow from integration to mortality stands in for every route that bypasses inflammation. This model has three unknown parameters: the effects $\gamma_1$ and $\gamma_2$ of the exogenous variable, and the effect $\beta$ of one endogenous variable on the other. The data contain three correlations. The connection between the two is the **decomposition rule** (@def-decomposition).
 
@@ -342,8 +342,6 @@ $$
 
 The 0.5 on the curved arrow in panel (a) of @fig-ace was not estimated from these twins, but predetermined by the fact that fraternal twins share 50% of their genetic material on average.
 
-Before decomposing the correlation, check that $y_1$ is indeed standardized, using the **variance rule** that goes with the decomposition rule: the implied variance of a variable is the sum, over all pairs of arrows pointing into it, of the product of the two coefficients times the correlation between the two sources, where the sources include the disturbance and a source paired with itself has correlation 1. With sources that are uncorrelated and standardized, as here, this is just the sum of the squared coefficients: $0.7^2 + 0.5^2 + 0.51^2 = 0.49 + 0.25 + 0.26 = 1.00$. The same rule is what fixes the variance of a disturbance once everything else is standardized: in the practice model of @fig-yang, $\eta_1 = \gamma_1\xi + \zeta_1$ has variance $\gamma_1^2 + \operatorname{var}(\zeta_1)$, so $\operatorname{var}(\zeta_1) = 1 - \gamma_1^2$.
-
 Now decompose the correlation between $y_1$ and $y_2$. The shared environment $C$ is a common cause, with a chain of 0.5 to each twin: a spurious relationship of $0.5 \times 0.5 = 0.25$. The genetic factors are joined by the curved arrow, with the chain 0.7 out of each end: a joint effect of $0.7 \times 0.5 \times 0.7 = 0.245$. The unique environments contribute nothing, since each acts on one twin alone: they are not common causes, and no chain connects them to the other twin. The sum, the implied correlation between fraternal twins, is $0.495$.
 
 Now change one number. For identical twins the genetic correlation is 1 instead of 0.5, as in panel (b) of @fig-ace, and nothing else about the model changes. The genetic joint effect becomes $0.7 \times 1 \times 0.7 = 0.49$, and the implied correlation is $0.25 + 0.49 = 0.74$. The model therefore predicts that identical twins will resemble each other considerably more than fraternal twins do, and by a specific amount. Comparing the two observed correlations is how heritability gets estimated; across 17,804 traits and fifty years of twin studies, the average reported heritability is 49 percent [@polderman2015].
@@ -351,14 +349,14 @@ Now change one number. For identical twins the genetic correlation is 1 instead 
 ::: {.callout-tip icon="false" title="Exercise 2.5"}
 Using the ACE diagram, suppose a trait has a genetic loading of 0.6, a shared-environment loading of 0.4, and a unique-environment loading of 0.693.
 
-(a) Write the two equations, and use the variance rule to check that the trait is standardized.
+(a) Write the two equations.
 (b) Derive the implied correlation between the twins' scores for fraternal twins, showing each contribution and naming its kind.
 (c) Do the same for identical twins.
 (d) Suppose children of more educated parents are better able to benefit from favourable genetics. Which assumption of the model does that violate?
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 2.5"}
-(a) $y_1 = 0.6A_1 + 0.4C + 0.693E_1$ and $y_2 = 0.6A_2 + 0.4C + 0.693E_2$. The three sources are uncorrelated and standardized, so the implied variance is the sum of squares, $0.36 + 0.16 + 0.48 = 1.00$: the trait is standardized, and its covariances are correlations.
+(a) $y_1 = 0.6A_1 + 0.4C + 0.693E_1$ and $y_2 = 0.6A_2 + 0.4C + 0.693E_2$. The trait is standardized, so its covariances are correlations.
 (b) Two contributions. A spurious relationship through the shared environment, their common cause: $0.4 \times 0.4 = 0.16$. A joint effect through the genetic factors' curved arrow: $0.6 \times 0.5 \times 0.6 = 0.18$. Total $0.34$.
 (c) The genetic joint effect becomes $0.6 \times 1 \times 0.6 = 0.36$, so the total is $0.52$.
 (d) Additivity. The claim is that the effect of $A$ on the trait depends on the value of another variable, parental education, which is a product term. Answering "linearity" would be a different claim: that the effect of $A$ changes as $A$ itself changes.
@@ -485,7 +483,7 @@ For a model of the same shape as @fig-yang you observe $r_{\xi\eta_1} = 0.5$, $r
 :::
 
 ::: {.callout-tip icon="false" title="Exercise 2.7"}
-The LISS data cannot be redistributed, so simulate the practice model of @fig-yang instead, with the values of the worked example, $\gamma_1 = -0.4$, $\beta = 0.3$, $\gamma_2 = -0.5$. With `set.seed(2)` and $n = 2{,}000$, draw `xi <- rnorm(n)`, then `eta1 <- -0.4 * xi + rnorm(n, sd = sqrt(1 - 0.16))`, then `eta2 <- 0.3 * eta1 - 0.5 * xi + rnorm(n, sd = s2)`, where `s2` is the standard deviation that gives `eta2` variance 1. Work it out with the variance rule and check it with `var()`.
+The LISS data cannot be redistributed, so simulate the practice model of @fig-yang instead, with the values of the worked example, $\gamma_1 = -0.4$, $\beta = 0.3$, $\gamma_2 = -0.5$. With `set.seed(2)` and $n = 2{,}000$, draw `xi <- rnorm(n)`, then `eta1 <- -0.4 * xi + rnorm(n, sd = sqrt(1 - 0.16))`, then `eta2 <- 0.3 * eta1 - 0.5 * xi + rnorm(n, sd = sqrt(0.54))`. The disturbance standard deviations have been chosen so that every variable has variance 1; check this with `var()`.
 
 (a) Compute the three correlations with `cor()` and compare them with the implied values $-0.40$, $-0.62$ and $0.50$.
 (b) Solve for the parameters by hand with the formulas of this section, then standardize the data with `scale()`, fit `sem("eta1 ~ xi \n eta2 ~ eta1 + xi")` and compare. Why is the chi-square of this model exactly zero?
@@ -493,15 +491,13 @@ The LISS data cannot be redistributed, so simulate the practice model of @fig-ya
 :::
 
 ::: {.callout-note collapse="true" icon="false" title="Answer 2.7"}
-By the variance rule, $\operatorname{var}(\eta_2) = 0.3^2 + 0.5^2 + 2 \times 0.3 \times (-0.5) \times \rho_{\xi\eta_1} + \operatorname{var}(\zeta_2) = 0.09 + 0.25 + 0.12 + \operatorname{var}(\zeta_2)$, so the disturbance variance is $1 - 0.46 = 0.54$ and `s2 <- sqrt(1 - 0.46)`.
-
 ```{r}
 #| label: sim-practice-model
 set.seed(2)
 n <- 2000
 xi   <- rnorm(n)
 eta1 <- -0.4 * xi + rnorm(n, sd = sqrt(1 - 0.16))
-eta2 <- 0.3 * eta1 - 0.5 * xi + rnorm(n, sd = sqrt(1 - 0.46))
+eta2 <- 0.3 * eta1 - 0.5 * xi + rnorm(n, sd = sqrt(0.54))
 sim <- data.frame(xi, eta1, eta2)
 round(c(var_eta1 = var(eta1), var_eta2 = var(eta2)), 3)
 round(cor(sim), 3)
@@ -701,7 +697,7 @@ I am using examples of relatively simple models for didactic purposes. Simple mo
 
 A verbal theory becomes a path diagram in three steps, listing the variables, ordering them causally and saying which affects which, and the diagram claims that every arrow not drawn is zero and that every common cause of two connected variables is in the model (@sec-words-to-graphs). Each variable with an arrow into it gets a linear and additive equation, written in the $\xi, \eta, \gamma, \beta, \zeta, \psi$ notation of @tbl-sem-notation, and the model's key assumption is that each disturbance is uncorrelated with the predictors of its own equation (@sec-graph-to-equations). With standardized variables, the decomposition rule (@def-decomposition) writes every correlation as the sum of direct effects, indirect effects, spurious relationships and joint effects, so a correlation overstates or understates an effect by the other contributions; @sec-identification and @sec-explanation-prediction use this rule (@sec-implied). Solving the decomposition equations for the parameters is estimation, and a model with fewer parameters than correlations has degrees of freedom and makes a prediction the data can reject, by a chi-square test whose maximum-likelihood version is a likelihood-ratio test (@def-likelihood), which @sec-identification, @sec-anova, @sec-evaluation and @sec-unsupervised rely on (@sec-estimating-testing). A binary outcome gets a linear model for its log-odds, logistic regression, whose coefficients are read on the log-odds scale, as odds ratios, or as differences in predicted probabilities; the last is usually the number to report, and @sec-identification picks up the question of what an indirect effect means when the arrows carry coefficients on different scales (@sec-logistic).
 
-**Terms and symbols introduced.** covariation statement; causal hypothesis; common cause; intervening variable; exogenous and endogenous variables; linearity; additivity; unstandardized and standardized coefficients; standard error; covariance; moments; standardizing; decomposition rule; direct effect, indirect effect, spurious relationship, joint effect; recursive model; collider; partial correlation; loading; variance rule; saturated (just identified) model; degrees of freedom; chi-square statistic; likelihood, log-likelihood, maximum likelihood, likelihood-ratio test, nested models, Wald test, block test; equivalent models; odds, log-odds (logit), logistic regression, generalized linear model, divide-by-four rule, odds ratio; linear probability model; reliability; $\xi$ an exogenous variable, $\eta$ an endogenous variable, $\gamma$ the effect of an exogenous on an endogenous variable, $\beta$ the effect of one endogenous variable on another, $\zeta$ a disturbance, $\psi$ a covariance between disturbances, $\rho$ a correlation, $s$ a linear predictor on the log-odds scale, $\ell$ the log-likelihood, $A$, $C$, $E$ the genetic, shared and unique components of the ACE model.
+**Terms and symbols introduced.** covariation statement; causal hypothesis; common cause; intervening variable; exogenous and endogenous variables; linearity; additivity; unstandardized and standardized coefficients; standard error; covariance; moments; standardizing; decomposition rule; direct effect, indirect effect, spurious relationship, joint effect; recursive model; collider; partial correlation; loading; saturated (just identified) model; degrees of freedom; chi-square statistic; likelihood, log-likelihood, maximum likelihood, likelihood-ratio test, nested models, Wald test, block test; equivalent models; odds, log-odds (logit), logistic regression, generalized linear model, divide-by-four rule, odds ratio; linear probability model; reliability; $\xi$ an exogenous variable, $\eta$ an endogenous variable, $\gamma$ the effect of an exogenous on an endogenous variable, $\beta$ the effect of one endogenous variable on another, $\zeta$ a disturbance, $\psi$ a covariance between disturbances, $\rho$ a correlation, $s$ a linear predictor on the log-odds scale, $\ell$ the log-likelihood, $A$, $C$, $E$ the genetic, shared and unique components of the ACE model.
 
 **Exercises that use R.** 2.7 (simulating the practice model, checking the decomposition rule with `cor()`, and fitting and testing it in `lavaan`); 2.D, optional, checks a derivation with `lm()`.
 

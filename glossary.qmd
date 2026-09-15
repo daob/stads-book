@@ -176,8 +176,6 @@ This appendix is meant for use during the open-book exam and while reading. The 
 
 **Variance (of an estimator)** — How much an estimate swings from one sample to the next; it shrinks with the sample size, unlike bias (Exercise 1.D in @sec-rq-to-interpretation). In @eq-bias-variance, the variance of a fitted model's prediction at a point across repeated training sets (@sec-overfitting).
 
-**Variance rule** — The implied variance of a variable is the sum, over all pairs of arrows pointing into it, of the product of the two coefficients times the correlation between their sources; with uncorrelated standardized sources, the sum of the squared coefficients, which fixes a disturbance's variance at $1 - \gamma_1^2$ (@sec-implied).
-
 **Wald estimator; Wald test** — Two different things. The Wald estimator is the instrumental-variable ratio $\rho_{\xi\eta_2}/\rho_{\xi\eta_1}$, or the corresponding ratio of covariances (@sec-iv). The Wald test tests one estimate against zero by squaring its $z$-statistic and agrees with the likelihood-ratio test in large samples (@def-likelihood).
 
 ## Notation {.unnumbered}

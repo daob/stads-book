@@ -94,7 +94,7 @@ set.seed(5)
 n <- 10000
 X <- rnorm(n)
 U <- rnorm(n) # never measured
-# the disturbance sd's keep M and Y at variance 1 (variance rule)
+# the disturbance sd's keep M and Y at variance 1
 M <- 0.5 * X + 0.6 * U + rnorm(n, sd = sqrt(1 - 0.25 - 0.36))
 Y <- 0.0 * M + 0.6 * U + rnorm(n, sd = sqrt(1 - 0.36))
 d2 <- data.frame(X, M, Y) # does not include U  :(
